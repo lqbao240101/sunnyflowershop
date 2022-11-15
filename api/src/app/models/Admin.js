@@ -1,19 +1,20 @@
 const mongoose = require('mongoose');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
-
 const Schema = mongoose.Schema;
+const mongooseDelete = require('mongoose-delete');
+const mongooseDateFormat = require('mongoose-date-format');
 
 const Admin = new Schema(
     {
-        _id: { type: Number },
-        username: { type: String, min: 2, max: 50, required: true },
+        username: { type: String, minLength: 2, maxLength: 50, required: true },
         email: { type: String, required: true },
-        password: { type: String, min: 6, max: 24, required: true },
-        level: { type: Number, default: 1 },
+        password: { type: String, minLength: 6, maxLength: 24, required: true },
+        level: { type: Number, default: 1, min: 1, max: 2},
+        avatar: { type: String, required: true}
+    },{
+        timestamps: true,
     },
-    {
-        _id: false
-    });
+)
 
-Admin.plugin(AutoIncrement, { id: 'admin_id_counter', inc_field: '_id' });
+Admin.plugin(mongooseDelete, { overrideMethods: 'all' })
+Admin.plugin(mongooseDateFormat);
 module.exports = mongoose.model('admins', Admin);

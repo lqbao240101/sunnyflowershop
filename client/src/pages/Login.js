@@ -9,12 +9,13 @@ function Login() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/retrieveToken`, {
+      .get(`http://localhost:8000/customer/checkLogin`, {
         headers: {
           Authorization: `Bearer ${Cookies.get('token')}`,
         },
       })
       .then((response) => {
+        console.log(response);
         if (response.data.success) {
           window.location.href = 'http://localhost:3000/my-account';
         }

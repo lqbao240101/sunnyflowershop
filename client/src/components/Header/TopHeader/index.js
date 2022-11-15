@@ -14,14 +14,16 @@ function TopHeader() {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/user/profile`, {
+            .get(`http://localhost:8000/customer/profile`, {
                 headers: {
-                    Authorization: `Bearer ${Cookies.get('token')}`,
+                    Authorization: `Bearer ` +  Cookies.get('token'),
                 },
             })
             .then((response) => {
-                setUser(response.data.data);
-
+                console.log(response);
+                if (response.data.success) {
+                    setUser(response.data.data);
+                }
             })
             .catch(function (error) {
                 console.log(error);
