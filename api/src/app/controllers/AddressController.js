@@ -8,18 +8,18 @@ class AddressController {
         Address.find({
             customer: req.user._id
         })
-        .then(data => {
-            res.json({
-                success: true,
-                data: data
+            .then(data => {
+                res.json({
+                    success: true,
+                    data: data
+                })
             })
-        })
-        .catch(err => {
-            console.log(err);
-            res.json({
-                success: false
-            })
-        });
+            .catch(err => {
+                console.log(err);
+                res.json({
+                    success: false
+                })
+            });
     }
 
     // [GET] /address/:id
@@ -50,17 +50,6 @@ class AddressController {
     create(req, res) {
         const { firstNameReceiver, lastNameReceiver, phoneReceiver, streetName, district, ward, city } = req.body;
 
-        const address = new Address({
-            first_name_receiver: firstNameReceiver,
-            last_name_receiver: lastNameReceiver,
-            customer: req.user._id,
-            phone_receiver: phoneReceiver,
-            street_name: streetName,
-            district: district,
-            ward: ward,
-            city: city
-        })
-
         Address.findOne({
             first_name_receiver: firstNameReceiver,
             last_name_receiver: lastNameReceiver,
@@ -78,43 +67,26 @@ class AddressController {
                         message: "Addresss is already exist"
                     })
                 } else {
-                    address.save()
+                    Address.create({
+                        first_name_receiver: firstNameReceiver,
+                        last_name_receiver: lastNameReceiver,
+                        customer: req.user._id,
+                        phone_receiver: phoneReceiver,
+                        street_name: streetName,
+                        district: district,
+                        ward: ward,
+                        city: city
+                    })
                         .then(result => {
-                            if (result === address) {
-                                req.user.addresses.push(address._id)
-                                req.user.save()
-                                    .then(result => {
-                                        if (result === req.user) {
-                                            res.json({
-                                                success: true,
-                                                message: "Create new address successfully"
-                                            })
-                                        } else {
-                                            res.json({
-                                                success: false,
-                                                message: "Add address to customer fail."
-                                            })
-                                        }
-                                    })
-                                    .catch(err => {
-                                        console.log(err);
-                                        res.json({
-                                            success: false,
-                                            message: "Something wrong."
-                                        })
-                                    })
-                            } else {
-                                res.json({
-                                    success: false,
-                                    message: "Create address fail"
-                                })
-                            }
+                            res.json({
+                                success: true,
+                                message: "Create address successfully"
+                            })
                         })
                         .catch(err => {
-                            console.log(err)
                             res.json({
                                 success: false,
-                                message: "Something wrong."
+                                message: "Create address failed."
                             })
                         })
                 }
@@ -125,7 +97,6 @@ class AddressController {
                     message: "Something wrong"
                 })
             })
-
     }
 
     // [PUT] /address/:id/update
