@@ -2,7 +2,26 @@ const { response } = require('express');
 const Address = require('../models/Address')
 
 class AddressController {
-    
+
+    // [GET] /address/
+    show(req, res) {
+        Address.find({
+            customer: req.user._id
+        })
+        .then(data => {
+            res.json({
+                success: true,
+                data: data
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.json({
+                success: false
+            })
+        });
+    }
+
     // [GET] /address/:id
     detail(req, res) {
         Address.findOne({ _id: req.params.id, customer: req.user._id })
