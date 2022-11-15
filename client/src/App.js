@@ -66,14 +66,6 @@ function App() {
             </Route>
             <Route path="/address-edit/*" element={<AddressEdit />}>
             </Route>
-
-
-            {/* {listAddress.leng !== 0 &&
-              listAddress.map((address, index) => {
-                return (
-                  <Route key={index} path={`/address-edit/id=${address.id}`} element={<AddressEdit id={address.id} />}></Route>
-                )
-              })} */}
           </Routes>
           <Footer />
         </div>

@@ -1,16 +1,19 @@
-// const mongoose = require('mongoose');
+const mongoose = require('mongoose');
+const mongooseDelete = require('mongoose-delete');
+const mongooseDateFormat = require('mongoose-date-format');
+const Schema = mongoose.Schema;
 
-// const Schema = mongoose.Schema;
+const Voucher = new Schema(
+    {
+        name: { type: String, required: true, minLength: 2, unique: true},
+        usage: { type: Number, min: 5, required: true},
+        percent: { type: Number, min: 0, max: 100, required: true},
+        expired_date: { type: Date, required: true }, 
+    },{
+        timestamps: true,
+    },
+)
 
-// const Voucher = new Schema({
-//     name: {type: String},
-//     description:{type: String},
-//     price: {type: Number},
-//     percent_sale: {type: Number},
-//     img: {type: String},
-//     quantity: {type: Number},
-//     status: {type: String},
-//     deleted_at: { type: Date, default: Date.now }
-// })
-
-// module.exports = mongoose.model('vouchers', Product);
+Voucher.plugin(mongooseDelete, { overrideMethods: 'all' })
+Voucher.plugin(mongooseDateFormat);
+module.exports = mongoose.model('vouchers', Voucher);
