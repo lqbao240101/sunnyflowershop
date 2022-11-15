@@ -8,7 +8,7 @@ import Cookies from 'js-cookie'
 function Register() {
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/retrieveToken`, {
+      .get(`http://localhost:8000/customer/profile`, {
         headers: {
           Authorization: `Bearer ${Cookies.get('token')}`,
         },
@@ -23,12 +23,12 @@ function Register() {
       });
   }, []);
 
-    return (
-        <>
-          <CommonBanner namePage="Register"/>
-          <RegisterArea />
-        </>
-    )
+  return (
+    <>
+      <CommonBanner namePage="Register" />
+      <RegisterArea />
+    </>
+  )
 };
 
 export default Register;

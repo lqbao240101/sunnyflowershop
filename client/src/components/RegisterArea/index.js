@@ -15,13 +15,13 @@ function RegisterArea() {
 
     const onSubmit = (data) => {
         axios
-            .post('http://localhost:8000/api/register', data)
+            .post('http://localhost:8000/customer/register', data)
             .then(function (response) {
-                console.log("1", response.data.success)
                 if (response.data.success) {
                     alert('Success')
+                    window.location.href = 'http://localhost:3000/login'
                 } else {
-                    console.log("2", response.data.errors)
+
                     alert('Fail!');
                 }
             })

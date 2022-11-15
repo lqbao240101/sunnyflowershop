@@ -17,7 +17,7 @@ function LoginArea() {
 
     const onSubmit = (data) => {
         axios
-            .post(`http://localhost:8000/customer/login`, data )
+            .post(`http://localhost:8000/customer/login`, data)
             .then(function (response) {
                 if (response.data.success) {
                     const token = response.data.token;

@@ -9,6 +9,7 @@ import CustomerDashboard from './CustomerDashboard';
 import CustomerAddress from './CustomerAddress';
 import CustomerAccountDetails from './CustomerAccountDetails';
 import { useState } from 'react';
+import AddAddress from './AddAddress/AddAddress';
 
 function MyAccountArea() {
     const [tab, setTab] = useState("Dashboard");
@@ -24,14 +25,14 @@ function MyAccountArea() {
                                     <Link to="/my-account" className={tab === "Dashboard" ? styles.active : ""} onClick={() => setTab("Dashboard")}>
                                         <FaTachometerAlt /> DASHBOARD
                                     </Link>
-                                    <Link to="/my-account/customer-order" className={tab === "Orders" ? styles.active : ""}  onClick={() => setTab("Orders")}>
-                                        <FaCartArrowDown className=''/> ORDERS
+                                    <Link to="/my-account/customer-order" className={tab === "Orders" ? styles.active : ""} onClick={() => setTab("Orders")}>
+                                        <FaCartArrowDown className='' /> ORDERS
                                     </Link>
                                     <Link to="/my-account/customer-address" className={tab === "Addresses" ? styles.active : ""} onClick={() => setTab("Addresses")}>
-                                        <FaMapMarkerAlt className=''/> ADDRESSES
+                                        <FaMapMarkerAlt className='' /> ADDRESSES
                                     </Link>
                                     <Link to="/my-account/customer-account-details" className={tab === "AccountDetails" ? styles.active : ""} onClick={() => setTab("AccountDetails")}>
-                                        <FaUserAlt className=''/> ACCOUNT DETAILS
+                                        <FaUserAlt className='' /> ACCOUNT DETAILS
                                     </Link>
                                 </li>
                             </ul>
@@ -43,6 +44,7 @@ function MyAccountArea() {
                             <Route path="/customer-order" element={<CustomerOrder />}></Route>
                             <Route path="/customer-address" element={<CustomerAddress />}></Route>
                             <Route path="/customer-account-details" element={<CustomerAccountDetails />}></Route>
+                            <Route path="/add-address" element={<AddAddress />}></Route>
                         </Routes>
                     </Col>
                 </Row>

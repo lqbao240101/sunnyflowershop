@@ -10,25 +10,32 @@ function CustomerAddress() {
 
     const [listAddress, setListAddress] = useState([]);
 
-    useEffect(() => {
-        axios
-            .get(`http://localhost:8000/api/user/address`, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('token')}`,
-                },
-            })
-            .then((response) => {
-                if (response.data.success) {
-                    setListAddress(response.data.data);
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }, []);
+    // useEffect(() => {
+    //     axios
+    //         .get(`http://localhost:8000/customer/profile`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${Cookies.get('token')}`,
+    //             },
+    //         })
+    //         .then((response) => {
+    //             if (response.data.success) {
+    //                 setListAddress(response.data.data);
+    //             }
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error);
+    //         });
+    // }, []);
 
     return (
         <Row>
+            <Col lg={12} md={12} sm={12} xs={12} className='position-relative'>
+                <h4 className='text-right'>
+                    <Link data-toggle="tab" className="theme-btn-one bg-black btn_sm add_prod_button " to="/my-account/add-address">
+                        Add Address
+                    </Link>
+                </h4>
+            </Col>
             {listAddress.map((address, index) => {
                 return (
                     <Col lg={6} key={index}>
@@ -48,8 +55,9 @@ function CustomerAddress() {
                         </div>
                     </Col>
                 )
-            })}
-        </Row>
+            })
+            }
+        </Row >
     )
 }
 
