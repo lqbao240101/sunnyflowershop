@@ -10,10 +10,12 @@ const Customer = new Schema(
         email: { type: String, required: true, unique: true },
         password: { type: String, min: 6, max: 24, required: true },
         avatar: { type: String, required: true },
-        addresses : [{ type: Schema.Types.ObjectId, ref: 'addresses' }],
-    },{
-        timestamps: true,
+        disabled: { type: Boolean, default: false},
+        subscribe: { type: Boolean, default: false}
     },
+    {
+        timestamps: true,
+    }
 )
 
 Customer.plugin(mongooseDelete, { overrideMethods: 'all' })
