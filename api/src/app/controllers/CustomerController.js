@@ -111,7 +111,7 @@ class CustomerController {
 
     // [GET] /customer/ => Pagination Customers
     show(req, res, next) {
-        let perPage = 2;
+        let perPage = 12;
         let page = parseInt(req.query.page);
         if (page < 1) {
             page = 1;
@@ -138,20 +138,18 @@ class CustomerController {
 
     //[GET] /customer/profile => Show profile 1 user
     profile(req, res, next) {
-        req.user.populate('addresses')
-            .then(data => {
-                res.json({
-                    success: true,
-                    data: {
-                        firstName: data.first_name,
-                        lastName: data.last_name,
-                        email: data.email,
-                        avatar: data.avatar,
-                        addresses: data.addresses
-                    },
-                    message: "Valid token."
-                })
-            })
+        res.json({
+            success: true,
+            data: {
+                _id: req.user._id,
+                firstName: req.user.first_name,
+                lastName: req.user.last_name,
+                email: req.user.email,
+                avatar: req.user.avatar,
+                disable: req.user.disable,
+                subscribe: req.user.subscribe
+            }
+        })
     }
 
     // [PATCH] /customer/updateAvatar => Update avatar
