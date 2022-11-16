@@ -47,7 +47,7 @@ function AddressEditArea({ id, stt }) {
                     setLastName(response.data.data.last_name_receiver)
                     // reset(response.data.data.last_name_receiver);
 
-                    setStreetName(response.data.data.street_name)
+                    setStreetName(response.data.data.x)
                     // reset(response.data.data.street_name);
 
                     setDistrict(response.data.data.district)
