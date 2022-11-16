@@ -23,7 +23,7 @@ class AuthMiddleware {
                     _id: decoded.id
                 }, { password: 0 })
                     .then(data => {
-                        if (data.length !== 0) {
+                        if (data.length !== 0 && data.disabled === false) {
                             req.user = data;
                             next();
                         }
