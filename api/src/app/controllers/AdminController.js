@@ -1,5 +1,6 @@
 const Admin = require('../models/Admin')
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const Customer = require('../models/Customer');
 
 class AdminController {
 
@@ -167,6 +168,80 @@ class AdminController {
                 res.json({
                     success: false,
                     message: "Update avatar account admin fail"
+                })
+            })
+    }
+
+    // [PATCH] /admin/disable/:id
+    disable(req, res) {
+        Customer.findOne({
+            _id: req.params.id
+        })
+            .then(data => {
+                if (data.disabled === true) {
+                    res.json({
+                        success: false,
+                        message: "This account has been locked."
+                    })
+                } else {
+                    data.disabled = true;
+
+                    data.save()
+                        .then(savedData => {
+                            res.json({
+                                success: true,
+                                message: "Account deactivated successfully."
+                            })
+                        })
+                        .catch(err => {
+                            res.json({
+                                success: false,
+                                message: "Account deactivated failed."
+                            })
+                        })
+                }
+            })
+            .catch(err => {
+                res.json({
+                    success: false,
+                    message: "Customer is not found."
+                })
+            })
+    }
+
+    // [PATCH] /admin/enable/:id
+    enable(req, res) {
+        Customer.findOne({
+            _id: req.params.id
+        })
+            .then(data => {
+                if (data.disabled === false) {
+                    res.json({
+                        success: false,
+                        message: "This account is not disabled."
+                    })
+                } else {
+                    data.disabled = false;
+
+                    data.save()
+                        .then(savedData => {
+                            res.json({
+                                success: false,
+                                message: "The account is no longer disabled."
+                            })
+                        })
+                        .catch(err => {
+                            res.json({
+                                success: false,
+                                message: "Enable failed."
+                            })
+                        })
+                }
+            })
+            .catch(err => {
+                res.json({
+                    success: false,
+                    message: "Customer is not found."
                 })
             })
     }

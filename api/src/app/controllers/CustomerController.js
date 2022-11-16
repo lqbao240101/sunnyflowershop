@@ -80,13 +80,20 @@ class CustomerController {
             password: password
         }).then(data => {
             if (data) {
+                if (data.disabled === true) {
+                    res.json({
+                        success: false,
+                        message: "Your account has been locked. Please contact us to resolve."
+                    })
+                } else {
+                    let token = jwt.sign({ id: data._id }, "secret"); //Need fix
+                    res.json({
+                        success: true,
+                        token: token,
+                        message: "Login successfully.",
+                    })
+                }
                 // let token = generateToken(data._id);
-                let token = jwt.sign({ id: data._id }, "secret"); //Need fix
-                res.json({
-                    success: true,
-                    token: token,
-                    message: "Login successfully.",
-                })
             } else {
                 res.json({
                     success: false,
