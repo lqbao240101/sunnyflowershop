@@ -116,8 +116,8 @@ class AddressController {
                 } else {
                     if (data.first_name_receiver === first_name_receiver
                         && data.last_name_receiver === last_name_receiver
-                        && data.phoneReceiver === phone_receiver
-                        && data.streetName === street_name
+                        && data.phone_receiver === phone_receiver
+                        && data.street_name === street_name
                         && data.district === district
                         && data.ward === ward
                         && data.city === city) {
@@ -146,8 +146,8 @@ class AddressController {
                                     data.first_name_receiver = first_name_receiver;
                                     data.last_name_receiver = last_name_receiver;
                                     data.phone_receiver = phone_receiver;
-                                    data.street_name = streetName;
-                                    data.district = district;
+                                    data.street_name = street_name;
+                                    data.district = district;   
                                     data.ward = ward;
                                     data.city = city;
 

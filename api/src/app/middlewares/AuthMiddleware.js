@@ -8,7 +8,6 @@ class AuthMiddleware {
     checkUser(req, res, next) {
         try {
             const authHeader = String(req.headers['authorization'] || '');
-            console.log(authHeader)
             if (authHeader === null) {
                 req.json({
                     success: false,
@@ -20,7 +19,9 @@ class AuthMiddleware {
                 // const cert = fs.readFileSync('../../key/publickey.crt')
                 // const decoded = jwt.verify(token, cert, { algorithm: ['RS256'] })
                 var decoded = jwt.verify(token, "secret")// Need fix
-                Customer.findById(decoded.id)
+                Customer.findOne({
+                    _id: decoded.id
+                }, { password: 0 })
                     .then(data => {
                         if (data.length !== 0) {
                             req.user = data;
