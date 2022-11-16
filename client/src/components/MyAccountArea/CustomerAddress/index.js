@@ -10,28 +10,28 @@ function CustomerAddress() {
 
     const [listAddress, setListAddress] = useState([]);
 
-    // useEffect(() => {
-    //     axios
-    //         .get(`http://localhost:8000/customer/profile`, {
-    //             headers: {
-    //                 Authorization: `Bearer ${Cookies.get('token')}`,
-    //             },
-    //         })
-    //         .then((response) => {
-    //             if (response.data.success) {
-    //                 setListAddress(response.data.data);
-    //             }
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error);
-    //         });
-    // }, []);
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8000/address/`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                if (response.data.success) {
+                    setListAddress(response.data.data);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }, []);
 
     return (
-        <Row>
+        <Row className='area_content'>
             <Col lg={12} md={12} sm={12} xs={12} className='position-relative'>
-                <h4 className='text-right'>
-                    <Link data-toggle="tab" className="theme-btn-one bg-black btn_sm add_prod_button " to="/my-account/add-address">
+                <h4 className='text-right p-3'>
+                    <Link data-toggle="tab" className="theme-btn-one bg-black btn_sm " to="/my-account/add-address">
                         Add Address
                     </Link>
                 </h4>
@@ -43,14 +43,14 @@ function CustomerAddress() {
                             <h4 className={styles.title}>Shipping Address {index + 1}</h4>
                             <div className={styles.shippingAddress}>
                                 <h5>
-                                    <strong>{address.nameReceiver}</strong>
+                                    <strong>{address.first_name_receiver} {address.last_name_receiver}</strong>
                                 </h5>
                                 <p>
-                                    {address.streetName}, {address.district}<br />
+                                    {address.street_name}, {address.district}<br />
                                     {address.ward}, {address.city}
                                 </p>
-                                <p>Mobile: {address.phoneReceiver}</p>
-                                <Link to={`/address-edit/id=${address.id}`} className='theme-btn-one bg-black btn_sm mt-4'>Edit Address</Link>
+                                <p>Mobile: {address.phone_receiver}</p>
+                                <Link to={`/address-edit/id=${address._id}`} className='theme-btn-one bg-black btn_sm mt-4'>Edit Address</Link>
                             </div>
                         </div>
                     </Col>

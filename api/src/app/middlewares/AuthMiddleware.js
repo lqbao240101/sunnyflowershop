@@ -8,7 +8,8 @@ class AuthMiddleware {
     checkUser(req, res, next) {
         try {
             const authHeader = String(req.headers['authorization'] || '');
-            if(authHeader === null) {
+            console.log(authHeader)
+            if (authHeader === null) {
                 req.json({
                     success: false,
                     message: "Token is not found."
@@ -28,7 +29,7 @@ class AuthMiddleware {
                     })
                     .catch(err => {
                         res.json({
-                            success:false,
+                            success: false,
                             message: "Invalid token"
                         })
                     })

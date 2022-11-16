@@ -12,10 +12,10 @@ const AddAddress = () => {
     const onSubmit = data => {
         console.log(data)
         axios
-            .patch('http://localhost:8000/address/', data,
+            .post('http://localhost:8000/address', data,
                 {
                     headers: {
-                        Authorization: `Bearer ${Cookies.get('admin')}`,
+                        Authorization: `Bearer ${Cookies.get('token')}`,
                     },
                 },
             )
@@ -142,7 +142,6 @@ const AddAddress = () => {
                                                     {errors.name?.type && <span className='error'>Không được bỏ trống mục này</span>}
                                                 </div>
                                             </Col>
-
                                             <Col lg={12}>
                                                 <div className='vendor_order_boxed position-relative'>
                                                     <div className='btn_right_table'>

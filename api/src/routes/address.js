@@ -5,7 +5,7 @@ const { checkUser, checkIsAdmin, checkIsSuperAdmin } = require('../app/middlewar
 const AddressController = require('../app/controllers/AddressController')
 
 router.get('/', checkUser, AddressController.show)
-router.patch('/', checkUser, AddressController.create)
+router.post('/', checkUser, AddressController.create)
 router.get('/:id', checkUser, AddressController.detail)
 router.delete('/:id', checkUser, AddressController.delete)
 router.put('/:id/update', checkUser, AddressController.update)
