@@ -16,11 +16,10 @@ function TopHeader() {
         axios
             .get(`http://localhost:8000/customer/profile`, {
                 headers: {
-                    Authorization: `Bearer ` +  Cookies.get('token'),
+                    Authorization: `Bearer ` + Cookies.get('token'),
                 },
             })
             .then((response) => {
-                console.log(response);
                 if (response.data.success) {
                     setUser(response.data.data);
                 }

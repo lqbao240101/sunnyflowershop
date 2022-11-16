@@ -4,7 +4,7 @@ const { checkIsAdmin } = require('../app/middlewares/AuthMiddleware');
 
 const categoryController = require('../app/controllers/CategoryController');
 
-router.get('/', checkIsAdmin, categoryController.show)
+router.get('/', categoryController.show)
 router.post('/', checkIsAdmin, categoryController.create);
 router.get('/trash', checkIsAdmin, categoryController.trashCategories)
 router.delete('/:id', checkIsAdmin, categoryController.delete);
