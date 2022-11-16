@@ -9,7 +9,7 @@ function Login() {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/customer/checkLogin`, {
+      .get(`localhost:8000/customer/profile`, {
         headers: {
           Authorization: `Bearer ${Cookies.get('token')}`,
         },

@@ -30,7 +30,7 @@ function AddressEdit() {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/user/address`, {
+            .get(`http://localhost:8000/address/`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
@@ -52,7 +52,7 @@ function AddressEdit() {
                 {listAddress.leng !== 0 &&
                     listAddress.map((address, index) => {
                         return (
-                            <Route key={index} path={`/id=${address.id}`} element={<AddressEditArea id={address.id} stt={index}/>}></Route>
+                            <Route key={index} path={`/id=${address._id}`} element={<AddressEditArea id={address._id} stt={index} />}></Route>
                         )
                     })}
             </Routes>
