@@ -8,7 +8,7 @@ class AuthMiddleware {
     checkUser(req, res, next) {
         try {
             const authHeader = String(req.headers['authorization'] || '');
-            if(authHeader === null) {
+            if (authHeader === null) {
                 req.json({
                     success: false,
                     message: "Token is not found."
@@ -19,7 +19,9 @@ class AuthMiddleware {
                 // const cert = fs.readFileSync('../../key/publickey.crt')
                 // const decoded = jwt.verify(token, cert, { algorithm: ['RS256'] })
                 var decoded = jwt.verify(token, "secret")// Need fix
-                Customer.findById(decoded.id)
+                Customer.findOne({
+                    _id: decoded.id
+                }, { password: 0 })
                     .then(data => {
                         if (data.length !== 0) {
                             req.user = data;
@@ -28,7 +30,7 @@ class AuthMiddleware {
                     })
                     .catch(err => {
                         res.json({
-                            success:false,
+                            success: false,
                             message: "Invalid token"
                         })
                     })

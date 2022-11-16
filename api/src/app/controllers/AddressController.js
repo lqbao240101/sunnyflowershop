@@ -101,7 +101,7 @@ class AddressController {
 
     // [PUT] /address/:id/update
     update(req, res) {
-        const { firstNameReceiver, lastNameReceiver, phoneReceiver, streetName, district, ward, city } = req.body;
+        const { first_name_receiver, last_name_receiver, phone_receiver, street_name, district, ward, city } = req.body;
 
         Address.findOne({
             _id: req.params.id,
@@ -114,10 +114,10 @@ class AddressController {
                         message: "Address id not found."
                     })
                 } else {
-                    if (data.first_name_receiver === firstNameReceiver
-                        && data.last_name_receiver === lastNameReceiver
-                        && data.phoneReceiver === phoneReceiver
-                        && data.streetName === streetName
+                    if (data.first_name_receiver === first_name_receiver
+                        && data.last_name_receiver === last_name_receiver
+                        && data.phone_receiver === phone_receiver
+                        && data.street_name === street_name
                         && data.district === district
                         && data.ward === ward
                         && data.city === city) {
@@ -127,11 +127,11 @@ class AddressController {
                         })
                     } else {
                         Address.findOne({
-                            first_name_receiver: firstNameReceiver,
-                            last_name_receiver: lastNameReceiver,
+                            first_name_receiver: first_name_receiver,
+                            last_name_receiver: last_name_receiver,
                             customer: req.user._id,
-                            phone_receiver: phoneReceiver,
-                            street_name: streetName,
+                            phone_receiver: phone_receiver,
+                            street_name: street_name,
                             district: district,
                             ward: ward,
                             city: city
@@ -143,11 +143,11 @@ class AddressController {
                                         message: "Addresss is already exist"
                                     })
                                 } else {
-                                    data.first_name_receiver = firstNameReceiver;
-                                    data.last_name_receiver = lastNameReceiver;
-                                    data.phone_receiver = phoneReceiver;
-                                    data.street_name = streetName;
-                                    data.district = district;
+                                    data.first_name_receiver = first_name_receiver;
+                                    data.last_name_receiver = last_name_receiver;
+                                    data.phone_receiver = phone_receiver;
+                                    data.street_name = street_name;
+                                    data.district = district;   
                                     data.ward = ward;
                                     data.city = city;
 

@@ -118,7 +118,7 @@ class CustomerController {
         }
 
         Customer
-            .find()
+            .find({}, { password: 0 })
             .skip((perPage * page) - perPage)
             .limit(perPage)
             .exec((err, customers) => {
@@ -136,23 +136,114 @@ class CustomerController {
             });
     }
 
-    //[GET] /customer/profile => Show profile 1 user
+    //[GET] /customer/profile => Show profile 1 user || /customer/:id/profile
     profile(req, res, next) {
-        res.json({
-            success: true,
-            data: {
-                _id: req.user._id,
-                firstName: req.user.first_name,
-                lastName: req.user.last_name,
-                email: req.user.email,
-                avatar: req.user.avatar,
-                disable: req.user.disable,
-                subscribe: req.user.subscribe
-            }
-        })
+        if (req.user) {
+            res.json({
+                success: true,
+                data: req.user
+            })
+        } else {
+            Customer.findOne({
+                _id: req.params.id
+            }, { password: 0 })
+                .then(data => {
+                    res.json({
+                        success: true,
+                        message: data
+                    })
+                })
+                .catch(err => {
+                    res.json({
+                        success: false,
+                        message: "Customer id is not found."
+                    })
+                })
+        }
     }
 
-    // [PATCH] /customer/updateAvatar => Update avatar
+    // [PATCH] /customer/update => Update
+    update(req, res) {
+        const { firstName, lastName, email, password, newPassword, confirmNewPassword, avatar } = req.body;
+
+        Customer.findOne({
+            _id: req.user._id,
+            password: password
+        })
+            .then(data => {
+                if (!data) {
+                    res.json({
+                        success: false,
+                        message: "Current password is wrong."
+                    })
+                } else {
+                    if (data.first_name == firstName
+                        && data.last_name == lastName
+                        && data.email == email
+                        && data.avatar == avatar) {
+                        res.json({
+                            success: false,
+                            message: "You didn't change any infomation."
+                        })
+                    } else {
+                        if (!newPassword && !confirmNewPassword) {
+                            data.first_name = firstName;
+                            data.last_name = lastName
+                            data.email = email;
+                            data.avatar = avatar;
+
+                            data.save()
+                                .then(result => {
+                                    res.json({
+                                        success: true,
+                                        message: "Update customer information successfully."
+                                    })
+                                })
+                                .catch(err => {
+                                    res.json({
+                                        success: false,
+                                        message: "Update customer information failed."
+                                    })
+                                })
+                        } else if ((newPassword || confirmNewPassword) && newPassword !== confirmNewPassword) {
+                            res.json({
+                                success: false,
+                                message: "new password are changing. Please make sure your information is consistent."
+                            })
+                        } else if (newPassword && confirmNewPassword && newPassword === confirmNewPassword) {
+                            data.first_name = firstName;
+                            data.last_name = lastName
+                            data.email = email;
+                            data.avatar = avatar;
+                            data.password = password
+
+                            data.save()
+                                .then(result => {
+                                    res.json({
+                                        success: true,
+                                        message: "Update customer information successfully."
+                                    })
+                                })
+                                .catch(err => {
+                                    res.json({
+                                        ssucess: false,
+                                        message: "Update customer information failed."
+                                    })
+                                })
+                        }
+
+                    }
+
+                }
+            })
+            .catch(err => {
+                res.json({
+                    success: false,
+                    message: "Something wrong!"
+                })
+            })
+
+    }
 }
 
 module.exports = new CustomerController();
