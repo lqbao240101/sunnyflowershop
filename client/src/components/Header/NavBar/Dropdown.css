@@ -4,9 +4,14 @@
     right: -50%;
     list-style: none;
     text-align: start;
-    padding: 10px 15px;
+    margin: 10px 15px;
     z-index: 999;
+    opacity: 1;
+    /* visibility: visible;
+    -webkit-transform: perspective(600px) rotateX(0deg);
+    transform: perspective(600px) rotateX(0deg); */
 }
+
 
 .services-submenu li {
     background: #fff;
@@ -16,7 +21,7 @@
 
 .services-submenu li a:hover {
     color: #F79837;
-    transform: translateX(5%);
+    /* transform: translateX(5%); */
     transition: .5s;
 }
 
@@ -32,4 +37,8 @@
     color: white;
     padding: 16px;
     z-index: 999;
+}
+
+.main-menu nav>ul>.has-dropdown {
+    margin-right: 5px;
 }

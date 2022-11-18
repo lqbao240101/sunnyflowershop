@@ -15,9 +15,8 @@ function ShopMainArea() {
 
     const [search, setSearch] = useState('');
     const [listCategories, setListCategories] = useState([])
-    const [category, setCategory] = useState('ALL');
+    const [category, setCategory] = useState([]);
     const [price, setPrice] = useState(100000);
-    const [listProduct, setListProduct] = useState(products);
     const [listAPI, setListAPI] = useState([]);
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
@@ -36,6 +35,36 @@ function ShopMainArea() {
             });
     }, []);
 
+
+
+    //gọi api để trả về sản phẩm theo filter
+
+    // useEffect(() => {
+    //     axios
+    //         .get(`http://localhost:8000/product/`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${Cookies.get('token')}`,
+    //             },
+    //         })
+    //         .then((response) => {
+    //             setListCategories(response.data.data);
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error);
+    //         });
+    // }, []);
+
+    const handlePriceFilter = (e) => {
+        setPrice(e.target.value);
+    }
+    const categoryFilter = (e) => {
+        if (category.includes(e.target.value)) {
+            setCategory(category.filter(item => item !== e.target.value))
+            console.log(category)
+        } else {
+            setCategory([...category, e.target.value])
+        }
+    }
     useEffect(() => {
         axios
             .get(`http://localhost:8000/category/`, {
@@ -49,20 +78,8 @@ function ShopMainArea() {
             .catch(function (error) {
                 console.log(error);
             });
-    }, []);
+    })
 
-    const handlePriceFilter = (e) => {
-        setPrice(e.target.value);
-    }
-    const categoryFilter = (category) => {
-        console.log(category)
-    }
-    // const handleClear = () => {
-    //     setPrice(100000);
-    //     setCategory('ALL');
-    //     setSearch('');
-    //     setListProduct(products)
-    // }
 
     // useEffect(() => {
     //     let List = products;
@@ -101,13 +118,13 @@ function ShopMainArea() {
                                 <form>
                                     {listCategories.map((category) => {
                                         return (
-                                            <div className='checkbox_group'>
+                                            <div className='checkbox_group' key={category._id}>
                                                 <input
                                                     id='Caterory'
                                                     type='checkbox'
-                                                    value={category.id}
+                                                    value={category.name}
                                                     className='check_box'
-                                                    {...register("category", { onClick: categoryFilter(category.name) })}
+                                                    {...register("category", { onChange: (e) => { categoryFilter(e) } })}
                                                 />
                                                 <p>{category.name}</p>
                                             </div>)
