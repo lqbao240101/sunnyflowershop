@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
@@ -13,6 +14,7 @@ import Footer from "./components/Footer";
 import AccountEdit from "./pages/AccountEdit";
 import Wishlist from "./pages/Wishlist";
 import AddressEdit from "./pages/AddressEdit";
+import DetailProduct from "./components/ShopMainArea/DetailProduct/DetailProduct";
 import { useState, useEffect } from 'react'
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -48,6 +50,7 @@ function App() {
             </Route>
             <Route path="/shop" element={<Shop />}>
             </Route>
+            <Route path="/shop/:productId" element={<DetailProduct />}></Route>
             <Route path="/login" element={<Login />}>
             </Route>
             <Route path="/register" element={<Register />}>

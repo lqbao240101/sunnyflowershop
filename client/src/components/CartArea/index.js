@@ -15,13 +15,13 @@ function CartArea() {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/user/cart`, {
+            .get(`http://localhost:8000/cart/`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
             })
             .then((response) => {
-                setListProduct(response.data.data.products);
+                setListProduct(response.data.data);
             })
             .catch(function (error) {
                 console.log(error);
@@ -60,7 +60,7 @@ function CartArea() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <ListProduct list={listProduct}/>
+                                                <ListProduct list={listProduct} />
                                             </tbody>
                                         </table>
                                     </div>

@@ -13,13 +13,13 @@ function WishlistArea() {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/user/favorite`, {
+            .get(`http://localhost:8000/favorite`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
             })
             .then((response) => {
-                setListWishlist(response.data.data);
+                setListWishlist(response.data.data.products);
             })
             .catch(function (error) {
                 console.log(error);
@@ -48,7 +48,7 @@ function WishlistArea() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <ListProduct list={listWishlist}/>
+                                                <ListProduct list={listWishlist} />
                                             </tbody>
                                         </table>
                                     </div>
