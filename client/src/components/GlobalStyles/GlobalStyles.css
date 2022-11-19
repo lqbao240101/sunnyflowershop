@@ -644,3 +644,19 @@ input[type="checkbox"]:checked:after {
 .detail-footer p {
     font-weight: bold;
 }
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.colorSuccess {
+    color: #a5dc86;
+}
+
+.colorFail {
+    color: red;
+}

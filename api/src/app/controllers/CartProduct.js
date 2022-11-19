@@ -49,41 +49,68 @@ class CustomerProductCarController {
 
     // [PATCH] /cart/:id
     add(req, res) {
-        CartProduct.findOne({
-            customer: req.user._id,
-            product: req.params.id
+        const { quantity } = req.body;
+
+        let quanTiTy = Number(quantity);
+
+        if(quanTiTy > 5) {
+            quanTiTy = 5;
+        }
+
+        Product.findOne({
+            _id: req.params.id
         })
-            .then(data => {
-                if (!data) {
-                    CartProduct.create({
+            .then(product => {
+                if (product) {
+                    CartProduct.findOne({
                         customer: req.user._id,
-                        product: req.params.id
+                        product: product._id
                     })
-                        .then(product => {
-                            res.json({
-                                success: true,
-                                message: "Add product to cart successfully"
-                            })
+                        .then(data => {
+                            if (!data) {
+                                CartProduct.create({
+                                    customer: req.user._id,
+                                    product: req.params.id,
+                                    quantity: quanTiTy
+                                })
+                                    .then(product => {
+                                        res.json({
+                                            success: true,
+                                            message: "Add product to cart successfully"
+                                        })
+                                    })
+                                    .catch(err => {
+                                        res.json({
+                                            success: false,
+                                            message: "Fai 2"
+                                        })
+                                    })
+                            } else {
+                                data.quantity = data.quantity + quanTiTy;
+
+                                if(data.quantity > 5 ) {
+                                    data.quantity = 5;
+                                }
+
+                                data.save()
+                                    .then(result => {
+                                        res.json({
+                                            success: true,
+                                            message: "Add product to cart successfully"
+                                        })
+                                    })
+                                    .catch(err => {
+                                        res.json({
+                                            success: false,
+                                            message: "Fail"
+                                        })
+                                    })
+                            }
                         })
                         .catch(err => {
                             res.json({
                                 success: false,
-                                message: "Fai 2"
-                            })
-                        })
-                } else {
-                    data.quantity++;
-                    data.save()
-                        .then(result => {
-                            res.json({
-                                success: true,
-                                message: "Add product to cart successfully"
-                            })
-                        })
-                        .catch(err => {
-                            res.json({
-                                success: false,
-                                message: "Fail"
+                                message: "Product id not found"
                             })
                         })
                 }
@@ -91,7 +118,7 @@ class CustomerProductCarController {
             .catch(err => {
                 res.json({
                     success: false,
-                    message: "Product id not found"
+                    message: "Product is not found."
                 })
             })
     }
@@ -119,8 +146,8 @@ class CustomerProductCarController {
     // [PATCH] /cart/:id/updateQuantity
     updateQuantity(req, res) {
         let quantity = req.body.quantity;
-        
-        if( quantity <= 0) {
+
+        if (quantity <= 0) {
             quantity = 1
         }
 

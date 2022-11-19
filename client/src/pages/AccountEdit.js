@@ -8,22 +8,22 @@ import axios from 'axios';
 
 function AccountEdit() {
 
-    useEffect(() => {
-        axios
-            .get(`http://localhost:8000/api/retrieveToken`, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('token')}`,
-                },
-            })
-            .then((response) => {
-                if (!response.data.success) {
-                    window.location.href = 'http://localhost:3000/login';
-                }
-            })
-            .catch(function (error) {
-                console.log(error);
-            });
-    }, []);
+    // useEffect(() => {
+    //     axios
+    //         .get(`http://localhost:8000/api/retrieveToken`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${Cookies.get('token')}`,
+    //             },
+    //         })
+    //         .then((response) => {
+    //             if (!response.data.success) {
+    //                 window.location.href = 'http://localhost:3000/login';
+    //             }
+    //         })
+    //         .catch(function (error) {
+    //             console.log(error);
+    //         });
+    // }, []);
 
     return (
         <>

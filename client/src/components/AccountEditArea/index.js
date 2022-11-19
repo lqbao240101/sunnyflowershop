@@ -1,4 +1,4 @@
-import styles from './AccountEditArea.module.scss';
+import styles from './AccountEditArea.module.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,6 +8,8 @@ import BaoAvatar from '../../images/Bao_avatar.jpg';
 import axios from '../../service/axiosClient';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { useForm } from "react-hook-form";
+import AccountEditModal from './AccountEditModal';
 
 function AccountEditArea() {
 
@@ -15,114 +17,135 @@ function AccountEditArea() {
     const [firstName, setFirstName] = useState('');
     const [email, setEmail] = useState('');
     const [avatar, setAvatar] = useState('');
-    const [password, setPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmNewPassword, setConfirmNewPassword] = useState('');
-    const [errors, setError] = useState({
-        firstName: false,
-        lastName: false,
-        email: false,
-        avatar: false,
-        password: false,
-        newPassword: false,
-        confirmNewPassword: false,
+    const { register, handleSubmit, formState: { errors }, reset } = useForm({
+        defaultValues: {
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            avatar: avatar
+        }
     });
-    const regExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    const [message, setMessage] = useState('');
+    const [success, setSuccess] = useState('');
+
+    const { register: register2, handleSubmit: handleSubmit2, formState: { errors: errors2 }, reset: reset2 } = useForm();
+
+    const { register: register3, handleSubmit: handleSubmit3, formState: { errors: errors3 } } = useForm();
+    // const regExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/user/profile`, {
+            .get(`http://localhost:8000/customer/shortProfile`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
             })
             .then((response) => {
-                setLastName(response.data.data.lastName);
-                setFirstName(response.data.data.firstName);
-                setEmail(response.data.data.email);
-                setAvatar(response.data.data.avatar)
+                if (response.data.success) {
+                    reset(response.data.data);
+                    setFirstName(response.data.data.first_name);
+                    setLastName(response.data.data.last_name);
+                    setEmail(response.data.data.email);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+        axios
+            .get(`http://localhost:8000/customer/avatar`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                if (response.data.success) {
+                    setAvatar(response.data.avatar)
+                }
             })
             .catch(function (error) {
                 console.log(error);
             });
     }, []);
 
-    const handleUpdateName = () => {
-        if (firstName === '' || firstName.length < 2 || firstName.length > 50) {
-            setError((prevState) => ({
-                ...prevState,
-                firstName: true,
-            }));
-        } else {
-            setError((prevState) => ({
-                ...prevState,
-                firstName: false,
-            }));
-        }
+    const handleUpdateInformation = (data) => {
+        axios
+            .patch(`http://localhost:8000/customer/updateInformation`, data, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then(function (response) {
+                if (response.data.success) {
+                    setSuccess(response.data.success)
+                    setMessage(response.data.message)
+                } else {
+                    setSuccess(response.data.success)
+                    setMessage(response.data.message);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    };
 
-        if (lastName === '' || lastName.length < 2 || firstName.length > 50) {
-            setError((prevState) => ({
-                ...prevState,
-                lastName: true,
-            }));
-        } else {
-            setError((prevState) => ({
-                ...prevState,
-                lastName: false,
-            }));
-        }
+    const handleUpdatePassword = (data) => {
+        axios
+            .patch(`http://localhost:8000/customer/updatePassword`, data, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then(function (response) {
+                if (response.data.success) {
+                    setSuccess(response.data.success)
+                    setMessage(response.data.message)
+                    reset2()
+                } else {
+                    setSuccess(response.data.success)
+                    setMessage(response.data.message);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
-    const handleUpdateEmail = () => {
-        if (!email.match(regExp) || email === '') {
-            setError((prevState) => ({
-                ...prevState,
-                email: true,
-            }));
-        } else {
-            setError((prevState) => ({
-                ...prevState,
-                email: false,
-            }));
-        }
+    const handleImage = (e) => {
+        const file = e.target.files[0];
+
+        const Reader = new FileReader();
+
+        Reader.readAsDataURL(file);
+
+        Reader.onload = () => {
+            if (Reader.readyState === 2) {
+                setAvatar(Reader.result);
+
+            }
+        };
     }
 
-    const handleUpdatePassword = () => {
-        if (password === '' || password.length < 6 || password.length > 24) {
-            setError((prevState) => ({
-                ...prevState,
-                password: true,
-            }));
-        } else {
-            setError((prevState) => ({
-                ...prevState,
-                password: false,
-            }));
-        }
-
-        if (newPassword === '' || newPassword.length < 6 || newPassword.length > 24) {
-            setError((prevState) => ({
-                ...prevState,
-                newPassword: true,
-            }));
-        } else {
-            setError((prevState) => ({
-                ...prevState,
-                newPassword: false,
-            }));
-        }
-
-        if (confirmNewPassword !== newPassword) {
-            setError((prevState) => ({
-                ...prevState,
-                confirmNewPassword: true,
-            }));
-        } else {
-            setError((prevState) => ({
-                ...prevState,
-                confirmNewPassword: false,
-            }));
-        }
+    const handleUpdateAvatar = (data) => {
+        console.log(data)
+        // axios
+        //     .patch(`http://localhost:8000/customer/updateAvatar`, data, {
+        //         headers: {
+        //             Authorization: `Bearer ${Cookies.get('token')}`,
+        //         },
+        //     })
+        //     .then(function (response) {
+        //         if (response.data.success) {
+        //             setSuccess(response.data.success)
+        //             setMessage(response.data.message)
+        //         } else {
+        //             setSuccess(response.data.success)
+        //             setMessage(response.data.message);
+        //         }
+        //     })
+        //     .catch(function (error) {
+        //         console.log(error);
+        //     });
     }
 
     return (
@@ -138,13 +161,21 @@ function AccountEditArea() {
                 <Row>
                     <Col lg={3}>
                         <div className={styles.accountThumd}>
-                            <div className={styles.accountThumbImg}>
-                                <img src={BaoAvatar} alt="img" />
-                                <div className={styles.fixedIcon}>
-                                    <input type="file" accept='image/*' /><FaCamera />
+                            <form onSubmit={handleSubmit3(handleUpdateAvatar)}>
+                                <div className={styles.accountThumbImg}>
+                                    <img src={avatar} alt="img" />
+                                    <div className={styles.fixedIcon}>
+                                        <input
+                                            className="FormInput"
+                                            type="file"
+                                            accept='image/*'
+                                            placeholder="First name"
+                                            {...register3("avatar", { onChange: handleImage })}
+                                        /><FaCamera />
+                                    </div>
                                 </div>
-                            </div>
-                            <h4>Lê Quốc Bảo</h4>
+                                <AccountEditModal nameBtn='Update Avatar' message={message} success={success} />
+                            </form>
                         </div>
                     </Col>
                     <Col lg={9}>
@@ -153,96 +184,83 @@ function AccountEditArea() {
                                 <h2>Account Details</h2>
                                 <p>Edit your account settings and change your password here.</p>
                             </div>
-                            <form id={styles.accountEditForm}>
+                            <form onSubmit={handleSubmit(handleUpdateInformation)} id='accountEditFormInformation' className={styles.accountEditForm}>
                                 <div className={styles.formGroup}>
-                                    <label htmlFor="firstName">
-                                        First Name
-                                    </label>
+                                    <label htmlFor="first_name">First Name</label>
                                     <input
                                         className="FormInput"
                                         type="text"
-                                        value={firstName}
-                                        onChange={e => setFirstName(e.target.value)}
-                                        required
+                                        placeholder="First name"
+                                        {...register("first_name", { required: true, minLength: 2, maxLength: 50, onChange: (e) => { setFirstName(e.target.value) } })}
                                     />
-                                    {errors["firstName"] && (
-                                        <p className="checkInput">Invalid First Name</p>
+                                    {errors["first_name"] && (
+                                        <p className="checkInput">Invalid First Name!</p>
                                     )}
-                                    <label htmlFor="lastName">
-                                        Last Name
-                                    </label>
+                                    <label htmlFor="last_name">Last Name</label>
                                     <input
                                         className="FormInput"
                                         type="text"
-                                        value={lastName}
-                                        onChange={e => setLastName(e.target.value)}
-                                        required
+                                        placeholder="Last name"
+                                        {...register("last_name", { required: true, minLength: 2, maxLength: 50, onChange: (e) => { setLastName(e.target.value) } })}
                                     />
-                                    {errors["lastName"] && (
-                                        <p className="checkInput">Invalid Last Name</p>
+                                    {errors["last_name"] && (
+                                        <p className="checkInput">Invalid Last Name!</p>
                                     )}
-                                    <button type="button" className='theme-btn-one bg-black btn_sm' onClick={handleUpdateName}>Update Name</button>
-                                </div>
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="email">Email Address
-                                    </label>
+                                    <label htmlFor="email">Email</label>
                                     <input
                                         className="FormInput"
-                                        type="email"
-                                        value={email}
-                                        onChange={e => setEmail(e.target.value)}
-                                        required
+                                        type="text"
+                                        placeholder="Username or Email"
+                                        {...register("email", { required: true, pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, onChange: (e) => { setEmail(e.target.value) } })}
                                     />
                                     {errors["email"] && (
-                                        <p className="checkInput">Invalid Email</p>
+                                        <p className="checkInput">Invalid Email!</p>
                                     )}
-                                    <button type="button" className='theme-btn-one bg-black btn_sm' onClick={handleUpdateEmail}>Update Email</button>
                                 </div>
+                                <AccountEditModal nameBtn='Update Information' message={message} success={success} />
+                            </form>
+                            <form onSubmit={handleSubmit2(handleUpdatePassword)} id='accountEditFormPassword' className={styles.accountEditForm}>
                                 <div className={styles.formGroup}>
                                     <label htmlFor="password">Current Password
+                                        <span className="text-danger">*</span>
                                     </label>
                                     <input
                                         className="FormInput"
                                         type="password"
-                                        value={password}
-                                        onChange={e => setPassword(e.target.value)}
-                                        required
+                                        placeholder="Password"
+                                        {...register2("password", { required: true, minLength: 6, maxLength: 24 })}
                                     />
-                                    {errors["password"] && (
-                                        <p className="checkInput">Invalid Password</p>
+                                    {errors2["password"] && (
+                                        <p className="checkInput">Password must be at least 6 characters and max 24 characters long</p>
                                     )}
-                                    <label htmlFor="newPassword">New Password
-                                    </label>
+                                    <label htmlFor="newPassword">New Password</label>
                                     <input
                                         className="FormInput"
                                         type="password"
-                                        value={newPassword}
-                                        onChange={e => setNewPassword(e.target.value)}
-                                        required
+                                        placeholder="New password"
+                                        {...register2("newPassword", { required: true, minLength: 6, maxLength: 24 })}
                                     />
-                                    {errors["newPassword"] && (
-                                        <p className="checkInput">Invalid Password</p>
+                                    {errors2["newPassword"] && (
+                                        <p className="checkInput">Password must be at least 6 characters and max 24 characters long</p>
                                     )}
-                                    <label htmlFor="confirmNewPassword">Password
-                                    </label>
+                                    <label htmlFor="confirmNewPassword">Confirm New Password</label>
                                     <input
                                         className="FormInput"
                                         type="password"
-                                        value={confirmNewPassword}
-                                        onChange={e => setConfirmNewPassword(e.target.value)}
-                                        required
+                                        placeholder="Confirm new password"
+                                        {...register2("confirmNewPassword", { required: true, minLength: 6, maxLength: 24 })}
                                     />
-                                    {errors["confirmNewPassword"] && (
+                                    {errors2["confirmNewPassword"] && (
                                         <p className="checkInput">Those passwords didn't match. Try again.</p>
                                     )}
-                                    <button type="button" className='theme-btn-one bg-black btn_sm' onClick={handleUpdatePassword}>Update Password</button>
                                 </div>
+                                <AccountEditModal nameBtn='Update Password' message={message} success={success} />
                             </form>
                         </div>
                     </Col>
                 </Row>
             </Container>
-        </section>
+        </section >
     )
 }
 

@@ -12,5 +12,5 @@ router.get('/:id', productController.detail)
 router.patch('/:id', checkIsAdmin, productController.update)
 router.patch('/:id/restore', checkIsAdmin, productController.restore)
 router.patch('/:id/updateImage', checkIsAdmin, productController.updateImage)
-
+router.post('/search', productController.search)
 module.exports = router;
