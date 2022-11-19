@@ -1,10 +1,12 @@
 const Product = require('../models/Product');
 const Category = require('../models/Category')
+const mongoose = require('mongoose');
 
 class ProductController {
     // [GET] /product => Show all products
     show(req, res) {
         Product.find({})
+            .populate('category', 'name')
             .then(products => {
                 res.json({
                     success: true,
@@ -39,7 +41,7 @@ class ProductController {
     detail(req, res) {
         Product.findById(req.params.id)
             // .populate('categories', '-createdAt')
-            .populate('categories', 'name -_id')
+            .populate('category', 'name')
             .then(product => {
                 res.json({
                     success: true,
@@ -56,7 +58,7 @@ class ProductController {
 
     // [POST] /products/ => Create product
     create(req, res) {
-        const { name, categories, description, price, percentSale, img, quantity } = req.body;
+        const { name, category, description, price, percentSale, img, quantity } = req.body;
 
         Product.findOneWithDeleted({ name: name })
             .then(data => {
@@ -73,7 +75,7 @@ class ProductController {
                         percent_sale: percentSale,
                         img: img,
                         quantity: quantity,
-                        categories: categories
+                        category: category
                     })
                         .then(result => {
                             res.json({
@@ -82,6 +84,7 @@ class ProductController {
                             })
                         })
                         .catch(err => {
+                            console.log(err);
                             res.json({
                                 success: false,
                                 message: "Invalid information"
@@ -97,12 +100,11 @@ class ProductController {
             })
     }
 
-    //[POST] /products/:id/update
+    //[PATCH]] /products/:id/update
     update(req, res) {
-        const { name, categories, description, price, percentSale, quantity } = req.body;
+        const { name, category, description, price, percentSale, quantity } = req.body;
 
         let status = 0;
-        let check = 0;
 
         if (quantity > 0) {
             status = 1;
@@ -111,13 +113,6 @@ class ProductController {
 
         Product.findById(req.params.id)
             .then(data => {
-                for (let i = 0; i < data.categories; i++) {
-                    if (categories[i] === data.categories[i].toString()) {
-                        check++;
-                        break;
-                    }
-                }
-
                 if (!data) {
                     return res.json({
                         success: false,
@@ -139,7 +134,7 @@ class ProductController {
                                     data.price = price;
                                     data.percent_sale = percentSale;
                                     data.quantity = quantity;
-                                    data.categories = categories;
+                                    data.category = category;
                                     data.status = status;
 
                                     data.save()
@@ -168,7 +163,7 @@ class ProductController {
                             && percentSale == data.percent_sale
                             && price == data.price
                             && quantity == data.quantity
-                            && check === 0
+                            && category == data.category
                         ) {
                             res.json({
                                 success: false,
@@ -180,7 +175,7 @@ class ProductController {
                             data.price = price;
                             data.percent_sale = percentSale;
                             data.quantity = quantity;
-                            data.categories = categories;
+                            data.category = category;
                             data.status = status;
 
                             data.save()
@@ -283,6 +278,59 @@ class ProductController {
                     message: "Product id not found"
                 })
             })
+    }
+
+    search(req, res) {
+        const { name, category, min, max } = req.body;
+
+        let minPrice = 0;
+        let maxPrice = 1000001;
+
+        if (min) {
+            minPrice = Number(min);
+        }
+
+        if (max) {
+            maxPrice = Number(max);
+        }
+
+        if (category !== "") {
+            Product.find(
+                {
+                    "$and": [
+                        { name: new RegExp(name, 'i') },
+                        { category: { "$in": category } },
+                        { price: { "$gt": minPrice } },
+                        { price: { "$lte": maxPrice } }
+                    ]
+                }
+            )
+                .then(data => {
+                    res.json({
+                        data: data
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        } else {
+            Product.find({
+                "$and": [
+                    { name: new RegExp(name, 'i') },
+                    { price: { "$gt": minPrice } },
+                    { price: { "$lte": maxPrice } }
+                ]
+            }
+            )
+                .then(data => {
+                    res.json({
+                        data: data
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        }
     }
 }
 

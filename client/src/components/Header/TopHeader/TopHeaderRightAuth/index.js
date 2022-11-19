@@ -36,7 +36,7 @@ function TopHeaderRightAuth(user) {
                     <Link to="/order-tracking"><FaTruck fontSize={18} /> Track your Order</Link>
                 </li>
                 <li className={styles.account}>
-                    <img src={user.user.avatar} alt="avatar" />{user.user.firstName} {user.user.lastName}
+                    <img src={user.user.avatar} alt="avatar" />{user.user.first_name} {user.user.last_name}
                     <FaAngleDown fontSize={12} />
                     <ul className={styles.dropDown}>
                         <li>

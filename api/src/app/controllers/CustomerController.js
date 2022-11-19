@@ -2,6 +2,7 @@ const Customer = require('../models/Customer')
 const CustomerProductFavorite = require('../models/CustomerProductFavorite')
 const jwt = require('jsonwebtoken')
 var fs = require('fs');
+const { resolveSoa } = require('dns');
 // const { generateToken } = require('../../utils/generateToken')
 
 class CustomerController {
@@ -169,9 +170,29 @@ class CustomerController {
         }
     }
 
-    // [PATCH] /customer/update => Update
-    update(req, res) {
-        const { firstName, lastName, email, password, newPassword, confirmNewPassword, avatar } = req.body;
+    // [GET] /customer/shortProfile => Show short profile 1 user for update
+    shortProfile(req, res) {
+        res.json({
+            success: true,
+            data: {
+                first_name: req.user.first_name,
+                last_name: req.user.last_name,
+                email: req.user.email
+            }
+        })
+    }
+
+    // [GET] / customer/avtar => Show avatar 1 user
+    avatar(req, res) {
+        res.json({
+            success: true,
+            avatar: req.user.avatar
+        })
+    }
+
+    // [PATCH] /customer/updatePassword
+    updatePassword(req, res) {
+        const { password, newPassword, confirmNewPassword } = req.body;
 
         Customer.findOne({
             _id: req.user._id,
@@ -184,63 +205,37 @@ class CustomerController {
                         message: "Current password is wrong."
                     })
                 } else {
-                    if (data.first_name == firstName
-                        && data.last_name == lastName
-                        && data.email == email
-                        && data.avatar == avatar) {
+                    if (!newPassword && !confirmNewPassword) {
                         res.json({
                             success: false,
-                            message: "You didn't change any infomation."
+                            message: "New password and confirm new password cannot be empty."
                         })
-                    } else {
-                        if (!newPassword && !confirmNewPassword) {
-                            data.first_name = firstName;
-                            data.last_name = lastName
-                            data.email = email;
-                            data.avatar = avatar;
-
-                            data.save()
-                                .then(result => {
-                                    res.json({
-                                        success: true,
-                                        message: "Update customer information successfully."
-                                    })
+                    } else if (newPassword !== confirmNewPassword) {
+                        res.json({
+                            success: false,
+                            message: "New password and confirm new password need to be same."
+                        })
+                    } else if (newPassword === confirmNewPassword && newPassword === password) {
+                        res.json({
+                            success: false,
+                            message: "The current password is the same as the new password."
+                        })
+                    } else if (newPassword === confirmNewPassword && newPassword !== password) {
+                        data.password = newPassword;
+                        data.save()
+                            .then(savedData => {
+                                res.json({
+                                    success: true,
+                                    message: "Change password successfully."
                                 })
-                                .catch(err => {
-                                    res.json({
-                                        success: false,
-                                        message: "Update customer information failed."
-                                    })
-                                })
-                        } else if ((newPassword || confirmNewPassword) && newPassword !== confirmNewPassword) {
-                            res.json({
-                                success: false,
-                                message: "new password are changing. Please make sure your information is consistent."
                             })
-                        } else if (newPassword && confirmNewPassword && newPassword === confirmNewPassword) {
-                            data.first_name = firstName;
-                            data.last_name = lastName
-                            data.email = email;
-                            data.avatar = avatar;
-                            data.password = password
-
-                            data.save()
-                                .then(result => {
-                                    res.json({
-                                        success: true,
-                                        message: "Update customer information successfully."
-                                    })
+                            .catch(err => {
+                                res.json({
+                                    success: false,
+                                    message: "Change password failed."
                                 })
-                                .catch(err => {
-                                    res.json({
-                                        ssucess: false,
-                                        message: "Update customer information failed."
-                                    })
-                                })
-                        }
-
+                            })
                     }
-
                 }
             })
             .catch(err => {
@@ -249,7 +244,121 @@ class CustomerController {
                     message: "Something wrong!"
                 })
             })
+    }
 
+    // [PATCH] /customer/update => Update
+    updateInformation(req, res) {
+        const { first_name, last_name, email } = req.body;
+
+        if (req.user.first_name == first_name
+            && req.user.last_name == last_name
+            && req.user.email == email) {
+            res.json({
+                success: false,
+                message: "You didn't change any infomation."
+            })
+        } else {
+            req.user.first_name = first_name;
+            req.user.last_name = last_name;
+            req.user.email = email;
+
+            req.user.save()
+                .then(savedDatad => {
+                    res.json({
+                        success: true,
+                        message: "Change information successfully."
+                    })
+                })
+                .catch(err => {
+                    res.json({
+                        success: false,
+                        message: "Change information failed."
+                    })
+                })
+        }
+    }
+
+    // [PATCH] /customer/updateAvatar 
+    updateAvatar(req, res) {
+        const { avatar } = req.body;
+
+        if (req.user.avatar === avatar) {
+            res.json({
+                success: false,
+                message: "You didn't change new avatar."
+            })
+        } else {
+            req.user.avatar = avatar;
+
+            req.user.save()
+                .then(savedData => {
+                    res.json({
+                        success: true,
+                        message: "Change avatar successfully."
+                    })
+                })
+                .catch(err => {
+                    console.log(err)
+                    res.json({
+                        success: false,
+                        message: "Change avatar failed."
+                    })
+                })
+        }
+    }
+
+    // [PATCH] /customer/subscribe
+    subscribe(req, res) {
+        if (req.user.subscribe === false) {
+            req.user.subscribe = true;
+
+            req.user.save()
+                .then(savedData => {
+                    res.json({
+                        success: true,
+                        message: "Thank you for your subscribe! Have a nice day."
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.json({
+                        success: false,
+                        message: "Subscribe failed."
+                    })
+                })
+        } else {
+            res.json({
+                success: false,
+                message: "You have already subscribed."
+            })
+        }
+    }
+
+    // [PATCH] /customer/unsubscribe
+    unsubscribe(req, res) {
+        if (req.user.subscribe === true) {
+            req.user.subscribe = false;
+
+            req.user.save()
+                .then(savedData => {
+                    res.json({
+                        success: true,
+                        message: "You have unsubscribed. Please subscribe to us next time."
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.json({
+                        success: false,
+                        message: "Unsubscribe failed."
+                    })
+                })
+        } else {
+            res.json({
+                success: false,
+                message: "You have already unsubscribed."
+            })
+        }
     }
 }
 

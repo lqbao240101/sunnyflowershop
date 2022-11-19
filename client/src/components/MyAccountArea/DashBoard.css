@@ -256,11 +256,6 @@ img {
     padding: 20px 10px;
 }
 
-label {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-}
-
 .bg-black {
     border: 1px solid #000;
     color: #fff;
@@ -502,10 +497,6 @@ input[type="checkbox"]:checked:after {
 .btn-black-overlay:hover {
     background-color: #262626;
     color: #fff;
-}
-
-.ml-2, .mx-2 {
-    margin-left: 0.5rem !important;
 }
 
 .btn-red-overlay {

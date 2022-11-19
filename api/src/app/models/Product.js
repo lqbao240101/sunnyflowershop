@@ -10,7 +10,7 @@ const Product = new Schema(
         description: { type: String, required: true, minLength: 10 },
         price: { type: Number, required: true },
         percent_sale: { type: Number, required: true, min: 0, max: 100 },
-        categories: [{ type: Schema.Types.ObjectId, ref: 'categories', required: true }],
+        category: { type: Schema.Types.ObjectId, ref: 'categories', required: true },
         img: { type: String, required: true },
         quantity: { type: Number, min: 0, required: true },
         status: { type: Number, min: 0, max: 1, default: 1, required: true },
