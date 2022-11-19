@@ -254,3 +254,12 @@ p, p:last-child {
 #description .product_description {
     padding-top: 20px;
 }
+
+.hidden {
+    display: none;
+}
+
+label {
+    cursor: pointer;
+    caret-color: rgba(0, 0, 0, 0);
+}

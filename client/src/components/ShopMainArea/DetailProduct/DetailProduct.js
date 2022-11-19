@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
 import { FaMinus, FaPlus, FaHeart } from "react-icons/fa"
 import axios from 'axios';
+import { useForm } from "react-hook-form";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -19,6 +20,7 @@ const DetailProduct = () => {
     const [productDescription, setProductDescription] = useState('')
     const [quantityPurchased, setQuantityPurchased] = useState(1)
     const [activeTab, setActiveTab] = useState('description')
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
     useEffect(() => {
         axios
             .get(`http://localhost:8000/product/${productId}`, {
@@ -35,7 +37,31 @@ const DetailProduct = () => {
                 }
             })
     })
-
+    const AddWishlist = () => {
+        console.log("cái cc")
+        axios
+            .patch(`http://localhost:8000/favorite/${productId}`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                alert(response.data.message)
+                console.log('đã bấm')
+            })
+    }
+    const AddToCart = () => {
+        console.log(`http://localhost:8000/cart/add/${productId}`)
+        axios
+            .get(`http://localhost:8000/cart/add/${productId}`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                console.log(response)
+            })
+    }
 
     return (
         <>
@@ -56,35 +82,29 @@ const DetailProduct = () => {
                                         <del>$ giá gốc ở đây</del>
                                     </h4>
                                     <p>{productDescription}</p>
-                                    {/* <div className='customs_selects'>
-                                        <select name='product' className='customs_sel_box'>
-                                            <option value="volvo">Size</option>
-                                            <option value="xl">XL</option>
-                                            <option value="smaill">S</option>
-                                            <option value="medium">M</option>
-                                            <option value="learz">L</option>
-                                        </select>
-                                    </div> */}
-                                    <form id='product_count_form_two'>
+                                    <form id='product_count_form_two'
+                                        onSubmit={handleSubmit(AddToCart)}>
                                         <div className='product_count_one'>
                                             <div className='plus-minus-input'>
                                                 <div className='input-group-button'>
                                                     <button type="button" className='button' onClick={() => { quantityPurchased > 1 ? setQuantityPurchased(quantityPurchased - 1) : setQuantityPurchased(1) }}><FaMinus></FaMinus></button>
                                                 </div>
-                                                <input type="number" className='form-control' readOnly value={quantityPurchased} />
+                                                <input type="number" className='form-control' readOnly value={quantityPurchased}
+                                                    {...register("name", { required: true })} />
                                                 <div className='input-group-button'>
                                                     <button type="button" className='button' onClick={() => { setQuantityPurchased(quantityPurchased + 1) }}><FaPlus></FaPlus></button>
                                                 </div>
                                             </div>
                                         </div>
+                                        <input type="submit" id="submit-form" className="hidden" />
                                     </form>
                                     <div className='links_Product_areas'>
                                         <ul>
-                                            <li>
-                                                <a href="#!" className='action wishlist' title="Wishlist"> <FaHeart /> Add To Wishlist</a>
+                                            <li onClick={AddWishlist}>
+                                                <a className='action wishlist' title="Wishlist"> <FaHeart /> Add To Wishlist</a>
                                             </li>
                                         </ul>
-                                        <button type="button" className='theme-btn-one btn-black-overlay btn_sm'>Add To Cart</button>
+                                        <label htmlFor='submit-form' readOnly className='theme-btn-one btn-black-overlay btn_sm'>Add To Cart</label>
                                     </div>
                                 </div>
                             </div>

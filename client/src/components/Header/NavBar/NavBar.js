@@ -91,9 +91,9 @@ function NavBar() {
               </button>
             </ul>
             <ul className="ActionNavBar">
-              <li> <a href="."><FaHeart fontSize={21} /></a></li>
-              <li> <a href="."><FaShoppingBag fontSize={21} /></a></li>
-              <li> <a href="."><FaSearch fontSize={21} /></a></li>
+              <li> <Link to='/wishlist'><FaHeart fontSize={21} /></Link></li>
+              <li> <Link to='/cart'><FaShoppingBag fontSize={21} /></Link></li>
+              {/* <li> <Link to={ }><FaSearch fontSize={21} /></Link></li> */}
               <button
                 className='nav-btn'
                 onClick={ShowNavBar}
