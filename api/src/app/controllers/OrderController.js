@@ -8,51 +8,79 @@ class OrderController {
 
     // [GET] /order => Customer get all order || [GET /order/admin ] => Admin get detail order of customer
     show(req, res, next) {
-        let perPage = 12;
-        let page = parseInt(req.query.page);
-        if (page < 1) {
-            page = 1;
-        }
-
         if (req.user) {
-            Order
-                .find({
-                    customer: req.user._id
+            Order.find({
+                customer: req.user._id
+            })
+                .populate({
+                    path: 'customer',
+                    populate: {
+                        path: 'order_products'
+                    }
                 })
-                .skip((perPage * page) - perPage)
-                .limit(perPage)
-                .exec((err, orders) => {
-                    Order.countDocuments((err, count) => {
-                        if (err) return next(err);
-                        res.json({
-                            data: orders,
-                            meta: {
-                                current_page: page,
-                                last_page: Math.ceil(count / perPage),
-                                total: count,
-                            }
-                        });
-                    });
-                });
-        } else {
-            Order
-                .find()
-                .skip((perPage * page) - perPage)
-                .limit(perPage)
-                .exec((err, orders) => {
-                    Order.countDocuments((err, count) => {
-                        if (err) return next(err);
-                        res.json({
-                            data: orders,
-                            meta: {
-                                current_page: page,
-                                last_page: Math.ceil(count / perPage),
-                                total: count,
-                            }
-                        });
-                    });
-                });
+                .then(data => {
+                    res.json({
+                        success: true,
+                        data: data
+                    }
+                    )
+                })
+                .catch(err => {
+                    console.log(err)
+                    res.json(
+                        {
+                            success: false,
+                            message: "Fail"
+                        }
+                    )
+                })
         }
+        // let perPage = 12;
+        // let page = parseInt(req.query.page);
+        // if (page < 1) {
+        //     page = 1;
+        // }
+
+        // if (req.user) {
+        //     Order
+        //         .find({
+        //             customer: req.user._id
+        //         })
+        //         .populate({ path: 'Customer' })
+        //         .skip((perPage * page) - perPage)
+        //         .limit(perPage)
+        //         .exec((err, orders) => {
+        //             Order.countDocuments((err, count) => {
+        //                 if (err) return next(err);
+        //                 res.json({
+        //                     data: orders,
+        //                     meta: {
+        //                         current_page: page,
+        //                         last_page: Math.ceil(count / perPage),
+        //                         total: count,
+        //                     }
+        //                 });
+        //             });
+        //         });
+        // } else {
+        //     Order
+        //         .find()
+        //         .skip((perPage * page) - perPage)
+        //         .limit(perPage)
+        //         .exec((err, orders) => {
+        //             Order.countDocuments((err, count) => {
+        //                 if (err) return next(err);
+        //                 res.json({
+        //                     data: orders,
+        //                     meta: {
+        //                         current_page: page,
+        //                         last_page: Math.ceil(count / perPage),
+        //                         total: count,
+        //                     }
+        //                 });
+        //             });
+        //         });
+        // }
     }
 
     // [GET] /order/:id => Customer get detail order || [GET /order/:userId/:id] => Admin get detail order of customer
@@ -87,9 +115,17 @@ class OrderController {
 
         const list = req.list;
 
+        console.log(list)
+
         list.forEach(element => {
-            const orderProduct = new OrderProduct(element);
+            const orderProduct = new OrderProduct({
+                product: element.product._id,
+                quantity: element.quantity,
+                price: element.product.price,
+                percent_sale: element.product.percent_sale
+            });
             tempArr.push(orderProduct._id);
+            console.log(tempArr)
             orderProduct.save()
                 .then(result => {
                     Product.findOne({
@@ -122,6 +158,7 @@ class OrderController {
                         })
                 })
                 .catch(err => {
+                    console.log("111111111111111", err)
                     res.json({
                         success: false,
                         message: "Create order product failed."
@@ -146,6 +183,7 @@ class OrderController {
                 })
             })
             .catch(err => {
+                console.log(err)
                 res.json({
                     success: false,
                     message: "Create order failed"

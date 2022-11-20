@@ -1,23 +1,22 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;const mongooseDateFormat = require('mongoose-date-format');
+const Schema = mongoose.Schema; const mongooseDateFormat = require('mongoose-date-format');
 
 const Order = new Schema(
     {
-        customer: { type: Schema.Types.ObjectId, ref: 'Customer', required: true },
+        customer: { type: Schema.Types.ObjectId, ref: 'customer', required: true },
         voucher: { type: Schema.Types.ObjectId, ref: 'vouchers', default: null },
         id_delivery: { type: String, required: true },
-        date_order: { type: Date, default: Date.now},
+        date_order: { type: Date, default: Date.now },
         order_products: [{ type: Schema.Types.ObjectId, ref: 'OrderProducts' }],
         address: { type: String, required: true },
         name_receiver: { type: String, required: true },
         phone_receiver: { type: String, required: true },
         total_price: { type: Number, required: true },
         status: { type: Number, default: 0 },
-        paid_type: { type: Number, required: true },
-        deleted_by: { type: Number, default: null}
+        deleted_by: { type: Number, default: null }
     }, {
-        timestamps: true
-    }
+    timestamps: true
+}
 )
 
 Order.plugin(mongooseDateFormat);
