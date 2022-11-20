@@ -6,6 +6,7 @@ class CustomerProductFavoriteController {
     // [GET] /favorite/
     show(req, res) {
         CustomerProductFavorite.findOne({ customer: req.user._id })
+            .populate('products')
             .then(data => {
                 res.json({
                     success: true,

@@ -654,7 +654,7 @@ input[type="checkbox"]:checked:after {
 }
 
 .colorSuccess {
-    color: #a5dc86;
+    color: #a5dc86 !important;
 }
 
 .colorFail {

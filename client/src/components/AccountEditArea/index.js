@@ -127,25 +127,31 @@ function AccountEditArea() {
     }
 
     const handleUpdateAvatar = (data) => {
-        console.log(data)
-        // axios
-        //     .patch(`http://localhost:8000/customer/updateAvatar`, data, {
-        //         headers: {
-        //             Authorization: `Bearer ${Cookies.get('token')}`,
-        //         },
-        //     })
-        //     .then(function (response) {
-        //         if (response.data.success) {
-        //             setSuccess(response.data.success)
-        //             setMessage(response.data.message)
-        //         } else {
-        //             setSuccess(response.data.success)
-        //             setMessage(response.data.message);
-        //         }
-        //     })
-        //     .catch(function (error) {
-        //         console.log(error);
-        //     });
+
+        const payload = {
+            ...data,
+            avatar: avatar,
+
+        }
+        console.log(payload)
+        axios
+            .patch(`http://localhost:8000/customer/updateAvatar`, payload, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then(function (response) {
+                if (response.data.success) {
+                    setSuccess(response.data.success)
+                    setMessage(response.data.message)
+                } else {
+                    setSuccess(response.data.success)
+                    setMessage(response.data.message);
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }
 
     return (
@@ -174,7 +180,9 @@ function AccountEditArea() {
                                         /><FaCamera />
                                     </div>
                                 </div>
-                                <AccountEditModal nameBtn='Update Avatar' message={message} success={success} />
+                                <div className='m-4 mx-auto'>
+                                    <AccountEditModal nameBtn='Update Avatar' message={message} success={success} />
+                                </div>
                             </form>
                         </div>
                     </Col>

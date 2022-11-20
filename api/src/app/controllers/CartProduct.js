@@ -50,10 +50,10 @@ class CustomerProductCarController {
     // [PATCH] /cart/:id
     add(req, res) {
         const { quantity } = req.body;
-
+        console.log("quantitiiiii", quantity)
         let quanTiTy = Number(quantity);
 
-        if(quanTiTy > 5) {
+        if (quanTiTy > 5) {
             quanTiTy = 5;
         }
 
@@ -80,6 +80,7 @@ class CustomerProductCarController {
                                         })
                                     })
                                     .catch(err => {
+                                        console.log(err)
                                         res.json({
                                             success: false,
                                             message: "Fai 2"
@@ -88,7 +89,7 @@ class CustomerProductCarController {
                             } else {
                                 data.quantity = data.quantity + quanTiTy;
 
-                                if(data.quantity > 5 ) {
+                                if (data.quantity > 5) {
                                     data.quantity = 5;
                                 }
 
@@ -100,6 +101,7 @@ class CustomerProductCarController {
                                         })
                                     })
                                     .catch(err => {
+                                        console.log(err)
                                         res.json({
                                             success: false,
                                             message: "Fail"
