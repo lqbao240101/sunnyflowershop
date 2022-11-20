@@ -5,7 +5,7 @@ class VoucherController {
     // [GET] /voucher/ => Show all vouchers
     show(req, res) {
 
-        let perPage = 2;
+        let perPage = 12;
         let page = parseInt(req.query.page);
         if (page < 1) {
             page = 1;

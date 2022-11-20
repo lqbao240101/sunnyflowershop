@@ -5,7 +5,7 @@ const { checkUser, checkIsAdmin, checkIsSuperAdmin } = require('../app/middlewar
 const customerProductFavoriteController = require('../app/controllers/CustomerProductFavorite')
 
 router.get('/', checkUser, customerProductFavoriteController.show)
-router.patch('/:id', checkUser, customerProductFavoriteController.add)
-router.patch('/:id/remove', checkUser, customerProductFavoriteController.remove)
+router.patch('/', checkUser, customerProductFavoriteController.add)
+router.patch('/remove', checkUser, customerProductFavoriteController.remove)
 
 module.exports = router;
