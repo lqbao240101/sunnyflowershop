@@ -35,8 +35,13 @@
     position: relative;
     display: block;
     overflow: hidden;
+    display: block;
+    max-width:100%;
+    aspect-ratio:10/11 ;
+    // max-height:95px;
+    // width: auto;
+    // height: auto;
 }
-
 .productWrapper .thumb .image img {
     z-index: 1;
     max-width: 100%;

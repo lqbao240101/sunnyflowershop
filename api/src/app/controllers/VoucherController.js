@@ -53,7 +53,7 @@ class VoucherController {
                 if (voucher) {
                     res.json({
                         success: true,
-                        data: category
+                        data: voucher
                     })
                 } else {
                     res.json({

@@ -140,9 +140,6 @@ function ShopMainArea() {
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className={styles.clearButton}>
-                                <button type="button" onClick={handleClear}>CLEAR FILTER</button>
-                            </div> */}
                         </div>
                     </Col>
                     <Col lg={9}>
