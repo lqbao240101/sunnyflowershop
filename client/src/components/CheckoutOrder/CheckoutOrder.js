@@ -12,7 +12,17 @@ const CheckoutOrder = () => {
     const [listProduct, setListProduct] = useState([]);
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
+    const [percent, setpercent] = useState(0)
+    const [voucherId, setvoucherId] = useState("")
+    const [nameReceiver, setnameReceiver] = useState('')
+    const [phoneReceiver, setphoneReceiver] = useState('')
+    const [totalPriceCart, settotalPriceCart] = useState(0)
+    const [district, setdistrict] = useState('')
+    const [province, setprovince] = useState('')
+    const [ward, setWard] = useState('')
+    const [street, setStreet] = useState('')
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register: register2, handleSubmit: handleSubmit2 } = useForm();
 
     useEffect(() => {
         axios
@@ -30,8 +40,56 @@ const CheckoutOrder = () => {
     }, []);
 
 
-    const onSubmit = (data) => {
-        console.log(data)
+    const PlaceOrder = (data) => {
+        const payload = {
+            nameReceiver: nameReceiver,
+            voucherId: voucherId,
+            totalPrice: totalPriceCart - (percent * totalPriceCart / 100),
+            address: street + ward + district + province
+
+        }
+
+        axios
+            .post(`http://localhost:8000/order/`, payload, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                setMessage(response.data.success)
+                setSuccess(response.data.success)
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
+
+    const [couter, setcouter] = useState(0)
+    useEffect(() => {
+        listProduct.map((product) => {
+            if (couter < 1) {
+                console.log('couter', couter)
+                settotalPriceCart(totalPriceCart => totalPriceCart + (product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)
+                console.log(totalPriceCart)
+                setcouter(couter + 1)
+            }
+        })
+    }, [listProduct])
+
+
+    const onSubmit2 = (data) => {
+        axios
+            .post(`http://localhost:8000/voucher/check`, data, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                setvoucherId(response.data.voucherId)
+                setMessage(response.data.success)
+                setSuccess(response.data.success)
+                setpercent(response.data.percent)
+            })
     }
 
 
@@ -45,50 +103,73 @@ const CheckoutOrder = () => {
                                 <h3>Billings Information</h3>
                             </div>
                             <div className='check-out-form'>
-                                <form onSubmit={handleSubmit(onSubmit)}>
+                                <form onSubmit={handleSubmit(PlaceOrder)}>
                                     <Row>
-                                        <Col lg={6} md={12} sm={12} xs={12}>
+                                        <Col lg={12} md={12} sm={12} xs={12}>
                                             <div className='form-group'>
-                                                <label htmlFor="fname">First Name<span className="text-danger">*</span></label>
+                                                <label htmlFor="nameReceiver">Name Receiver<span className="text-danger">*</span></label>
                                                 <input
                                                     type="text"
-                                                    value=""
+                                                    value={nameReceiver}
                                                     className='form-control'
-                                                    placeholder='First Name'
-                                                    {...register("fname", { required: true })} />
+                                                    placeholder='Name Receiver'
+                                                    {...register("nameReceiver", { required: true, onChange: (e) => { setnameReceiver(e.target.value) } })} />
+                                            </div>
+                                        </Col>
+
+                                        <Col lg={12} md={12} sm={12} xs={12}>
+                                            <div className='form-group'>
+                                                <label htmlFor="phoneReceiver">Phone Receiver<span className="text-danger">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    value={phoneReceiver}
+                                                    className='form-control'
+                                                    placeholder='Phone Receiver'
+                                                    {...register("phoneReceiver", { required: true, onChange: (e) => { setphoneReceiver(e.target.value) } })} />
                                             </div>
                                         </Col>
                                         <Col lg={6} md={12} sm={12} xs={12}>
                                             <div className='form-group'>
-                                                <label htmlFor="lname">Last Name<span className="text-danger">*</span></label>
+                                                <label htmlFor="province">Province<span className="text-danger">*</span></label>
                                                 <input
                                                     type="text"
-                                                    value=""
+                                                    value={province}
                                                     className='form-control'
-                                                    placeholder='Last Name'
-                                                    {...register("lname", { required: true })} />
+                                                    placeholder='Province'
+                                                    {...register("province", { required: true, onChange: (e) => { setprovince(e.target.value) } })} />
+                                            </div>
+                                        </Col>
+                                        <Col lg={6} md={12} sm={12} xs={12}>
+                                            <div className='form-group'>
+                                                <label htmlFor="district">District<span className="text-danger">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    value={district}
+                                                    className='form-control'
+                                                    placeholder='District'
+                                                    {...register("district", { required: true, onChange: (e) => { setdistrict(e.target.value) } })} />
+                                            </div>
+                                        </Col>
+                                        <Col lg={6} md={12} sm={12} xs={12}>
+                                            <div className='form-group'>
+                                                <label htmlFor="ward">Ward<span className="text-danger">*</span></label>
+                                                <input
+                                                    type="text"
+                                                    value={ward}
+                                                    className='form-control'
+                                                    placeholder='Ward'
+                                                    {...register("ward", { required: true, onChange: (e) => { setWard(e.target.value) } })} />
                                             </div>
                                         </Col>
                                         <Col lg={12} md={12} sm={12} xs={12}>
                                             <div className='form-group'>
-                                                <label htmlFor="email">Email Address<span className="text-danger">*</span></label>
+                                                <label htmlFor="street">Street<span className="text-danger">*</span></label>
                                                 <input
                                                     type="text"
-                                                    value=""
+                                                    value={street}
                                                     className='form-control'
-                                                    placeholder='Last Name'
-                                                    {...register("email", { required: true })} />
-                                            </div>
-                                        </Col>
-                                        <Col lg={6} md={12} sm={12} xs={12}>
-                                            <div className='form-group'>
-                                                <label htmlFor="email">Email Address<span className="text-danger">*</span></label>
-                                                <input
-                                                    type="text"
-                                                    value=""
-                                                    className='form-control'
-                                                    placeholder='Last Name'
-                                                    {...register("email", { required: true })} />
+                                                    placeholder='Ex: 36 Nguyen Chi Thanh '
+                                                    {...register("street", { required: true, onChange: (e) => { setStreet(e.target.value) } })} />
                                             </div>
                                         </Col>
                                     </Row>
@@ -103,11 +184,11 @@ const CheckoutOrder = () => {
                                     <h3>Apply Voucher</h3>
                                 </div>
                                 <div className='coupon'>
-                                    <form onSubmit={handleSubmit(onSubmit)}>
+                                    <form onSubmit={handleSubmit2(onSubmit2)}>
                                         <input
                                             type="text"
                                             placeholder="Coupon code"
-                                            {...register("name")}
+                                            {...register2("name")}
                                         />
                                         <AccountEditModal message={message} success={success} nameBtn='Apply coupon' />
                                     </form>
@@ -130,7 +211,7 @@ const CheckoutOrder = () => {
                                         {listProduct.map((product, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    <td>{product.product.name}<span class="product-qty">{product.quantity}</span></td>
+                                                    <td>{product.product.name}<span class="product-qty"> X {product.quantity}</span></td>
                                                     <td>{formatter.format((product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)}</td>
                                                 </tr>
                                             )
@@ -140,20 +221,20 @@ const CheckoutOrder = () => {
                                     <tfoot>
                                         <tr>
                                             <th>SubTotal:</th>
-                                            <td className='product-subtotal'>tổng tiền </td>
+                                            <td className='product-subtotal'>{formatter.format(totalPriceCart)}</td>
                                         </tr>
                                         <tr>
                                             <th>Discount:</th>
-                                            <td >giảm giá </td>
+                                            <td >{percent}% </td>
                                         </tr>
                                         <tr>
                                             <th>Total:</th>
-                                            <td className='product-subtotal'>số tiền phải trả </td>
+                                            <td className='product-subtotal'>{formatter.format(totalPriceCart - (percent * totalPriceCart / 100))} </td>
                                         </tr>
                                     </tfoot>
                                 </table>
                             </div>
-                            <div className='coupon'>
+                            <div className='coupon' onClick={PlaceOrder}>
                                 <AccountEditModal message={message} success={success} nameBtn='Place order' />
                             </div>
                         </div>
