@@ -19,6 +19,7 @@ function CartArea() {
     const [success, setSuccess] = useState("")
     const [percent, setpercent] = useState(0)
     const [totalPriceCart, settotalPriceCart] = useState(0)
+
     useEffect(() => {
         axios
             .get(`http://localhost:8000/cart/`, {
@@ -75,7 +76,8 @@ function CartArea() {
     return (
         <>
             {listProduct.length === 0 && <EmptyCart />}
-            {listProduct.length !== 0 &&
+            {
+                listProduct.length !== 0 &&
                 <section id={styles.cartArea} className='ptb100'>
                     <Container>
                         <Row>
@@ -117,6 +119,8 @@ function CartArea() {
                                                             <td className={styles.productRemove} onClick={() => handleDeleteProduct(product.product._id)}>
                                                                 <ModalATag message={message} success={success} icon={<FaTrashAlt />} />
                                                             </td>
+                                                            
+
                                                         </tr>
                                                     )
                                                 })
@@ -125,6 +129,7 @@ function CartArea() {
                                         </table>
                                     </div>
                                     <div className={styles.btnClearCart}>
+
                                         <button type="button" className='theme-btn-one btn-black-overlay btn_sm'>Clear cart</button>
                                     </div>
                                 </div>
@@ -134,6 +139,7 @@ function CartArea() {
                                             type="text"
                                             placeholder="Coupon code"
                                             {...register("name")}
+
                                         />
                                         <AccountEditModal message={message} success={success} nameBtn='Apply coupon' />
                                     </form>
@@ -147,6 +153,7 @@ function CartArea() {
                                             <p>Subtotal</p>
                                             {console.log(totalPriceCart)}
                                             <p className={styles.cartSubTotalDetail}>${formatter.format(totalPriceCart)}</p>
+
                                         </div>
                                         <div className={styles.cartSubTotal}>
                                             <p>Coupon</p>
