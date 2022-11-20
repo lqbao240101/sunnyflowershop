@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;const mongooseDateFormat = require('mongoose-date
 const Order = new Schema(
     {
         customer: { type: Schema.Types.ObjectId, ref: 'Customer', required: true },
-        voucher: { type: Number, ref: 'vouchers', default: null },
+        voucher: { type: Schema.Types.ObjectId, ref: 'vouchers', default: null },
         id_delivery: { type: String, required: true },
         date_order: { type: Date, default: Date.now},
         order_products: [{ type: Schema.Types.ObjectId, ref: 'OrderProducts' }],
