@@ -5,18 +5,43 @@ const mongoose = require('mongoose');
 class ProductController {
     // [GET] /product => Show all products
     show(req, res) {
-        Product.find({})
+        // Product.find({})
+        //     .populate('category', 'name')
+        //     .then(products => {
+        //         res.json({
+        //             success: true,
+        //             data: products
+        //         })
+        //     })
+        //     .catch(err => {
+        //         res.json({
+        //             success: false
+        //         })
+        //     });
+
+        let perPage = 2;
+        let page = parseInt(req.query.page);
+        if (page < 1) {
+            page = 1;
+        }
+
+        Product
+            .find()
             .populate('category', 'name')
-            .then(products => {
-                res.json({
-                    success: true,
-                    data: products
-                })
-            })
-            .catch(err => {
-                res.json({
-                    success: false
-                })
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .exec((err, products) => {
+                Product.countDocuments((err, count) => {
+                    if (err) return next(err);
+                    res.json({
+                        data: products,
+                        meta: {
+                            current_page: page,
+                            last_page: Math.ceil(count / perPage),
+                            total: count,
+                        }
+                    });
+                });
             });
     }
 
