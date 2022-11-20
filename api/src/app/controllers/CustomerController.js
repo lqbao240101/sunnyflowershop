@@ -326,11 +326,28 @@ class CustomerController {
                         message: "Subscribe failed."
                     })
                 })
+            // } else {
+            //     res.json({
+            //         success: false,
+            //         message: "You have already subscribed."
+            //     })
         } else {
-            res.json({
-                success: false,
-                message: "You have already subscribed."
-            })
+            req.user.subscribe = false;
+
+            req.user.save()
+                .then(savedData => {
+                    res.json({
+                        success: true,
+                        message: "You have unsubscribed. Please subscribe to us next time."
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.json({
+                        success: false,
+                        message: "Unsubscribe failed."
+                    })
+                })
         }
     }
 

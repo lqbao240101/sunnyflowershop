@@ -1,10 +1,15 @@
 const Product = require('../models/Product')
+const CartProduct = require('../models/CartProduct')
 
 class CheckCart {
     async checkCart(req, res, next) {
         let check = 0;
-        const { listProducts } = req.body;
-        const list = listProducts;
+
+        const list = await CartProduct.find({ customer: req.user._id })
+            .populate({
+                path: 'product', options: { withDeleted: true }
+            })
+
 
         if (list.length === 0) {
             check++;
@@ -23,7 +28,7 @@ class CheckCart {
                     check++;
                     return res.json({
                         success: false,
-                        message: `Product was deleted or product id not found.`
+                        message: `Product ${product.name} was deleted or product id not found.`
                     })
                 } else {
                     if (product.quantity < list[i].quantity) {
@@ -39,6 +44,7 @@ class CheckCart {
         }
 
         if (check === 0) {
+            req.list = list;
             next()
         }
     }
