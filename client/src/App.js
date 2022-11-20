@@ -18,7 +18,7 @@ import DetailProduct from "./components/ShopMainArea/DetailProduct/DetailProduct
 import { useState, useEffect } from 'react'
 import Cookies from "js-cookie";
 import axios from "axios";
-import AccountEditArea from "./components/AccountEditArea";
+import CheckoutOrderPage from "./pages/CheckoutOrderPage";
 
 function App() {
   // const [listAddress, setListAddress] = useState([]);
@@ -68,6 +68,8 @@ function App() {
             <Route path="/account-edit" element={<AccountEdit />}>
             </Route>
             <Route path="/address-edit/*" element={<AddressEdit />}>
+            </Route>
+            <Route path="/checkout-order/" element={<CheckoutOrderPage />}>
             </Route>
           </Routes>
           <Footer />

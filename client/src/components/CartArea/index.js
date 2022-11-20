@@ -11,7 +11,6 @@ import axios from "axios";
 import ModalATag from '../ModalATag/ModalATag';
 import Cookies from 'js-cookie'
 import { formatter } from '../../utils/utils';
-import ListProduct from './ListProduct';
 import AccountEditModal from '../AccountEditArea/AccountEditModal';
 
 function CartArea() {
@@ -19,7 +18,7 @@ function CartArea() {
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
     const [percent, setpercent] = useState(0)
-    const [totalPriceCar, settotalPriceCar] = useState(0)
+    const [totalPriceCart, settotalPriceCart] = useState(0)
 
     useEffect(() => {
         axios
@@ -47,6 +46,17 @@ function CartArea() {
                 setSuccess(response.data.success)
             })
     }
+    const [couter, setcouter] = useState(0)
+    useEffect(() => {
+        listProduct.map((product) => {
+            if (couter < 1) {
+                console.log('couter', couter)
+                settotalPriceCart(totalPriceCart => totalPriceCart + (product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)
+                console.log(totalPriceCart)
+                setcouter(couter + 1)
+            }
+        })
+    }, [listProduct])
 
     const { register, handleSubmit, formState: { errors }, } = useForm();
 
@@ -58,7 +68,6 @@ function CartArea() {
                 },
             })
             .then((response) => {
-                console.log("đã chạy")
                 setMessage(response.data.success)
                 setSuccess(response.data.success)
                 setpercent(response.data.percent)
@@ -87,7 +96,6 @@ function CartArea() {
                                                 </tr>
                                             </thead>
                                             <tbody>
-
                                                 {listProduct.map((product, index) => {
                                                     return (
                                                         <tr key={index}>
@@ -109,10 +117,10 @@ function CartArea() {
                                                             </td>
                                                             <td className={styles.productTotal}>{formatter.format((product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)}</td>
                                                             <td className={styles.productRemove} onClick={() => handleDeleteProduct(product.product._id)}>
-                                                                {settotalPriceCar(0 + (product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)}
                                                                 <ModalATag message={message} success={success} icon={<FaTrashAlt />} />
                                                             </td>
-                                                            {console.log('chạy ')}
+                                                            
+
                                                         </tr>
                                                     )
                                                 })
@@ -130,7 +138,8 @@ function CartArea() {
                                         <input
                                             type="text"
                                             placeholder="Coupon code"
-                                            {...register("name", {})}
+                                            {...register("name")}
+
                                         />
                                         <AccountEditModal message={message} success={success} nameBtn='Apply coupon' />
                                     </form>
@@ -142,7 +151,9 @@ function CartArea() {
                                     <div className={styles.cartInner}>
                                         <div className={styles.cartSubTotal}>
                                             <p>Subtotal</p>
-                                            <p className={styles.cartSubTotalDetail}>${totalPriceCar}</p>
+                                            {console.log(totalPriceCart)}
+                                            <p className={styles.cartSubTotalDetail}>${formatter.format(totalPriceCart)}</p>
+
                                         </div>
                                         <div className={styles.cartSubTotal}>
                                             <p>Coupon</p>
@@ -150,10 +161,10 @@ function CartArea() {
                                         </div>
                                         <div className={`${styles.cartSubTotal} ${styles.border}`}>
                                             <p>Total</p>
-                                            <p className={styles.cartSubTotalDetail}>$159.00</p>
+                                            <p className={styles.cartSubTotalDetail}>${formatter.format(totalPriceCart * percent)}</p>
                                         </div>
                                         <div className={styles.checkoutBtn}>
-                                            <Link to="" className='theme-btn-one btn-black-overlay btn_sm'>Proceed to Checkout</Link>
+                                            <Link to="/checkout-order" className='theme-btn-one btn-black-overlay btn_sm'>Proceed to Checkout</Link>
                                         </div>
                                     </div>
                                 </div>
@@ -165,5 +176,4 @@ function CartArea() {
         </>
     )
 }
-
 export default CartArea
