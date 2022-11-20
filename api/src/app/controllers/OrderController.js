@@ -81,7 +81,7 @@ class OrderController {
 
     // [POST] /order/
     create(req, res) {
-        const { voucherId, address, nameReceiver, phoneReceiver, totalPrice, paidType } = req.body;
+        const { voucherId, address, nameReceiver, phoneReceiver, totalPrice } = req.body;
         const id_delivery = orderid.generate();
         const tempArr = [];
 
@@ -137,8 +137,7 @@ class OrderController {
             order_products: tempArr,
             name_receiver: nameReceiver,
             phone_receiver: phoneReceiver,
-            total_price: totalPrice,
-            paid_type: paidType
+            total_price: totalPrice
         })
             .then(data => {
                 res.json({

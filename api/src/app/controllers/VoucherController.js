@@ -88,6 +88,7 @@ class VoucherController {
                     if (voucher.usage > 0 && dateNow < voucher.expired_date) {
                         res.json({
                             success: true,
+                            _id: voucher._id,
                             name: voucher.name,
                             percent: voucher.percent
                         })
