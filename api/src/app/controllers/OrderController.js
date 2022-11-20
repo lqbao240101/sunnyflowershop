@@ -2,6 +2,7 @@ const Order = require('../models/Order')
 const OrderProduct = require('../models/OrderProduct');
 const Product = require('../models/Product');
 const orderid = require('order-id')('key');
+const CartProduct = require('../models/CartProduct')
 
 class OrderController {
 
@@ -80,11 +81,11 @@ class OrderController {
 
     // [POST] /order/
     create(req, res) {
-        const { listProducts, voucherId, address, nameReceiver, phoneReceiver, totalPrice, paidType } = req.body;
+        const { voucherId, address, nameReceiver, phoneReceiver, totalPrice, paidType } = req.body;
         const id_delivery = orderid.generate();
         const tempArr = [];
 
-        const list = listProducts;
+        const list = req.list;
 
         list.forEach(element => {
             const orderProduct = new OrderProduct(element);

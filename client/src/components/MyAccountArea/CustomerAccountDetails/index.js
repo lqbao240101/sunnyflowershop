@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react'
 import axios from '../../../service/axiosClient'
 import Cookies from 'js-cookie';
+import MessageModal from './MessageModal/index'
 
 function CustomerAccountDetails() {
 
@@ -10,7 +11,7 @@ function CustomerAccountDetails() {
     const [firstName, setFirstName] = useState('');
     const [email, setEmail] = useState('');
     const [avatar, setAvatar] = useState('');
-    const [subscribe, setSubscribe] = useState('');
+    const [subscribe ,setSubscribe] = useState('');
 
     useEffect(() => {
         axios
@@ -31,40 +32,7 @@ function CustomerAccountDetails() {
             });
     }, []);
 
-    const handleSubcribe = () => {
-        if (subscribe === true) {
-            axios
-                .patch(`http://localhost:8000/customer/unsubscribe`, {
-                    headers: {
-                        Authorization: `Bearer ${Cookies.get('token')}`,
-                    },
-                })
-                .then(response => {
-                    if (response.data.success) {
-                        setSubscribe(!subscribe);
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-        } else {
-            axios
-                .patch(`http://localhost:8000/customer/subscribe`, {
-                    headers: {
-                        Authorization: `Bearer ${Cookies.get('token')}`,
-                    },
-                })
-                .then(response => {
-                    if (response.data.success) {
-                        console.log(response);
-                        setSubscribe(!subscribe);
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-        }
-    }
+    console.log(subscribe);
 
     return (
         <div className={styles.myaccountContent}>
@@ -90,11 +58,7 @@ function CustomerAccountDetails() {
                             <label>Email</label>
                             <input type="text" name="email-name" value={email} className='form-control' disabled />
                         </div>
-                        <label className="mt-4" htmlFor="newsletter">
-                            <input type="checkbox" id="newsletter" onChange={handleSubcribe} checked={subscribe === true ? true : false}/>
-                            <span className="ml-2">Sign up for our newsletter</span>
-                            <p className="mt-2 text-secondary">You may unsubscribe at any moment. For that purpose, please find our contact info in the legal notice.</p>
-                        </label>
+                        <MessageModal subsc={subscribe}/>
                     </form>
                 </div>
             </div>

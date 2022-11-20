@@ -35,6 +35,7 @@ const VoucherEditModal = ({ idDetail }) => {
                 setVoucherUsage(response.data.data.usage)
                 setVoucherexpiredDate(response.data.data.expired_date)
                 setDeleted(response.data.data.deleted)
+
             });
     };
     const reversedVoucher = () => {
