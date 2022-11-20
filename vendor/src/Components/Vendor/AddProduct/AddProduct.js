@@ -26,13 +26,12 @@ const AddProduct = () => {
                 setImage(Reader.result);
 
             }
-            console.log(Reader.result)
         };
     };
     // get all categories   
     useEffect(() => {
         axios
-            .get(`http://127.0.0.1:8000/api/v1/categories`, {
+            .get(`http://localhost:8000/category/`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 }
@@ -44,20 +43,20 @@ const AddProduct = () => {
 
     const onSubmit = data => {
         const list = []
-
+        console.log(data)
         for (let i = 0; i < data.category.length; i++) {
             list.push({ id: data.category[i] })
         }
-        console.log(list)
         const payload = {
             ...data,
             img: image,
-            category: list
+            category: data.category.toString()
+            // category: list
         }
         console.log("cái data", payload)
 
         axios
-            .post('http://127.0.0.1:8000/api/v1/products/add', payload,
+            .post('http://localhost:8000/product/', payload,
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('adminToken')}`,
@@ -152,15 +151,15 @@ const AddProduct = () => {
                                                     <div className='fotm-group'>
                                                         <label htmlFor="Caterory">Caterory</label>
                                                         <Row>
-                                                            {listCategories.map((category) => {
+                                                            {listCategories.map((category, index) => {
                                                                 return (
 
-                                                                    <Col lg={3} key={category.id}>
+                                                                    <Col lg={3} key={index}>
                                                                         <div className='checkbox_group'>
                                                                             <input
                                                                                 id='Caterory'
                                                                                 type='checkbox'
-                                                                                value={category.id}
+                                                                                value={category._id}
                                                                                 className='check_box'
                                                                                 {...register("category")}
                                                                             />

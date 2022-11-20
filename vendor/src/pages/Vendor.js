@@ -12,7 +12,7 @@ function Vendor() {
 
   useEffect(() => {
     axios
-      .get(`http://127.0.0.1:8000/api/admin/retrieveToken`, {
+      .get(`http://localhost:8000/admin/`, {
         headers: {
           Authorization: `Bearer ${Cookies.get('adminToken')}`,
         },

@@ -20,7 +20,7 @@ function LoginArea() {
 
     const onSubmit = (data) => {
         axios
-            .post('http://localhost:8000/api/admin/login', data)
+            .post('http://localhost:8000/admin/login', data)
             .then(function (response) {
                 if (response.data.success) {
                     const adminToken = response.data.token;

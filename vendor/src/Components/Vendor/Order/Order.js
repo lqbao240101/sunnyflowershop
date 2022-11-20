@@ -22,7 +22,7 @@ const Order = () => {
     });
     useEffect(() => {
         axios
-            .get(`http://127.0.0.1:8000/api/v1/orders?${searchParams.toString()}`, {
+            .get(`http://localhost:8000/order/admin`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
@@ -69,7 +69,7 @@ const Order = () => {
 
                                         </tbody>
                                     </table>
-                                    < Col lg={12}>
+                                    {/* < Col lg={12}>
                                         <ul className={styles.pagination}>
                                             {data.page > 1 && <li className={styles.pageItem}>
                                                 <Link to={`?page=${data.prevPage}`} className={styles.pageLink}>«</Link>
@@ -107,7 +107,7 @@ const Order = () => {
 
                                         </ul>
 
-                                    </Col>
+                                    </Col> */}
                                 </div>
                             </div>
                         </Col>

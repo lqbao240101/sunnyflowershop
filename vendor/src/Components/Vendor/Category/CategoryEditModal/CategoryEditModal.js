@@ -8,26 +8,19 @@ import { useForm } from "react-hook-form";
 import "../../Modal.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const CategoryEditModal = ({ idDetail }) => {
+const CategoryEditModal = ({ idDetail, nameDetail }) => {
     const [modal, setModal] = useState(false);
     const [categoryName, setcategoryName] = useState('')
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const toggleModal = () => {
         setModal(!modal);
-        console.log(idDetail)
-        axios
-            .get(`http://127.0.0.1:8000/api/v1/categories/${idDetail}`, {
-                headers: {
-                    Authorization: `Bearer ${Cookies.get('adminToken')}`,
-                },
-            })
-
-            .then((response) => {
-                setcategoryName(response.data.name);
-            });
+        setcategoryName(nameDetail)
     };
+
     const closeModal = () => {
+
         setModal(!modal);
+
     }
     if (modal) {
         document.body.classList.add('active-modal')
@@ -38,7 +31,7 @@ const CategoryEditModal = ({ idDetail }) => {
     const onSubmit = (data) => {
         console.log(data)
         axios
-            .put(`http://127.0.0.1:8000/api/v1/categories/${idDetail}/update`, data, {
+            .put(`http://localhost:8000/category/${idDetail}`, data, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`
                 },

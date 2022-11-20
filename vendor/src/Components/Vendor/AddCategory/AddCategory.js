@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row'
 import '../DashBoard.css'
@@ -7,11 +7,12 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const AddCategory = () => {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = data => {
+        console.log(data)
         axios
-            .post('http://127.0.0.1:8000/api/v1/categories/create', data,
+            .post('http://localhost:8000/category/', data,
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('adminToken')}`,
@@ -22,7 +23,7 @@ const AddCategory = () => {
                 alert(response.data.success);
                 console.log(response.data.error);
                 if (response.data.success === true) {
-                    window.location.reload = 'http://localhost:4000/vendor-category';
+                    window.location.href = 'http://localhost:4000/vendor-category';
                 }
             })
             .catch(function (error) {

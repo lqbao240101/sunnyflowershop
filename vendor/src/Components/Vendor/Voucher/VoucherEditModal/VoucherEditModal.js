@@ -22,7 +22,7 @@ const VoucherEditModal = ({ idDetail }) => {
     const toggleModal = () => {
         setModal(!modal);
         axios
-            .get(`http://127.0.0.1:8000/api/v1/vouchers/${idDetail}`, {
+            .get(`http://localhost:8000/voucher/${idDetail}`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
@@ -38,7 +38,7 @@ const VoucherEditModal = ({ idDetail }) => {
     };
     const reversedVoucher = () => {
         axios
-            .delete(`http://127.0.0.1:8000/api/v1/vouchers/${idDetail}/destroy=0`, {
+            .delete(`http://localhost:8000/voucher/${idDetail}/restore`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
@@ -65,7 +65,7 @@ const VoucherEditModal = ({ idDetail }) => {
         }
         console.log(payload)
         axios
-            .put(`http://127.0.0.1:8000/api/v1/vouchers/${idDetail}/update`, payload, {
+            .put(`http://localhost:8000/voucher/${idDetail}`, payload, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`
                 },

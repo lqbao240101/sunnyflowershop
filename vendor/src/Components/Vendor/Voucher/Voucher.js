@@ -11,7 +11,7 @@ import styles from '../../Hook/usePagination/PaginatedItems.module.scss'
 const Voucher = () => {
     const [searchParams] = useSearchParams();
     const { data, page, nextPage, prevPage, lastPage } = usePaginate(
-        "http://127.0.0.1:8000/api/v1/vouchers",
+        "http://localhost:8000/voucher/",
         searchParams
     );
     return (
@@ -48,7 +48,7 @@ const Voucher = () => {
                                             <ListVoucher currentVoucher={data} />
                                         </tbody>
                                     </table>
-                                    < Col lg={12}>
+                                    {/* < Col lg={12}>
                                         <ul className={styles.pagination}>
                                             {page > 1 && <li className={styles.pageItem}>
                                                 <Link to={`?page=${prevPage}`} className={styles.pageLink}>«</Link>
@@ -78,7 +78,7 @@ const Voucher = () => {
                                                 <Link to={`?page=${nextPage}`} className={styles.pageLink}>»</Link>
                                             </li>}
                                         </ul>
-                                    </Col>
+                                    </Col> */}
                                 </div>
                             </Col>
                         </Row>

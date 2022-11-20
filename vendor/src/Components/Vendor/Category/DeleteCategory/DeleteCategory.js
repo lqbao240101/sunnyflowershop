@@ -22,7 +22,7 @@ const DeleteCategory = ({ idDetail, nameDetail }) => {
     const onSubmit = (data) => {
         setModal(!modal);
         axios
-            .delete(`http://127.0.0.1:8000/api/v1/categories/${idDetail}/destroy`,
+            .delete(`http://localhost:8000/category/${idDetail}`,
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('adminToken')}`,
@@ -30,8 +30,8 @@ const DeleteCategory = ({ idDetail, nameDetail }) => {
                 },)
             .then((response) => {
 
-                // alert(response.data.success);
-                window.location.reload(false)
+                alert(response.data.success);
+                // window.location.reload(false)
                 console.log('kkhi da bam')
 
             })

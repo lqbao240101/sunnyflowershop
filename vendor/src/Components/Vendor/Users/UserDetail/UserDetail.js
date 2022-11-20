@@ -15,49 +15,35 @@ const UserDetail = ({ idDetail, firstNameDetail, lastNameDetail }) => {
     const [avatar, setAvatar] = useState('')
     const [subscribed, setSubscribed] = useState('')
 
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, formState: { errors } } = useForm();
     const toggleModal = () => {
-        setModal(!modal);
+
+        const timer = setTimeout(() => {
+            setModal(!modal);
+        }, 500);
         axios
-            .get(`http://127.0.0.1:8000/api/v1/users/${idDetail}`, {
+            .get(`http://localhost:8000/customer/${idDetail}/profile`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
             })
-
             .then((response) => {
-                setFirstName(response.data.data.firstName);
-                setlastName(response.data.data.lastName)
-                setEmail(response.data.data.email)
-                if (response.data.data.avatar) {
-                    setAvatar(response.data.data.avatar)
-                } else {
-                    setAvatar(response.data.data.defaultAvatar)
-                }
-                if (response.data.data.subscribed == 1) {
+                setFirstName(response.data.message.first_name);
+                setlastName(response.data.message.last_name)
+                setEmail(response.data.message.email)
+                setAvatar(response.data.message.avatar)
+                if (response.data.message.subscribe === true) {
                     setSubscribed('Yes')
                 } else {
                     setSubscribed('No')
                 }
             });
+        return () => clearTimeout(timer);
     };
     const closeModal = () => {
         setModal(!modal);
     }
-    const handleImage = (e) => {
-        const file = e.target.files[0];
 
-        const Reader = new FileReader();
-
-        Reader.readAsDataURL(file);
-
-        Reader.onload = () => {
-            if (Reader.readyState === 2) {
-                setAvatar(Reader.result);
-
-            }
-        };
-    };
     if (modal) {
         document.body.classList.add('active-modal')
     } else {
@@ -70,7 +56,8 @@ const UserDetail = ({ idDetail, firstNameDetail, lastNameDetail }) => {
                 <div className="modal">
                     <div onClick={toggleModal} className="overlay"></div>
                     <div className="modal-content">
-                        <h2 className="title_modal">User Profile {idDetail}</h2>
+                        {/* <h2 className="title_modal">User Profile</h2> */}
+                        <h2 className="title_modal">{firstNameDetail} {lastNameDetail}</h2>
                         <form >
                             <Row>
                                 <Col lg={12}>
@@ -120,9 +107,6 @@ const UserDetail = ({ idDetail, firstNameDetail, lastNameDetail }) => {
                                     </div>
                                 </Col>
                             </Row>
-                            {/* {<div className="btn_left_table">
-                                <button onClick={closeModal} className="theme-btn-one bg-black btn_sm">Close</button>
-                            </div>} */}
                             <div className="btn_right_table">
                                 <button onClick={closeModal} className="theme-btn-one bg-black btn_sm">Close</button>
                             </div>

@@ -15,7 +15,7 @@ const AddVoucher = () => {
         }
         console.log(payload)
         axios
-            .post('http://127.0.0.1:8000/api/v1/vouchers/create', payload,
+            .post('http://localhost:8000/voucher/', payload,
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('adminToken')}`,

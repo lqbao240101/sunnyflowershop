@@ -18,10 +18,10 @@ const DeleteVoucher = ({ idDetail, nameDetail }) => {
         document.body.classList.remove('active-modal')
     }
 
-    const onSubmit = (data) => {
+    const onSubmit = () => {
         setModal(!modal);
         axios
-            .delete(`http://127.0.0.1:8000/api/v1/vouchers/${idDetail}/destroy=1`,
+            .delete(`http://localhost:8000/voucher/${idDetail}`,
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('adminToken')}`,

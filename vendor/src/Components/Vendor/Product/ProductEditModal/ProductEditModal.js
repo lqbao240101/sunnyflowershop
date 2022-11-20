@@ -24,7 +24,7 @@ const ProductEditModal = ({ idDetail }) => {
     const toggleModal = () => {
         setModal(!modal);
         axios
-            .get(`http://127.0.0.1:8000/api/v1/products/${idDetail}`, {
+            .get(`http://localhost:8000/product/${idDetail}`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
@@ -33,16 +33,16 @@ const ProductEditModal = ({ idDetail }) => {
             .then((response) => {
                 setPoductName(response.data.data.name);
                 setPrice(response.data.data.price)
-                setPrecentSale(response.data.data.precentSale)
+                setPrecentSale(response.data.data.percent_sale)
                 setQuantity(response.data.data.quantity)
                 setImg(response.data.data.img)
-                setListCategoriesOfProduct(response.data.data.categories)
+                setListCategoriesOfProduct(response.data.data.category.name)
                 setDescription(response.data.data.description)
 
             });
 
         axios
-            .get(`http://127.0.0.1:8000/api/v1/categories`, {
+            .get(`http://localhost:8000/category/`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 }
@@ -219,9 +219,9 @@ const ProductEditModal = ({ idDetail }) => {
                                     <div className='fotm-group'>
                                         <label htmlFor="Caterory">Caterory</label>
                                         <Row>
-                                            {listCategories.map((category) => {
+                                            {listCategories.map((category, index) => {
                                                 return (
-                                                    <Col lg={4} key={category.id}>
+                                                    <Col lg={4} key={index}>
                                                         <div className='checkbox_group'>
 
                                                             <>

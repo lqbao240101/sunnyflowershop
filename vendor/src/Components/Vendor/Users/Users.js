@@ -10,7 +10,7 @@ import '../DashBoard.css'
 const Users = () => {
     const [searchParams] = useSearchParams();
     const { data, page, nextPage, prevPage, lastPage } = usePaginate(
-        "http://127.0.0.1:8000/api/v1/users",
+        "http://localhost:8000/customer/",
         searchParams
     );
 
@@ -37,7 +37,7 @@ const Users = () => {
                                     <ListUsers listUsers={data} />
                                 </tbody>
                             </table>
-                            < Col lg={12}>
+                            {/* < Col lg={12}>
                                 <ul className={styles.pagination}>
                                     {page > 1 && <li className={styles.pageItem}>
                                         <Link to={`?page=${prevPage}`} className={styles.pageLink}>«</Link>
@@ -67,7 +67,7 @@ const Users = () => {
                                         <Link to={`?page=${nextPage}`} className={styles.pageLink}>»</Link>
                                     </li>}
                                 </ul>
-                            </Col>
+                            </Col> */}
 
                         </div>
                     </div>

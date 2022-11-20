@@ -6,13 +6,13 @@ import axios from 'axios';
 import './DashBoard.css'
 
 const Dashboard = () => {
-    const [orderPending, setOrderPending] = useState()
+    const [orderPending, setOrderPending] = useState(0)
     const [RecentOrders, setRecenOrders] = useState([])
     const [totalProduct, setTotalProduct] = useState(0)
-    const [totalSales, setTotalSales] = useState()
+    const [totalSales, setTotalSales] = useState(0)
     useEffect(() => {
         axios
-            .get(`http://127.0.0.1:8000/api/v1/orders`, {
+            .get(`http://localhost:8000/order/admin`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },

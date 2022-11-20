@@ -15,13 +15,13 @@ function TopHeader() {
     useEffect(() => {
         if (Cookies.get('adminToken') !== undefined) {
             axios
-                .get(`http://127.0.0.1:8000/api/admin/profile`, {
+                .get(`http://localhost:8000/admin/`, {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('adminToken')}`,
                     },
                 })
                 .then((response) => {
-                    setUser(response.data);
+                    setUser(response.data.data);
                 })
                 .catch(function (error) {
                     console.log('error')

@@ -13,10 +13,10 @@ import ListProducts from './ListProduct/ListProduct';
 const Product = () => {
     const [searchParams] = useSearchParams();
     const { data, page, nextPage, prevPage, lastPage } = usePaginate(
-        "http://localhost:8000/api/v1/products",
+        "http://localhost:8000/product/",
         searchParams
     );
-
+    console.log()
     return (
         <Col sm={12} md={12} lg={9}>
             <div className='tab-content dashboard_content'>
@@ -51,7 +51,7 @@ const Product = () => {
                                             <ListProducts listProducts={data} />
                                         </tbody>
                                     </table>
-                                    < Col lg={12}>
+                                    {/* < Col lg={12}>
                                         <ul className={styles.pagination}>
                                             {page > 1 && <li className={styles.pageItem}>
                                                 <Link to={`?page=${prevPage}`} className={styles.pageLink}>«</Link>
@@ -81,7 +81,7 @@ const Product = () => {
                                                 <Link to={`?page=${nextPage}`} className={styles.pageLink}>»</Link>
                                             </li>}
                                         </ul>
-                                    </Col>
+                                    </Col> */}
 
                                 </div>
                             </div>

@@ -13,15 +13,15 @@ const ListCategories = ({ currentCategory }) => {
             {currentCategory && currentCategory.map((Category) => {
                 return (
 
-                    <tr key={Category.id}>
-                        <td>
-                            <a href="/invoice-one" className='text-primary'>{Category.id}</a>
+                    <tr key={Category._id}>
+                        <td >
+                            {Category._id}
                         </td>
                         <td>{Category.name}</td>
 
-                        <td><div className='edit_icon'> <CategoryEditModal idDetail={Category.id} /></div>
+                        <td><div className='edit_icon'> <CategoryEditModal idDetail={Category._id} nameDetail={Category.name} /></div>
 
-                            <div className='edit_icon'><DeleteCategory idDetail={Category.id} nameDetail={Category.name} /></div>
+                            <div className='edit_icon'><DeleteCategory idDetail={Category._id} nameDetail={Category._name} /></div>
                         </td>
 
                     </tr>

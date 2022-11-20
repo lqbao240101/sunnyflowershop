@@ -6,11 +6,9 @@ import axios from '../../../../service/axiosClient';
 
 function TopHeaderRightAuth({ user }) {
     const handleLogout = () => {
-
+        console.log("đã chạy")
         axios
-            .post(
-                'http://127.0.0.1:8000/api/admin/logout',
-                {},
+            .get('http://localhost:8000/admin/logout',
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('adminToken')}`,
@@ -35,7 +33,7 @@ function TopHeaderRightAuth({ user }) {
         <div className={styles.divRight}>
             <ul className={styles.rightList}>
                 <li className={styles.account}>
-                    <img src={user.defaultAvatar} alt="avatar" />{user.userName}
+                    <img src={user.avatar} alt="avatar" />{user.userName}
                     <FaAngleDown fontSize={12} />
                     <ul className={styles.dropDown}>
                         <li>

@@ -18,10 +18,10 @@ const DeleteProduct = ({ idDetail, nameDetail }) => {
     } else {
         document.body.classList.remove('active-modal')
     }
-    const onSubmit = (data) => {
+    const onSubmit = () => {
         setModal(!modal);
         axios
-            .delete(`http://127.0.0.1:8000/api/v1/products/${idDetail}/destroy=1`,
+            .delete(`http://localhost:8000/product/${idDetail}`,
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('adminToken')}`,
@@ -31,7 +31,6 @@ const DeleteProduct = ({ idDetail, nameDetail }) => {
 
                 alert(response.data.success);
                 window.location.reload(false)
-                console.log('kkhi da bam')
 
             })
             .catch(function (error) {
@@ -47,12 +46,10 @@ const DeleteProduct = ({ idDetail, nameDetail }) => {
                     <div className="modal">
                         <div onClick={toggleModal} className="overlay"></div>
                         <div className="modal-content">
-                            <h2 className="title_modal">Confirm delete Category <p>{idDetail}</p></h2>
+                            <h2 className="title_modal">Confirm delete Category <p>{nameDetail}</p></h2>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="btn_right_table">
-
                                     <button className="theme-btn-one bg-black btn_sm">Delete </button>
-
                                 </div>
                             </form>
 

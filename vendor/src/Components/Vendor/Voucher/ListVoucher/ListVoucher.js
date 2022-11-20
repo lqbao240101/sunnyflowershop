@@ -8,21 +8,21 @@ const ListVoucher = ({ currentVoucher }) => {
         <>
             {currentVoucher && currentVoucher.map((Voucher) => {
                 return (
-                    <tr key={Voucher.voucherId}>
+                    <tr key={Voucher._id}>
                         <td>
-                            <a href="/invoice-one" className='text-primary'>{Voucher.voucherId}</a>
+                            <a href="/invoice-one" className='text-primary'>{Voucher._id}</a>
                         </td>
                         <td>{Voucher.name}</td>
                         <td>{Voucher.usage}</td>
                         <td>{Voucher.percent}</td>
-                        <td>{Voucher.expiredDate}</td>
+                        <td>{Voucher.expired_date}</td>
                         {Voucher.deleted === 1 ? <td>Deleted</td> : <td>Availability</td>}
                         <td>
                             <div className='edit_icon'>
-                                <VoucherEditModal idDetail={Voucher.id} />
+                                <VoucherEditModal idDetail={Voucher._id} nameDetail={Voucher.name} />
                             </div>
                             <div className='edit_icon'>
-                                <DeleteVoucher idDetail={Voucher.id} nameDetail={Voucher.name} />
+                                <DeleteVoucher idDetail={Voucher._id} nameDetail={Voucher.name} />
                             </div>
                         </td>
 

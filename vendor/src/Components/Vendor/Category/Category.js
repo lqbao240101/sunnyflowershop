@@ -11,7 +11,7 @@ import styles from '../../Hook/usePagination/PaginatedItems.module.scss'
 const Category = () => {
     const [searchParams] = useSearchParams();
     const { data, page, nextPage, prevPage, lastPage } = usePaginate(
-        "http://127.0.0.1:8000/api/v1/categories",
+        "http://localhost:8000/category/",
         searchParams
     );
 
