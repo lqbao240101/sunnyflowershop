@@ -42,13 +42,13 @@ const CheckoutOrder = () => {
 
     const PlaceOrder = (data) => {
         const payload = {
+            phoneReceiver: phoneReceiver,
             nameReceiver: nameReceiver,
             voucherId: voucherId,
             totalPrice: totalPriceCart - (percent * totalPriceCart / 100),
-            address: street + ward + district + province
-
+            address: street + ' ' + ward + ' ' + district + ' ' + province
         }
-
+        console.log(payload)
         axios
             .post(`http://localhost:8000/order/`, payload, {
                 headers: {
@@ -56,7 +56,8 @@ const CheckoutOrder = () => {
                 },
             })
             .then((response) => {
-                setMessage(response.data.success)
+                console.log(response.data.message)
+                setMessage(response.data.message)
                 setSuccess(response.data.success)
             })
             .catch(function (error) {
@@ -68,9 +69,7 @@ const CheckoutOrder = () => {
     useEffect(() => {
         listProduct.map((product) => {
             if (couter < 1) {
-                console.log('couter', couter)
                 settotalPriceCart(totalPriceCart => totalPriceCart + (product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)
-                console.log(totalPriceCart)
                 setcouter(couter + 1)
             }
         })
@@ -85,7 +84,7 @@ const CheckoutOrder = () => {
                 },
             })
             .then((response) => {
-                setvoucherId(response.data.voucherId)
+                setvoucherId(response.data._id)
                 setMessage(response.data.success)
                 setSuccess(response.data.success)
                 setpercent(response.data.percent)
@@ -207,11 +206,10 @@ const CheckoutOrder = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {console.log(listProduct)}
                                         {listProduct.map((product, index) => {
                                             return (
                                                 <tr key={index}>
-                                                    <td>{product.product.name}<span class="product-qty"> X {product.quantity}</span></td>
+                                                    <td>{product.product.name}<span className="product-qty"> X {product.quantity}</span></td>
                                                     <td>{formatter.format((product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)}</td>
                                                 </tr>
                                             )
