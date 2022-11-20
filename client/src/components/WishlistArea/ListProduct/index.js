@@ -14,7 +14,7 @@ function ListProduct(prop) {
     const handleDeleteProduct = () => {
 
     }
-
+    console.log('hehe', prop)
     return (
         <>
             {listWishlist.map((product, index) => {

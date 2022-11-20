@@ -7,7 +7,7 @@ function AccountEditModal({ message, success, nameBtn }) {
     const [modal, setModal] = useState(false);
 
     const toggleModal = () => {
-        setTimeout(() => { setModal(!modal); }, 500)
+        setTimeout(() => { setModal(!modal); }, 1000)
     };
 
     const closeModal = () => {

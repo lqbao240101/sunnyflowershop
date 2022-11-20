@@ -6,11 +6,11 @@ import { useForm } from "react-hook-form";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
+import ModalATag from '../../ModalATag/ModalATag'
 import { useParams } from "react-router-dom"
 import CommonBanner from '../../CommonBanner';
 import "./DetailProduct.css"
+import AccountEditModal from "../../AccountEditArea/AccountEditModal/index"
 
 const DetailProduct = () => {
     const { productId } = useParams()
@@ -19,6 +19,8 @@ const DetailProduct = () => {
     const [productPrice, setProductPrice] = useState('')
     const [productDescription, setProductDescription] = useState('')
     const [quantityPurchased, setQuantityPurchased] = useState(1)
+    const [message, setMessage] = useState("")
+    const [success, setSuccess] = useState("")
     const [activeTab, setActiveTab] = useState('description')
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     useEffect(() => {
@@ -40,7 +42,7 @@ const DetailProduct = () => {
     const AddWishlist = () => {
         console.log("cái cc")
         axios
-            .patch(`http://localhost:8000/favorite/${productId}`, {
+            .patch(`http://localhost:8000/favorite/`, productId, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
@@ -50,16 +52,16 @@ const DetailProduct = () => {
                 console.log('đã bấm')
             })
     }
-    const AddToCart = () => {
-        console.log(`http://localhost:8000/cart/add/${productId}`)
+    const AddToCart = (data) => {
         axios
-            .get(`http://localhost:8000/cart/add/${productId}`, {
+            .patch(`http://localhost:8000/cart/${productId}`, data, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
             })
             .then((response) => {
-                console.log(response)
+                setMessage(response.data.message)
+                setSuccess(response.data.success)
             })
     }
 
@@ -90,9 +92,9 @@ const DetailProduct = () => {
                                                     <button type="button" className='button' onClick={() => { quantityPurchased > 1 ? setQuantityPurchased(quantityPurchased - 1) : setQuantityPurchased(1) }}><FaMinus></FaMinus></button>
                                                 </div>
                                                 <input type="number" className='form-control' readOnly value={quantityPurchased}
-                                                    {...register("name", { required: true })} />
+                                                    {...register("quantity", { required: true })} />
                                                 <div className='input-group-button'>
-                                                    <button type="button" className='button' onClick={() => { setQuantityPurchased(quantityPurchased + 1) }}><FaPlus></FaPlus></button>
+                                                    <button type="button" className='button' onClick={() => { quantityPurchased === 5 ? setQuantityPurchased(5) : setQuantityPurchased(quantityPurchased + 1) }}><FaPlus></FaPlus></button>
                                                 </div>
                                             </div>
                                         </div>
@@ -101,10 +103,14 @@ const DetailProduct = () => {
                                     <div className='links_Product_areas'>
                                         <ul>
                                             <li onClick={AddWishlist}>
-                                                <a className='action wishlist' title="Wishlist"> <FaHeart /> Add To Wishlist</a>
+                                                <ModalATag message={message} success={success} nameBtn='Add To Wishlist' icon={<FaHeart />}></ModalATag>
+                                                {/* <a className='action wishlist' title="Wishlist"> <FaHeart /> Add To Wishlist</a> */}
                                             </li>
                                         </ul>
-                                        <label htmlFor='submit-form' readOnly className='theme-btn-one btn-black-overlay btn_sm'>Add To Cart</label>
+                                        <label htmlFor='submit-form'>
+                                            <AccountEditModal message={message} success={success} nameBtn='Add to cart' />
+                                        </label>
+                                        {/* <label htmlFor='submit-form' readOnly className='theme-btn-one btn-black-overlay btn_sm'>Add To Cart</label> */}
                                     </div>
                                 </div>
                             </div>
