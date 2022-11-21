@@ -3,84 +3,59 @@ const OrderProduct = require('../models/OrderProduct');
 const Product = require('../models/Product');
 const orderid = require('order-id')('key');
 const CartProduct = require('../models/CartProduct')
+const Customer = require('../models/Customer')
 
 class OrderController {
 
     // [GET] /order => Customer get all order || [GET /order/admin ] => Admin get detail order of customer
     show(req, res, next) {
-        if (req.user) {
-            Order.find({
-                customer: req.user._id
-            })
-                .populate({
-                    path: 'customer',
-                    populate: {
-                        path: 'order_products'
-                    }
-                })
-                .then(data => {
-                    res.json({
-                        success: true,
-                        data: data
-                    }
-                    )
-                })
-                .catch(err => {
-                    console.log(err)
-                    res.json(
-                        {
-                            success: false,
-                            message: "Fail"
-                        }
-                    )
-                })
+        let perPage = 12;
+        let page = parseInt(req.query.page);
+        if (page < 1) {
+            page = 1;
         }
-        // let perPage = 12;
-        // let page = parseInt(req.query.page);
-        // if (page < 1) {
-        //     page = 1;
-        // }
 
-        // if (req.user) {
-        //     Order
-        //         .find({
-        //             customer: req.user._id
-        //         })
-        //         .populate({ path: 'Customer' })
-        //         .skip((perPage * page) - perPage)
-        //         .limit(perPage)
-        //         .exec((err, orders) => {
-        //             Order.countDocuments((err, count) => {
-        //                 if (err) return next(err);
-        //                 res.json({
-        //                     data: orders,
-        //                     meta: {
-        //                         current_page: page,
-        //                         last_page: Math.ceil(count / perPage),
-        //                         total: count,
-        //                     }
-        //                 });
-        //             });
-        //         });
-        // } else {
-        //     Order
-        //         .find()
-        //         .skip((perPage * page) - perPage)
-        //         .limit(perPage)
-        //         .exec((err, orders) => {
-        //             Order.countDocuments((err, count) => {
-        //                 if (err) return next(err);
-        //                 res.json({
-        //                     data: orders,
-        //                     meta: {
-        //                         current_page: page,
-        //                         last_page: Math.ceil(count / perPage),
-        //                         total: count,
-        //                     }
-        //                 });
-        //             });
-        //         });
-        // }
+        if (req.user) {
+            Order
+                .find({
+                    customer: req.user._id
+                })
+                .populate('customer')
+                .skip((perPage * page) - perPage)
+                .limit(perPage)
+                .exec((err, orders) => {
+                    Order.countDocuments((err, count) => {
+                        if (err) return next(err);
+                        res.json({
+                            data: orders,
+                            meta: {
+                                current_page: page,
+                                last_page: Math.ceil(count / perPage),
+                                total: count,
+                            }
+                        });
+                    });
+                });
+        } else {
+            Order
+                .find()
+                .populate('customer')
+                .skip((perPage * page) - perPage)
+                .limit(perPage)
+                .exec((err, orders) => {
+                    Order.countDocuments((err, count) => {
+                        if (err) return next(err);
+                        res.json({
+                            data: orders,
+                            meta: {
+                                current_page: page,
+                                last_page: Math.ceil(count / perPage),
+                                total: count,
+                            }
+                        });
+                    });
+                });
+        }
     }
 
     // [GET] /order/:id => Customer get detail order || [GET /order/:userId/:id] => Admin get detail order of customer
@@ -115,57 +90,6 @@ class OrderController {
 
         const list = req.list;
 
-        console.log(list)
-
-        list.forEach(element => {
-            const orderProduct = new OrderProduct({
-                product: element.product._id,
-                quantity: element.quantity,
-                price: element.product.price,
-                percent_sale: element.product.percent_sale
-            });
-            tempArr.push(orderProduct._id);
-            console.log(tempArr)
-            orderProduct.save()
-                .then(result => {
-                    Product.findOne({
-                        _id: element.product
-                    })
-                        .then(data => {
-                            data.quantity = data.quantity - element.quantity;
-                            if (data.quantity === 0) {
-                                data.status = 0;
-                            }
-                            data.save()
-                                .then(savedData => {
-                                    res.json({
-                                        success: true,
-                                        message: "Create order product successfully."
-                                    })
-                                })
-                                .catch(err => {
-                                    res.json({
-                                        success: false,
-                                        message: "Change quantity of product failed."
-                                    })
-                                })
-                        })
-                        .catch(err => {
-                            res.json({
-                                success: false,
-                                message: "Product is not found"
-                            })
-                        })
-                })
-                .catch(err => {
-                    console.log("111111111111111", err)
-                    res.json({
-                        success: false,
-                        message: "Create order product failed."
-                    })
-                })
-        })
-
         Order.create({
             customer: req.user._id,
             voucher: voucherId,
@@ -177,10 +101,53 @@ class OrderController {
             total_price: totalPrice
         })
             .then(data => {
-                res.json({
-                    success: true,
-                    message: "Create order successfully"
+                list.forEach(element => {
+                    const orderProduct = new OrderProduct({
+                        product: element.product._id,
+                        quantity: element.quantity,
+                        price: element.product.price,
+                        percent_sale: element.product.percent_sale
+                    });
+                    tempArr.push(orderProduct._id);
+                    orderProduct.save()
+                        .then(result => {
+                            Product.findOne({
+                                _id: element.product
+                            })
+                                .then(data => {
+                                    data.quantity = data.quantity - element.quantity;
+                                    if (data.quantity === 0) {
+                                        data.status = 0;
+                                    }
+                                    data.save()
+                                        .then(savedData => {
+                                            res.json({
+                                                success: true,
+                                                message: "Create order product successfully."
+                                            })
+                                        })
+                                        .catch(err => {
+                                            res.json({
+                                                success: false,
+                                                message: "Change quantity of product failed."
+                                            })
+                                        })
+                                })
+                                .catch(err => {
+                                    res.json({
+                                        success: false,
+                                        message: "Product is not found"
+                                    })
+                                })
+                        })
+                        .catch(err => {
+                            res.json({
+                                success: false,
+                                message: "Create order product failed."
+                            })
+                        })
                 })
+
             })
             .catch(err => {
                 console.log(err)

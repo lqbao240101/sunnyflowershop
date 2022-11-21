@@ -3,23 +3,23 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const db = require('./config/db');
+const cors = require('cors');
 
 dotenv.config();
-const cors = require('cors');
 const corsOptions = {
   origin: '*',
   credentials: true,            //access-control-allow-credentials:true
   optionSuccessStatus: 200
 }
-
+db.connect();
 const app = express();
+
 const port = 8000;
 
-const routes = require('./routes');
-const db = require('./config/db');
-
 //Connect to DB
-db.connect();
+
+const routes = require('./routes');
 
 app.use(cors(corsOptions));
 app.use(morgan('combined'))
