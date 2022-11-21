@@ -173,7 +173,23 @@ class CustomerProductCarController {
             })
     }
 
-
+    // [GET] /cart/clearCart
+    clearCart(req, res) {
+        CartProduct.deleteMany({ customer: req.user._id})
+            .then(result => {
+                console.log(result)
+                res.json({
+                    success: true,
+                    message: "Clear cart successfully."
+                })
+            })
+            .catch(err => {
+                res.json({
+                    success: false,
+                    message: "Customer id not found"
+                })
+            })
+    }
 }
 
 module.exports = new CustomerProductCarController();

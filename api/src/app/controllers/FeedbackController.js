@@ -13,6 +13,7 @@ class FeedbackController {
 
         Feedback
             .find()
+            .populate('customer')
             .skip((perPage * page) - perPage)
             .limit(perPage)
             .exec((err, feedbacks) => {
@@ -38,12 +39,12 @@ class FeedbackController {
             _id: req.params.productId
         })
             .then(product => {
-                if (product) {
-                    if (comment !== '') {
-                        Feedback.create({
-                            customer: req.user._id,
-                            product: req.params.productId
-                        })
+                if (comment !== '') {
+                    Feedback.create({
+                        customer: req.user._id,
+                        product: req.params.productId,
+                        comment: comment
+                    })
                         .then(result => {
                             res.json({
                                 success: true,
@@ -57,15 +58,78 @@ class FeedbackController {
                                 message: "Create feedback failed."
                             })
                         })
-                    }
+                } else {
+                    res.json({
+                        success: false,
+                        message: "You have not written a feedback yet."
+                    })
+                }
+
+            })
+            .catch(err => {
+                res.json({
+                    success: false,
+                    message: "Product is not found."
+                })
+            })
+    }
+
+    // [PATCH] /feedback/:id
+    update(req, res) {
+        const { comment } = req.body;
+
+        Feedback.findById(req.params.id)
+            .then(data => {
+                if (comment !== '' && comment !== data.comment) {
+                    data.comment = comment;
+                    data.save()
+                        .then(result => {
+                            res.json({
+                                success: true,
+                                message: "Update feedback successfully."
+                            })
+                        })
+                        .catch(err => {
+                            res.json({
+                                success: false,
+                                message: "Update feedback failed."
+                            })
+                        })
+                } else if (comment === '') {
+                    res.json({
+                        success: false,
+                        message: "You have not written a feedback yet."
+                    })
+                } else if (comment !== '' && comment == data.comment) {
+                    res.json({
+                        success: false,
+                        message: "You haven't changed your feedback yet."
+                    })
                 }
             })
             .catch(err => {
                 res.json({
                     success: false,
-                    message: "Something wrong."
+                    message: "Feedback is not found."
                 })
             })
+    }
+
+    // [DELETE] /feedback/:id
+    delete(req, res) {
+        Feedback.findByIdAndDelete(req.params.id)
+        .then(result => {
+            res.json({
+                success: true,
+                message: "Delete your feedback successfully."
+            })
+        })
+        .catch(err => {
+            res.json({
+                success: false,
+                message: "Something wrong."
+            })
+        })
     }
 }
 

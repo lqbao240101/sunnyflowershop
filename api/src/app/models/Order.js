@@ -3,7 +3,7 @@ const Schema = mongoose.Schema; const mongooseDateFormat = require('mongoose-dat
 
 const Order = new Schema(
     {
-        customer: { type: Schema.Types.ObjectId, ref: 'customer', required: true },
+        customer: { type: Schema.Types.ObjectId,  ref: 'customers'},
         voucher: { type: Schema.Types.ObjectId, ref: 'vouchers', default: null },
         id_delivery: { type: String, required: true },
         date_order: { type: Date, default: Date.now },
