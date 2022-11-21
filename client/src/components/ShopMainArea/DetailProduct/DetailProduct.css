@@ -263,3 +263,13 @@ label {
     cursor: pointer;
     caret-color: rgba(0, 0, 0, 0);
 }
+
+.input-review {
+    padding: 30px;
+    box-shadow: 0 0 15px 6px hsl(0deg 0% 59% / 8%);
+}
+
+.submit-comment {
+    padding: 10px;
+    text-align: right;
+}

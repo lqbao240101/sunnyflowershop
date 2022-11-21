@@ -5,6 +5,7 @@ class FeedbackController {
 
     // [GET] /feedback/:productId
     show(req, res) {
+
         let perPage = 3;
         let page = parseInt(req.query.page);
         if (page < 1) {
@@ -53,6 +54,7 @@ class FeedbackController {
                         })
 
                         .catch(err => {
+                            console.log(err)
                             res.json({
                                 success: false,
                                 message: "Create feedback failed."
@@ -118,18 +120,18 @@ class FeedbackController {
     // [DELETE] /feedback/:id
     delete(req, res) {
         Feedback.findByIdAndDelete(req.params.id)
-        .then(result => {
-            res.json({
-                success: true,
-                message: "Delete your feedback successfully."
+            .then(result => {
+                res.json({
+                    success: true,
+                    message: "Delete your feedback successfully."
+                })
             })
-        })
-        .catch(err => {
-            res.json({
-                success: false,
-                message: "Something wrong."
+            .catch(err => {
+                res.json({
+                    success: false,
+                    message: "Something wrong."
+                })
             })
-        })
     }
 }
 

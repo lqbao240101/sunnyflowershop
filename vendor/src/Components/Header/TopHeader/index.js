@@ -34,7 +34,7 @@ function TopHeader() {
                 <Row>
                     <Col lg={6} md={6} sm={12} xs={12}>
                         <div className={styles.divLeft}>
-                            <p>Special collection already available. <Link to='/shop'>Read more...</Link></p>
+                            <p>Open Monday to Sunday from 7:00 AM to 23:00 PM</p>
                         </div>
                     </Col>
                     <Col lg={6} md={6} sm={12} xs={12}>

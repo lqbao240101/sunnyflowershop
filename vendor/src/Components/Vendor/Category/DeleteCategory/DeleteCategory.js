@@ -31,7 +31,7 @@ const DeleteCategory = ({ idDetail, nameDetail }) => {
             .then((response) => {
 
                 alert(response.data.success);
-                // window.location.reload(false)
+                window.location.reload(false)
                 console.log('kkhi da bam')
 
             })

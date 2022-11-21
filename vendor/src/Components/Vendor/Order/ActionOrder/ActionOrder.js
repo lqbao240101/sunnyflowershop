@@ -11,35 +11,31 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
     const [modal, setModal] = useState(false);
     const [idDelivery, setIdDelivery] = useState('')
     const [createdAt, setCreatedAt] = useState('')
-    const [email, setEmail] = useState('')
     const [totalPrice, settotalPrice] = useState('')
     const [listProducts, setListProducts] = useState([])
     const [address, setAddress] = useState('')
     const [deletedBy, setDeletedBy] = useState()
-    const [imgProduct, setImgProduct] = useState()
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setlastName] = useState('')
     const [state, setState] = useState('')
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const toggleModal = () => {
         setModal(!modal);
+        console.log(`http://localhost:8000/order/${idOrder}/${idCustomer}`)
         axios
-            .get(`http://127.0.0.1:8000/api/v1/users/${idCustomer}/orders/${idOrder}`, {
+            .get(`http://localhost:8000/order/${idOrder}/${idCustomer}`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
             })
 
             .then((response) => {
-                setIdDelivery(response.data.data.order.idDelivery)
-                setCreatedAt(response.data.data.order.createdAt)
-                settotalPrice(response.data.data.order.totalPrice)
-                setListProducts(response.data.data.products)
-                setEmail(response.data.data.customer.email)
-                setState(response.data.data.order.status)
-                setAddress(response.data.data.order.address)
-                setDeletedBy(response.data.data.order.deleted_by)
-                setImgProduct(response.data.data.product.img)
+                setIdDelivery(response.data.data.id_delivery)
+                setCreatedAt(response.data.data.createdAt)
+                settotalPrice(response.data.data.total_price)
+                setListProducts(response.data.data.order_products)
+                // setEmail(response.data.data.customer.email)
+                setState(response.data.data.status)
+                setAddress(response.data.data.address)
+                setDeletedBy(response.data.data.deleted_by)
             });
     };
 
@@ -47,26 +43,27 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
         setModal(!modal);
     }
     const handleState = () => {
-        console.log(Cookies.get('adminToken'))
         axios
-            .put(`http://127.0.0.1:8000/api/v1/orders/${idOrder}/update/status=${state + 1}`, 1, {
+            .patch(`http://localhost:8000/order/${idOrder}/${idCustomer}/updateStatus=${state + 1}`, 1, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
             })
             .then((response) => {
                 alert(response.data.message)
+                window.location.reload(false)
             })
     }
     const handleCancel = () => {
         axios
-            .delete(`http://127.0.0.1:8000/api/v1/users/${idCustomer}/orders/${idOrder}/destroy=1`, {
+            .patch(`http://localhost:8000/order/${idOrder}/${idCustomer}/cancel`, 1, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
             })
             .then((response) => {
                 alert(response.data.success)
+                window.location.reload(false)
             })
             .catch((err) => { console.log(err) })
 
@@ -99,27 +96,21 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                                                         <h6>{createdAt}</h6>
                                                     </li>
                                                 </ul>
-
                                                 <ul>
                                                     <li>
-                                                        <span>Address: </span>
-                                                        <h6>{address}</h6>
+                                                        <span>Status: </span>
+                                                        {deletedBy ? <h6 className='Cancelled'>Cancelled</h6> : state === 0 ? <h6 className='Pending'>Pending</h6> : state === 1 ? <h6 className='Confirmed'>Confirm</h6> : <h6 className='Completed'>Completed</h6>}
                                                     </li>
                                                 </ul>
+
                                             </div>
                                         </Col>
                                         <Col lg={6}>
                                             <div className='detail-bottom'>
                                                 <ul>
                                                     <li>
-                                                        <span>Email: </span>
-                                                        <h6>{email}</h6>
-                                                    </li>
-                                                </ul>
-                                                <ul>
-                                                    <li>
-                                                        <span>Status: </span>
-                                                        {deletedBy ? <h6 className='Cancelled'>Cancelled</h6> : state === 0 ? <h6 className='Pending'>Pending</h6> : state === 1 ? <h6 className='Confirmed'>Confirm</h6> : <h6 className='Completed'>Completed</h6>}
+                                                        <span>Address: </span>
+                                                        <h6>{address}</h6>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -140,8 +131,8 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                                         <tbody>
                                             {listProducts.map((product) => {
                                                 return (
-                                                    <tr key={product.id} >
-                                                        <th scope='col'><img src="{product.id}" alt="img" /></th>
+                                                    <tr key={product._id} >
+                                                        <th scope='col'><img src={product.img} alt="img" /></th>
                                                         <th scope='col'>{product.name}</th>
                                                         <th scope='col'>{product.price}</th>
                                                         <th scope='col'>{product.quantity}</th>
@@ -158,15 +149,15 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                                             </tr>
                                         </tfoot>
                                     </table>
-                                    <div className='detail-footer text-right'>
-                                        {deletedBy ? "" : state === 2 ? "" : <p>Which state would you like to change?</p>}
+                                    <div className='detail-footer text-center'>
+                                        {deletedBy ? "" : state === 2 ? "" : <p >Which state would you like to change?</p>}
                                         <div className='buttons'>
                                             {deletedBy ? '' : state === 0 ? <button className='theme-btn-one btn-blue-overlay btn_sm' onClick={handleState}>Confirm</button> : state === 1 ? <button className='theme-btn-one btn-blue-overlay btn_sm' onClick={handleState}>Complete</button> : ""}
 
                                             {deletedBy ? "" : state === 2 ? '' : <button className='theme-btn-one btn-red-overlay btn_sm ml-2' onClick={handleCancel}>Cancel</button>}
                                         </div>
                                     </div>
-                                    <button className="close close-modal" onClick={toggleModal}><FaTimes /></button>
+                                    <button className="close close-modal" onClick={closeModal}><FaTimes /></button>
 
                                 </div>
                             </div>

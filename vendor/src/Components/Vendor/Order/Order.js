@@ -40,8 +40,6 @@ const Order = () => {
             });
     }, [searchParams.toString()]);
 
-
-    console.log(data)
     return (
         <Col sm={12} md={12} lg={9}>
             <div className='tab-content dashboard_content'>
