@@ -125,9 +125,9 @@ class ProductController {
             })
     }
 
-    //[PATCH]] /products/:id/update
+    //[PUT] /products/:id/update
     update(req, res) {
-        const { name, category, description, price, percentSale, quantity } = req.body;
+        const { name, category, description, price, percentSale, quantity,img } = req.body;
 
         let status = 0;
 
@@ -160,6 +160,7 @@ class ProductController {
                                     data.percent_sale = percentSale;
                                     data.quantity = quantity;
                                     data.category = category;
+                                    data.img = img;
                                     data.status = status;
 
                                     data.save()
@@ -189,6 +190,7 @@ class ProductController {
                             && price == data.price
                             && quantity == data.quantity
                             && category == data.category
+                            && img == data.img
                         ) {
                             res.json({
                                 success: false,
@@ -202,6 +204,7 @@ class ProductController {
                             data.quantity = quantity;
                             data.category = category;
                             data.status = status;
+                            data.img = img;
 
                             data.save()
                                 .then(savedData => {
@@ -229,46 +232,46 @@ class ProductController {
     }
 
     // [PATCH] /product/:id/updateImage
-    updateImage(req, res) {
-        const { img } = req.body;
-        Product.findById(req.params.id)
-            .then(data => {
-                if (!data) {
-                    return res.json({
-                        success: false,
-                        message: "Product id not found or Product was deleted"
-                    })
-                } else {
-                    if (img === data.img) {
-                        res.json({
-                            success: false,
-                            message: "You didn't change product image."
-                        })
-                    } else {
-                        data.img = img;
-                        data.save()
-                            .then(result => {
-                                res.json({
-                                    success: true,
-                                    message: "Update product image successfully."
-                                })
-                            })
-                            .catch(err => {
-                                res.json({
-                                    success: false,
-                                    message: "Invalid information"
-                                })
-                            })
-                    }
-                }
-            })
-            .catch(err => {
-                res.json({
-                    success: false,
-                    message: "Product id not found"
-                })
-            })
-    }
+    // updateImage(req, res) {
+    //     const { img } = req.body;
+    //     Product.findById(req.params.id)
+    //         .then(data => {
+    //             if (!data) {
+    //                 return res.json({
+    //                     success: false,
+    //                     message: "Product id not found or Product was deleted"
+    //                 })
+    //             } else {
+    //                 if (img === data.img) {
+    //                     res.json({
+    //                         success: false,
+    //                         message: "You didn't change product image."
+    //                     })
+    //                 } else {
+    //                     data.img = img;
+    //                     data.save()
+    //                         .then(result => {
+    //                             res.json({
+    //                                 success: true,
+    //                                 message: "Update product image successfully."
+    //                             })
+    //                         })
+    //                         .catch(err => {
+    //                             res.json({
+    //                                 success: false,
+    //                                 message: "Invalid information"
+    //                             })
+    //                         })
+    //                 }
+    //             }
+    //         })
+    //         .catch(err => {
+    //             res.json({
+    //                 success: false,
+    //                 message: "Product id not found"
+    //             })
+    //         })
+    // }
 
 
     // [DELETE] /product/:id

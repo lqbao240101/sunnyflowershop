@@ -9,7 +9,7 @@ router.post('/', checkIsAdmin, productController.create);
 router.get('/trash', checkIsAdmin, productController.trashProduct)
 router.delete('/:id', checkIsAdmin, productController.delete)
 router.get('/:id', productController.detail)
-router.patch('/:id', checkIsAdmin, productController.update)
+router.put('/:id', checkIsAdmin, productController.update)
 router.patch('/:id/restore', checkIsAdmin, productController.restore)
 router.patch('/:id/updateImage', checkIsAdmin, productController.updateImage)
 router.post('/search', productController.search)
