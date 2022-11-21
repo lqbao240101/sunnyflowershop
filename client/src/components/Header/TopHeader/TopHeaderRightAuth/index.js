@@ -9,7 +9,7 @@ function TopHeaderRightAuth(user) {
     const handleLogout = () => {
         axios
             .post(
-                'http://localhost:8000/api/logout',{},
+                'http://localhost:8000/api/logout', {},
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('token')}`,
@@ -18,7 +18,7 @@ function TopHeaderRightAuth(user) {
             )
             .then(function (response) {
                 if (response.data.success) {
-                    Cookies.remove('token', { path: '/', domain: 'localhost'});
+                    Cookies.remove('token', { path: '/', domain: 'localhost' });
                     window.location.href = 'http://localhost:3000/login';
                 } else {
                     console.log(response);
@@ -33,7 +33,7 @@ function TopHeaderRightAuth(user) {
         <div className={styles.divRight}>
             <ul className={styles.rightList}>
                 <li>
-                    <Link to="/order-tracking"><FaTruck fontSize={18} /> Track your Order</Link>
+                    <Link to="/my-account/customer-order"><FaTruck fontSize={18} /> Track your Order</Link>
                 </li>
                 <li className={styles.account}>
                     <img src={user.user.avatar} alt="avatar" />{user.user.first_name} {user.user.last_name}

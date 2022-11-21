@@ -36,23 +36,29 @@ function ShopMainArea() {
     }, []);
 
 
-
+    console.log(listAPI)
     //gọi api để trả về sản phẩm theo filter
-
-    // useEffect(() => {
-    //     axios
-    //         .get(`http://localhost:8000/product/`, {
-    //             headers: {
-    //                 Authorization: `Bearer ${Cookies.get('token')}`,
-    //             },
-    //         })
-    //         .then((response) => {
-    //             setListCategories(response.data.data);
-    //         })
-    //         .catch(function (error) {
-    //             console.log(error);
-    //         });
-    // }, []);
+    const handleSearch = (data) => {
+        const payload = {
+            ...data,
+            category: '',
+            min: '',
+            max: ''
+        }
+        axios
+            .post(`http://localhost:8000/product/search`, payload, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                console.log(response.data)
+                setListAPI(response.data.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+    }
 
     const handlePriceFilter = (e) => {
         setPrice(e.target.value);
@@ -78,24 +84,7 @@ function ShopMainArea() {
             .catch(function (error) {
                 console.log(error);
             });
-    })
-
-
-    // useEffect(() => {
-    //     let List = products;
-
-    //     if (search !== "") {
-    //         List = List.filter(product => { return product.name.toLocaleLowerCase().includes(search.toLocaleLowerCase()) })
-    //     }
-
-    //     List = List.filter(product => { return product.discount !== "" ? product.cost * ((100 - product.discount) / 100) >= price : product.cost >= price })
-
-    //     if (category !== "ALL") {
-    //         List = List.filter(product => { return product.category === category })
-    //     }
-
-    //     setListProduct(List);
-    // }, [price, search, category])
+    }, [])
 
     return (
         <section id={styles.shopMainArea}>
@@ -104,11 +93,14 @@ function ShopMainArea() {
                     <Col lg={3}>
                         <div className={styles.shopSidebarWrapper}>
                             <div className={styles.shopSearch}>
-                                <form>
-                                    <input value={search} className="form-control" placeholder="Search..."
-                                        onChange={(e) => setSearch(e.target.value)}
+                                <form onSubmit={handleSubmit(handleSearch)}>
+                                    <input
+                                        value={search}
+                                        className="form-control"
+                                        placeholder="Search..."
+                                        {...register('name', { onChange: (e) => setSearch(e.target.value) })}
                                     />
-                                    <button type="">
+                                    <button type="submit">
                                         <GoSearch />
                                     </button>
                                 </form>

@@ -76,14 +76,14 @@ const ProductEditModal = ({ idDetail }) => {
         }
         console.log(payload)
         axios
-            .put(`http://127.0.0.1:8000/api/v1/products/${idDetail}/edit`, payload, {
+            .patch(`http://localhost:8000/product/${idDetail}`, payload, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`
                 },
             })
             .then((response) => {
                 alert(response.data.success);
-                console.log(response.data.error);
+                console.log(response.data.message);
                 if (response.data.success === true) {
                     window.location.href = 'http://localhost:4000/all-product';
                 }
