@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;const mongooseDateFormat = require('mongoose-date-format');
+const Schema = mongoose.Schema; const mongooseDateFormat = require('mongoose-date-format');
 
 const Feedback = new Schema(
     {
-        customer: { type: Schema.Types.ObjectId, ref: 'Customer', required: true },
-        product: { type: Schema.Types.Number, ref: 'products', required: true },
-        comment: { type: String, required: true, minLength: 1, maxLength: 100}
+        customer: { type: Schema.Types.ObjectId, ref: 'customers', required: true },
+        product: { type: Schema.Types.ObjectId, ref: 'products', required: true },
+        comment: { type: String, required: true, minLength: 1, maxLength: 100 }
     }, {
-        timestamps: true
-    }
+    timestamps: true
+}
 )
 
 Feedback.plugin(mongooseDateFormat);

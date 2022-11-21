@@ -15,10 +15,11 @@ function ShopMainArea() {
 
     const [search, setSearch] = useState('');
     const [listCategories, setListCategories] = useState([])
-    const [category, setCategory] = useState([]);
+    const [category, setCategory] = useState('');
     const [price, setPrice] = useState(100000);
     const [listAPI, setListAPI] = useState([]);
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit } = useForm();
+    const { register: register2, handleSubmit: handleSubmit2 } = useForm();
 
     useEffect(() => {
         axios
@@ -36,15 +37,16 @@ function ShopMainArea() {
     }, []);
 
 
-    console.log(listAPI)
     //gọi api để trả về sản phẩm theo filter
     const handleSearch = (data) => {
         const payload = {
             ...data,
-            category: '',
+            category: category,
             min: '',
             max: ''
         }
+
+        console.log(payload)
         axios
             .post(`http://localhost:8000/product/search`, payload, {
                 headers: {
@@ -63,14 +65,7 @@ function ShopMainArea() {
     const handlePriceFilter = (e) => {
         setPrice(e.target.value);
     }
-    const categoryFilter = (e) => {
-        if (category.includes(e.target.value)) {
-            setCategory(category.filter(item => item !== e.target.value))
-            console.log(category)
-        } else {
-            setCategory([...category, e.target.value])
-        }
-    }
+
     useEffect(() => {
         axios
             .get(`http://localhost:8000/category/`, {
@@ -85,7 +80,6 @@ function ShopMainArea() {
                 console.log(error);
             });
     }, [])
-
     return (
         <section id={styles.shopMainArea}>
             <Container fluid>
@@ -108,22 +102,32 @@ function ShopMainArea() {
                             <div className={styles.shopSidebarBoxed}>
                                 <h4>Product Categories</h4>
                                 <form>
+                                    <div className='checkbox_group' key={category._id}>
+                                        <input
+                                            id='Caterory'
+                                            type='radio'
+                                            value="None"
+                                            className='check_box'
+                                            {...register2("category", { onChange: (e) => { setCategory('') } })}
+                                        />
+                                        <p>None</p>
+                                    </div>
                                     {listCategories.map((category) => {
                                         return (
                                             <div className='checkbox_group' key={category._id}>
                                                 <input
                                                     id='Caterory'
-                                                    type='checkbox'
-                                                    value={category.name}
+                                                    type='radio'
+                                                    value={category._id}
                                                     className='check_box'
-                                                    {...register("category", { onChange: (e) => { categoryFilter(e) } })}
+                                                    {...register2("category", { onChange: (e) => { setCategory(e.target.value) } })}
                                                 />
                                                 <p>{category.name}</p>
                                             </div>)
                                     })}
                                 </form>
                             </div>
-                            <div className={styles.shopSidebarBoxed}>
+                            {/* <div className={styles.shopSidebarBoxed}>
                                 <h4>Price</h4>
                                 <div className={styles.priceFilter}>
                                     <input id={styles.formControlRange} type="range" onInput={handlePriceFilter} min="100000" max="500000" value={price} />
@@ -131,7 +135,7 @@ function ShopMainArea() {
                                         <span>Price: {formatter.format(price)}</span>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </Col>
                     <Col lg={9}>

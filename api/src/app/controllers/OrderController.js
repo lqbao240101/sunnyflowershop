@@ -60,7 +60,7 @@ class OrderController {
 
     // [GET] /order/:id => Customer get detail order || [GET /order/:userId/:id] => Admin get detail order of customer
     detail(req, res) {
-        Order.find({
+        Order.findOne({
             customer: req.user ? req.user._id : req.params.userId,
             _id: req.params.id
         })

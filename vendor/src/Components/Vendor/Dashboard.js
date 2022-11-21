@@ -21,7 +21,7 @@ const Dashboard = () => {
                 setRecenOrders(response.data.data)
 
             })
-    }, [RecentOrders])
+    }, [])
 
     useEffect(() => {
         axios
@@ -82,14 +82,13 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {console.log(RecentOrders)}
                                     {RecentOrders && RecentOrders.map((Order) => {
                                         return (
-                                            <tr key={Order.id}>
-                                                <td>
-                                                    <a className='text-primary' href=".">{Order.id}</a>
-                                                </td>
+                                            <tr key={Order.id_delivery}>
+                                                <td> {Order.id_delivery} </td>
                                                 <td>{Order.address}</td>
-                                                <td>{Order.nameReceiver}</td>
+                                                <td>{Order.name_receiver}</td>
                                                 <td>
                                                     {Order.deletedBy ? <span className='Cancelled'>Cancelled</span> : Order.status === 0 ? <span className='Pending'>Pending</span> : Order.status === 1 ? <span className='Confirmed'>Confirm</span> : <span className='Completed'>Completed</span>}
                                                 </td>

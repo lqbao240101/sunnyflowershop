@@ -14,7 +14,7 @@ function TrendingIntroduction() {
                             <h5>TRENDING</h5>
                             <h2>New Fashion</h2>
                             <p>
-                                Consectetur adipisicing elit. Dolores nisi distinctio magni, iure deserunt doloribus optio
+                                Beautiful and attractive products are ready
                             </p>
                             <Link to="">Shop Now</Link>
                         </div>

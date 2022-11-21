@@ -1,0 +1,213 @@
+.Content {
+    padding-bottom: 30px;
+    text-align: center;
+}
+
+.Content h2 {
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 0px;
+}
+
+.Content p {
+    margin-bottom: 0px;
+    padding-top: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #777c87;
+}
+
+.navTabs {
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
+    width: 100%;
+}
+
+.navTabs li {
+    margin-left: 50px;
+    transition: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background: transparent;
+    padding-bottom: 5px;
+
+
+}
+
+.navTabs li:hover {
+    color: #f79837;
+    cursor: pointer;
+}
+
+.navTabs li:first-child {
+    margin-left: 0px;
+}
+
+.tabOnClick {
+    color: #f79837;
+    border-bottom: 2px solid #f79837;
+}
+
+.product_wrappers_one {
+    margin-top: 30px;
+    box-shadow: 0 3px 15px 0 rgb(0 0 0 / 6%);
+    overflow: hidden;
+}
+
+.product_wrappers_one .thumb {
+    position: relative;
+    overflow: hidden;
+}
+
+.product_wrappers_one .thumb .image {
+    position: relative;
+    display: block;
+    overflow: hidden;
+}
+
+.product_wrappers_one .thumb .image img {
+    z-index: 1;
+    max-width: 100%;
+    transition: all .3s ease 0s;
+    width: 100%;
+}
+
+.product_wrappers_one .thumb .badges {
+    position: absolute;
+    z-index: 8;
+    top: 18px;
+    left: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+.product_wrappers_one .thumb .badges span.hot {
+    background-color: #2664fb;
+}
+
+.product_wrappers_one .thumb .actions {
+    position: absolute;
+    z-index: 9;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    flex-direction: column;
+    transition: all .3s ease 0s;
+}
+
+.product_wrappers_one .thumb .add-to-cart {
+    display: block;
+    width: 80%;
+    height: 45px;
+    line-height: 45px;
+    background-color: #fff;
+    text-align: center;
+    border: 0;
+    border-radius: 3px;
+    font-size: 14px;
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    z-index: 11;
+    margin: auto;
+    font-weight: 600;
+    visibility: hidden;
+    transition: all .3s ease 0s;
+    -webkit-transform: translateY(20px);
+    transform: translateY(20px);
+    color: #3f3f3f;
+    opacity: 0;
+    font-family: Raleway, sans-serif;
+}
+
+.product_wrappers_one .thumb .actions .action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    transition: all .3s ease 0s;
+    text-decoration: none;
+    color: #212121;
+    border-radius: 50%;
+    background-color: #fff;
+    border: none;
+}
+
+.product_wrappers_one .thumb .actions .action:hover {
+    background-color: #f79837;
+    color: #fff;
+}
+
+.product_wrappers_one:hover .thumb .actions .action, .product_wrappers_one:hover .thumb .add-to-cart {
+    visibility: visible;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.product_wrappers_one .thumb .add-to-cart:hover {
+    color: #ff7004;
+}
+
+.product_wrappers_one .thumb .badges span {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 24px;
+    display: block;
+    padding: 0 7px;
+    text-align: center;
+    text-transform: capitalize;
+    border-radius: 3px;
+    color: #fff;
+}
+
+[type=button]:not(:disabled), [type=reset]:not(:disabled), [type=submit]:not(:disabled), button:not(:disabled) {
+    cursor: pointer;
+}
+
+.product_wrappers_one .content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 15px 23px;
+    transition: all .3s ease 0s;
+    text-align: center;
+    background-color: #fff;
+}
+
+.product_wrappers_one .content .title {
+    font-size: 14px;
+    margin: 0 0 10px;
+}
+
+.product_wrappers_one .content .title a {
+    text-decoration: none;
+    color: #1d1d1d;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    font-size: 16px;
+}
+
+.product_wrappers_one .content .price {
+    font-size: 16px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #212121;
+}
+
+.product_wrappers_one .content .price span.new {
+    color: #3f3f3f;
+    font-weight: 500;
+}

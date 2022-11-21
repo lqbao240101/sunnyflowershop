@@ -9,6 +9,7 @@ import Col from 'react-bootstrap/Col';
 import ModalATag from '../../ModalATag/ModalATag'
 import { useParams } from "react-router-dom"
 import CommonBanner from '../../CommonBanner';
+import { FaRegCheckCircle, FaTimesCircle } from 'react-icons/fa'
 import "./DetailProduct.css"
 import AccountEditModal from "../../AccountEditArea/AccountEditModal/index"
 
@@ -21,8 +22,26 @@ const DetailProduct = () => {
     const [quantityPurchased, setQuantityPurchased] = useState(1)
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
+    const [listReview, setListReview] = useState([])
+    const [comment, setComment] = useState('')
     const [activeTab, setActiveTab] = useState('description')
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register: register2, handleSubmit: handleSubmit2 } = useForm();
+    const [modal, setModal] = useState(false);
+
+    const toggleModal = () => {
+        setTimeout(() => { setModal(!modal); }, 1000)
+    };
+
+    const closeModal = () => {
+        setModal(!modal);
+    }
+
+    if (modal) {
+        document.body.classList.add('active-modal')
+    } else {
+        document.body.classList.remove('active-modal')
+    }
     useEffect(() => {
         axios
             .get(`http://localhost:8000/product/${productId}`, {
@@ -38,7 +57,7 @@ const DetailProduct = () => {
                     setProductDescription(response.data.data.description)
                 }
             })
-    })
+    }, [])
     const AddWishlist = () => {
         const payload = { productId: productId }
         axios
@@ -53,6 +72,20 @@ const DetailProduct = () => {
                 setSuccess(response.data.success)
             })
     }
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8000/feedback/${productId}`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                setListReview(response.data.data)
+
+
+            })
+
+    }, [])
     const AddToCart = (data) => {
         axios
             .patch(`http://localhost:8000/cart/${productId}`, data, {
@@ -65,7 +98,19 @@ const DetailProduct = () => {
                 setSuccess(response.data.success)
             })
     }
-
+    const sentReview = (data) => {
+        axios
+            .post(`http://localhost:8000/feedback/${productId}`, data, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                setMessage(response.data.message)
+                setSuccess(response.data.success)
+                window.location.reload(false)
+            })
+    }
     return (
         <>
             <CommonBanner namePage="Product Details"></CommonBanner>
@@ -107,8 +152,24 @@ const DetailProduct = () => {
                                                 <ModalATag message={message} success={success} nameBtn='Add To Wishlist' icon={<FaHeart />}></ModalATag>
                                             </li>
                                         </ul>
-                                        <label htmlFor='submit-form'>
-                                            <AccountEditModal message={message} success={success} nameBtn='Add to cart' />
+                                        <label htmlFor='submit-form' className="theme-btn-one bg-black btn_sm" onClick={toggleModal}>
+                                            Add to cart
+
+                                            {modal && (
+                                                <div className="modal">
+                                                    <div onClick={toggleModal} className="overlay"></div>
+                                                    <div className="modal-content">
+                                                        <div>
+                                                            {success == true ? <FaRegCheckCircle size={90} className='colorSuccess' /> : <FaTimesCircle size={90} className='colorFail' />}
+                                                        </div>
+                                                        <h2 className="title_modal">Add to cart {success ? 'Successful' : 'Failed'}</h2>
+                                                        <p >{message}</p>
+                                                        <div className='divClose'>
+                                                            <button className="close close-modal" onClick={closeModal}>OK</button>
+                                                        </div>
+
+                                                    </div>
+                                                </div>)}
                                         </label>
                                     </div>
                                 </div>
@@ -134,24 +195,49 @@ const DetailProduct = () => {
                                     </div>
                                     <div id='review' className={activeTab === 'review' ? "tab-pane fade in active show" : 'tab-pane fade'}>
                                         <div className='product_reviews'>
-                                            <ul>
-                                                <li className='media'>
-                                                    <div className='media-img'>
-                                                        <img src="	https://andshop-react.netlify.app/static/media/user1.be89a16c.png" alt="img" />
-                                                    </div>
-                                                    <div className='media-body'>
-                                                        <div className='media-header'>
-                                                            <div className='media-name'>
-                                                                <h4>Lê Quốc Bảo</h4>
-                                                                <p>5 day ago</p>
+
+                                            {listReview.map((review) => {
+                                                return (
+                                                    <ul key={review._id}>
+                                                        <li className='media'>
+                                                            <div className='media-img'>
+                                                                <img src={review.customer.avatar} alt="img" />
                                                             </div>
-                                                        </div>
-                                                        <div className='media-pragraph'>
-                                                            <p>Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Cras ultricies ligula sed magna dictum porta.Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Vivamus magna justo.</p>
-                                                        </div>
+                                                            <div className='media-body'>
+                                                                <div className='media-header'>
+                                                                    <div className='media-name'>
+                                                                        <h4>{review.customer.first_name} {review.customer.last_name}</h4>
+                                                                    </div>
+                                                                    <div className='post-share'>
+                                                                        <p className=''>{review.createdAt}</p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className='media-pragraph'>
+                                                                    <p>{review.comment}</p>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                )
+
+                                            })}
+                                        </div>
+                                        <div className='input-review'>
+                                            <Row>
+                                                <form onSubmit={handleSubmit2(sentReview)}>
+                                                    <Col lg={12} md={12} sm={12} xs={12}>
+                                                        <label htmlFor="comment" className='media-name'>Leave a comment</label>
+                                                        <input type="text"
+                                                            className='form-control comment-input'
+                                                            value={comment}
+                                                            placeholder='Enter your comment here'
+                                                            {...register2('comment', { onChange: (e) => { setComment(e.target.value) } })} />
+                                                    </Col>
+                                                    <div className='submit-comment'>
+                                                        <AccountEditModal message={message} success={success} nameBtn='Comment' />
                                                     </div>
-                                                </li>
-                                            </ul>
+                                                </form>
+                                            </Row>
                                         </div>
                                     </div>
                                 </div>

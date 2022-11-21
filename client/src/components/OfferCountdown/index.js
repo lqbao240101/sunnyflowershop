@@ -12,7 +12,7 @@ function OfferCountdown() {
     const [timeSeconds, setSeconds] = useState('00');
 
     let interval = useRef();
-    
+
     const startCountDown = () => {
         const countDownDate = new Date('October 1, 2022 00:00:00').getTime();
 
@@ -69,7 +69,7 @@ function OfferCountdown() {
                             </div>
                             <div className={styles.offerTimeText}>
                                 <h2>20% OFF FOR ALL T-SHIRT COLLECTION</h2>
-                                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Porro quisquam, odit assumenda sit modi commodi esse necessitatibus temporibus aperiam veritatis eveniet!</p>
+                                <p>Exciting promotions coming up, check it out</p>
                                 <a href="">VIEW MORE</a>
                             </div>
                         </div>
