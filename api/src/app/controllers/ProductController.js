@@ -307,7 +307,7 @@ class ProductController {
 
     search(req, res) {
         const { name, category, min, max } = req.body;
-
+        console.log(name)
         let minPrice = 0;
         let maxPrice = 1000001;
 

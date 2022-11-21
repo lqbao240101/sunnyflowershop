@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { FaHeart } from "react-icons/fa"
+import React, { useState } from 'react';
 import "./Modal.css";
 import { FaRegCheckCircle, FaTimesCircle } from 'react-icons/fa'
 
@@ -13,7 +12,7 @@ const ModalATag = ({ message, success, nameBtn, icon }) => {
 
     const closeModal = () => {
         setModal(!modal);
-        window.location.reload(false)
+        // window.location.reload(false)
     }
 
     if (modal) {
@@ -21,11 +20,9 @@ const ModalATag = ({ message, success, nameBtn, icon }) => {
     } else {
         document.body.classList.remove('active-modal')
     }
-
     return (
         <>
             <a type="submit" className='action wishlist' onClick={toggleModal}>{icon}   {nameBtn} </a>
-
             {modal && (
                 <div className="modal">
                     <div onClick={toggleModal} className="overlay"></div>
@@ -38,7 +35,6 @@ const ModalATag = ({ message, success, nameBtn, icon }) => {
                         <div className='divClose'>
                             <button className="close close-modal" onClick={closeModal}>OK</button>
                         </div>
-
                     </div>
                 </div>
             )}

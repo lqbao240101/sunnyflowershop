@@ -40,16 +40,17 @@ const DetailProduct = () => {
             })
     })
     const AddWishlist = () => {
-        console.log("cái cc")
+        const payload = { productId: productId }
         axios
-            .patch(`http://localhost:8000/favorite/`, productId, {
+            .patch(`http://localhost:8000/favorite`, payload, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
             })
             .then((response) => {
-                alert(response.data.message)
-                console.log('đã bấm')
+                console.log('bên detail', response)
+                setMessage(response.data.message)
+                setSuccess(response.data.success)
             })
     }
     const AddToCart = (data) => {
@@ -104,13 +105,11 @@ const DetailProduct = () => {
                                         <ul>
                                             <li onClick={AddWishlist}>
                                                 <ModalATag message={message} success={success} nameBtn='Add To Wishlist' icon={<FaHeart />}></ModalATag>
-                                                {/* <a className='action wishlist' title="Wishlist"> <FaHeart /> Add To Wishlist</a> */}
                                             </li>
                                         </ul>
                                         <label htmlFor='submit-form'>
                                             <AccountEditModal message={message} success={success} nameBtn='Add to cart' />
                                         </label>
-                                        {/* <label htmlFor='submit-form' readOnly className='theme-btn-one btn-black-overlay btn_sm'>Add To Cart</label> */}
                                     </div>
                                 </div>
                             </div>
