@@ -7,6 +7,7 @@ const voucherRouter = require('./voucher')
 const adminRouter = require('./admin')
 const customerProductFavoriteRouter = require('./customerProductFavorite')
 const cartProductRouter = require('./cartProduct')
+const feedbackRouter = require('./feedback')
 
 function routes(app) {
     app.use('/product', productRouter)
@@ -18,6 +19,7 @@ function routes(app) {
     app.use('/admin', adminRouter)
     app.use('/favorite', customerProductFavoriteRouter)
     app.use('/cart', cartProductRouter)
+    app.use('/feedback', feedbackRouter)
 }
 
 module.exports = routes;
