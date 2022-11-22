@@ -1,6 +1,9 @@
 const Admin = require('../models/Admin')
 const jwt = require('jsonwebtoken');
 const Customer = require('../models/Customer');
+const Order = require('../models/Order')
+const Prodcut = require('../models/Product');
+const Product = require('../models/Product');
 
 class AdminController {
 
@@ -244,6 +247,24 @@ class AdminController {
                     message: "Customer is not found."
                 })
             })
+    }
+
+    // [GET] /admin/dashboard
+    dashboard(req, res) {
+        Product.countDocuments().exec((err, products) => {
+            if (err) return next(err);
+            Order.countDocuments().exec((err, orders) => {
+                if(err) return next(err);
+                Order.countDocuments({status: 0}).exec((err, ordersPending) => {
+                    if(err) return next(err);
+                    res.json({
+                        products: products,
+                        orders: orders,
+                        ordersPending: ordersPending
+                    })
+                })
+            })
+        })
     }
 }
 

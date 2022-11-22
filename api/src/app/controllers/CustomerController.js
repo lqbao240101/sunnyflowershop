@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 var fs = require('fs');
 const { resolveSoa } = require('dns');
 // const { generateToken } = require('../../utils/generateToken')
+const Order = require('../models/Order')
 
 class CustomerController {
 
@@ -376,6 +377,24 @@ class CustomerController {
                 message: "You have already unsubscribed."
             })
         }
+    }
+
+    // [GET] /customer/dashboard
+    dashboard(req, res) {
+        Order.countDocuments({customer: req.user._id, status: 2}).exec((err, ordersCompleted) => {
+            if (err) return next(err);
+            Order.countDocuments({customer: req.user._id}).exec((err, orders) => {
+                if(err) return next(err);
+                Order.countDocuments({status: 0, customer: req.user._id}).exec((err, ordersPending) => {
+                    if(err) return next(err);
+                    res.json({
+                        orders: orders,
+                        ordersCompleted: ordersCompleted,
+                        ordersPending: ordersPending
+                    })
+                })
+            })
+        })
     }
 }
 

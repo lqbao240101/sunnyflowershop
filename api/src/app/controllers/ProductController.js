@@ -231,49 +231,6 @@ class ProductController {
             })
     }
 
-    // [PATCH] /product/:id/updateImage
-    // updateImage(req, res) {
-    //     const { img } = req.body;
-    //     Product.findById(req.params.id)
-    //         .then(data => {
-    //             if (!data) {
-    //                 return res.json({
-    //                     success: false,
-    //                     message: "Product id not found or Product was deleted"
-    //                 })
-    //             } else {
-    //                 if (img === data.img) {
-    //                     res.json({
-    //                         success: false,
-    //                         message: "You didn't change product image."
-    //                     })
-    //                 } else {
-    //                     data.img = img;
-    //                     data.save()
-    //                         .then(result => {
-    //                             res.json({
-    //                                 success: true,
-    //                                 message: "Update product image successfully."
-    //                             })
-    //                         })
-    //                         .catch(err => {
-    //                             res.json({
-    //                                 success: false,
-    //                                 message: "Invalid information"
-    //                             })
-    //                         })
-    //                 }
-    //             }
-    //         })
-    //         .catch(err => {
-    //             res.json({
-    //                 success: false,
-    //                 message: "Product id not found"
-    //             })
-    //         })
-    // }
-
-
     // [DELETE] /product/:id
     delete(req, res) {
         Product.delete({ _id: req.params.id })
@@ -308,6 +265,7 @@ class ProductController {
             })
     }
 
+    // [POST] /customer/search
     search(req, res) {
         const { name, category, min, max } = req.body;
         console.log(name)
@@ -360,6 +318,30 @@ class ProductController {
                 })
         }
     }
+
+    // [GET] /product/hotProducts
+    hotProducts(req, res) {
+        Product.find({})
+        .sort({ createdAt: -1 })
+        .limit(4)
+        .exec((err, newArrival) => {
+            if(err) return next(err);
+            Product.find({ 
+                percent_sale: {
+                    "$gt": 0
+                }})
+                .sort({ updatedAt: -1 })
+                .limit(4)
+                .exec((err, onSell) => {
+                    if(err) return next(err);
+                    res.json({
+                        newArrival: newArrival,
+                        onSell: onSell
+                    }) 
+                })
+        })
+    }
+    
 }
 
 module.exports = new ProductController();
