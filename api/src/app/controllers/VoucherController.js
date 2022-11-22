@@ -114,7 +114,7 @@ class VoucherController {
 
     // [POST] / => Create voucher
     create(req, res) {
-        const { name, usage, percent, expiredDate } = req.body;
+        const { name, usage, percent, expiredDate, show } = req.body;
 
         const date = new Date(expiredDate)
 
@@ -130,7 +130,8 @@ class VoucherController {
                         name: name,
                         usage: usage,
                         percent: percent,
-                        expired_date: date
+                        expired_date: date,
+                        show: show
                     })
                         .then((result) => {
                             console.log(result.expired_date)
@@ -272,6 +273,12 @@ class VoucherController {
                 })
             })
     }
+
+    // [GET] /voucher/updateShowCountdown
+    updateShowCountDown(req, res) {
+
+    }
+
 }
 
 module.exports = new VoucherController();

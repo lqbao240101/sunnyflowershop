@@ -7,10 +7,11 @@ const productController = require('../app/controllers/ProductController');
 router.get('/', productController.show)
 router.post('/', checkIsAdmin, productController.create);
 router.get('/trash', checkIsAdmin, productController.trashProduct)
+router.post('/search', productController.search)
+router.get('/hotProducts', productController.hotProducts)
 router.delete('/:id', checkIsAdmin, productController.delete)
 router.get('/:id', productController.detail)
 router.put('/:id', checkIsAdmin, productController.update)
 router.patch('/:id/restore', checkIsAdmin, productController.restore)
-router.patch('/:id/updateImage', checkIsAdmin, productController.updateImage)
-router.post('/search', productController.search)
+
 module.exports = router;
