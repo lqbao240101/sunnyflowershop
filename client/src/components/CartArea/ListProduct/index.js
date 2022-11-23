@@ -6,12 +6,16 @@ import { formatter } from '../../../utils/utils';
 import { FaMinus, FaPlus, FaHeart } from "react-icons/fa"
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { useForm } from "react-hook-form";
 import ModalATag from '../../ModalATag/ModalATag';
 
+
 function ListProduct(prop) {
+
     const [listProduct, setListProduct] = useState([]);
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
+    const { register, handleSubmit } = useForm();
     useEffect(() => {
         setListProduct(prop.list);
     }, [prop.list]);
@@ -47,7 +51,18 @@ function ListProduct(prop) {
                             {formatter.format(product.product.price * ((100 - product.product.percent_sale) / 100))}
                         </td>
                         <td className={styles.productQuantity}>
-                            <input onKeyDown={(evt) => evt.key === 'e' && evt.preventDefault()} type="number" defaultValue={product.quantity} min="1" max="5" />
+                            <div className='input-group-button'>
+                                <button type="button" className='button' onClick={() => { }}><FaMinus></FaMinus></button>
+                            </div>
+                            <input
+                                // onKeyDown={(evt) => evt.key === 'e' && evt.preventDefault()}
+                                type="number"
+                                value={product.quantity}
+                                {...register('quantity', { min: 1, max: 10 })}
+                            />
+                            <div className='input-group-button'>
+                                <button type="button" className='button' onClick={() => { }}><FaPlus></FaPlus></button>
+                            </div>
                         </td>
                         <td className={styles.productTotal}>{formatter.format((product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)}</td>
                         <td className={styles.productRemove} onClick={() => handleDeleteProduct(product.product._id)}>

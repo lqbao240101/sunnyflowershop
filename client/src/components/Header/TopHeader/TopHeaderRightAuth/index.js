@@ -9,7 +9,7 @@ function TopHeaderRightAuth(user) {
     const handleLogout = () => {
         axios
             .post(
-                'http://localhost:8000/api/logout', {},
+                'http://localhost:8000/customer/logout', {},
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('token')}`,

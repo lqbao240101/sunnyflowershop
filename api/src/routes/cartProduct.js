@@ -8,5 +8,5 @@ router.get('/', checkUser, cartProductController.show)
 router.patch('/:id', checkUser, cartProductController.add)
 router.delete('/:id', checkUser, cartProductController.remove)
 router.patch('/:id/updateQuantity', checkUser, cartProductController.updateQuantity)
-
+router.get('/clearCart', checkUser, cartProductController.clearCart)
 module.exports = router;

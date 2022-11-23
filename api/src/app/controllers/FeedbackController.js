@@ -13,7 +13,9 @@ class FeedbackController {
         }
 
         Feedback
-            .find()
+            .find({
+                product: req.params.productId
+            })
             .populate('customer')
             .skip((perPage * page) - perPage)
             .limit(perPage)

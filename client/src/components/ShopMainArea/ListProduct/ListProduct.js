@@ -11,6 +11,7 @@ import { formatter } from '../../../utils/utils'
 
 
 function ListProduct({ currentItems }) {
+    const [isLogin, setIsLogin] = useState(true)
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
     const AddToCart = (data, productId) => {
@@ -25,18 +26,19 @@ function ListProduct({ currentItems }) {
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
                 setModal(!modal);
+                if (!response.data.login) {
+                    setIsLogin(false)
+                }
             })
 
     }
     const [modal, setModal] = useState(false);
 
-    // const toggleModal = () => {
-    //     setTimeout(() => { setModal(!modal); }, 1000)
-    //     clearTimeout()
-    // };
-
     const closeModal = () => {
         setModal(!modal);
+        if (!isLogin) {
+            window.location.href = '/login'
+        }
     }
 
     if (modal) {

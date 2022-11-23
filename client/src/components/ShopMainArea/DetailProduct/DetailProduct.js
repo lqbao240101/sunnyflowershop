@@ -14,6 +14,7 @@ import "./DetailProduct.css"
 import AccountEditModal from "../../AccountEditArea/AccountEditModal/index"
 
 const DetailProduct = () => {
+    const [isLogin, setIsLogin] = useState(true)
     const { productId } = useParams()
     const [productImg, setProductImg] = useState('')
     const [productName, setProductName] = useState('')
@@ -35,6 +36,9 @@ const DetailProduct = () => {
 
     const closeModal = () => {
         setModal(!modal);
+        if (!isLogin) {
+            window.location.href = '/login'
+        }
     }
 
     if (modal) {
@@ -67,9 +71,11 @@ const DetailProduct = () => {
                 },
             })
             .then((response) => {
-                console.log('bên detail', response)
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
+                if (!response.data.login) {
+                    setIsLogin(false)
+                }
             })
     }
     useEffect(() => {
@@ -81,8 +87,6 @@ const DetailProduct = () => {
             })
             .then((response) => {
                 setListReview(response.data.data)
-
-
             })
 
     }, [])
@@ -96,6 +100,9 @@ const DetailProduct = () => {
             .then((response) => {
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
+                if (!response.data.login) {
+                    setIsLogin(false)
+                }
             })
     }
     const sentReview = (data) => {
@@ -108,6 +115,9 @@ const DetailProduct = () => {
             .then((response) => {
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
+                if (!response.data.login) {
+                    setIsLogin(false)
+                }
                 window.location.reload(false)
             })
     }
