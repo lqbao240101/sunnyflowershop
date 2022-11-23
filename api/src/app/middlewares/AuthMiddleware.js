@@ -33,15 +33,16 @@ class AuthMiddleware {
                     .catch(err => {
                         res.json({
                             success: false,
-                            message: "Invalid token"
+                            message: "Invalid token 1"
                         })
                     })
             }
         } catch (err) {
             console.log(err);
             res.json({
+                login: false,
                 success: false,
-                message: "Invalid token"
+                message: "You are not logged in"
             })
         }
     }

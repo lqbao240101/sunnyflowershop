@@ -152,18 +152,26 @@ class CustomerProductCarController {
         if (quantity <= 0) {
             quantity = 1
         }
-
-        CartProduct.findOneAndUpdate({
+        console.log(quantity)
+        CartProduct.findOne({
             customer: req.user._id,
             product: req.params.id
-        }, {
-            quantity: quantity
         })
             .then(result => {
-                res.json({
-                    success: true,
-                    message: "Update quantity of product successfully"
-                })
+                result.quantity = quantity;
+                result.save()
+                    .then(savedData => {
+                        res.json({
+                            success: true,
+                            message: "Update quantity of product successfully"
+                        })
+                    })
+                    .catch(err => {
+                        res.json({
+                            success: false,
+                            message: "Update quantity of product failed."
+                        })
+                    })
             })
             .catch(err => {
                 res.json({
@@ -175,7 +183,7 @@ class CustomerProductCarController {
 
     // [GET] /cart/clearCart
     clearCart(req, res) {
-        CartProduct.deleteMany({ customer: req.user._id})
+        CartProduct.deleteMany({ customer: req.user._id })
             .then(result => {
                 console.log(result)
                 res.json({

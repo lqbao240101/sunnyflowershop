@@ -17,7 +17,8 @@ const VoucherEditModal = ({ idDetail }) => {
     const [VoucherExpiredDate, setVoucherexpiredDate] = useState('')
     const [effectiveDate, setEffectiveDate] = useState('')
     const [deleted, setDeleted] = useState('')
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const [show, setShow] = useState(false)
+    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm();
     const toggleModal = () => {
         setModal(!modal);
         axios
@@ -33,7 +34,8 @@ const VoucherEditModal = ({ idDetail }) => {
                 setVoucherexpiredDate(response.data.data.expired_date)
                 setDeleted(response.data.data.deleted)
                 setEffectiveDate(response.data.data.effective_date)
-
+                setShow(response.data.data.show)
+                reset(response.data.data)
             });
     };
     const reversedVoucher = () => {

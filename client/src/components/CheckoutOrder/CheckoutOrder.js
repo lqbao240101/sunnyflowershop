@@ -59,6 +59,21 @@ const CheckoutOrder = () => {
                 console.log(response.data.message)
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
+                if (response.data.success) {
+                    axios
+                        .get(`http://localhost:8000/cart/clearCart`,
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${Cookies.get('token')}`,
+                                },
+                            })
+                        .then((response) => {
+
+                        })
+                        .catch((error) => {
+
+                        })
+                }
             })
             .catch(function (error) {
                 console.log(error);

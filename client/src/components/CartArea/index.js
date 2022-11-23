@@ -1,10 +1,10 @@
+import React, { useState, useEffect, useReducer } from 'react';
 import styles from './Cart.module.scss'
 import Container from 'react-bootstrap/Container';
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaMinus, FaPlus, FaHeart, FaTrashAlt } from "react-icons/fa"
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import EmptyCart from './EmptyCart';
 import axios from "axios";
@@ -14,11 +14,13 @@ import { formatter } from '../../utils/utils';
 import AccountEditModal from '../AccountEditArea/AccountEditModal';
 
 function CartArea() {
+    const [loader, setloader] = useState(true)
     const [listProduct, setListProduct] = useState([]);
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
     const [percent, setpercent] = useState(0)
     const [totalPriceCart, settotalPriceCart] = useState(0)
+    const { register, handleSubmit, formState: { errors }, } = useForm();
 
     useEffect(() => {
         axios
@@ -33,7 +35,7 @@ function CartArea() {
             .catch(function (error) {
                 console.log(error);
             });
-    }, []);
+    }, [loader]);
     const handleDeleteProduct = (idProduct) => {
         axios
             .delete(`http://localhost:8000/cart/${idProduct}`, {
@@ -50,29 +52,43 @@ function CartArea() {
     useEffect(() => {
         listProduct.map((product) => {
             if (couter < 1) {
-                console.log('couter', couter)
                 settotalPriceCart(totalPriceCart => totalPriceCart + (product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)
-                console.log(totalPriceCart)
                 setcouter(couter + 1)
             }
         })
     }, [listProduct])
-
-    const { register, handleSubmit, formState: { errors }, } = useForm();
-
-    const onSubmit = (data) => {
+    const updateQuantity = (qtt, idProduct) => {
+        const quantity = {
+            quantity: qtt
+        };
         axios
-            .post(`http://localhost:8000/voucher/check`, data, {
+            .patch(`http://localhost:8000/cart/${idProduct}/updateQuantity`, quantity, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
             })
             .then((response) => {
-                setMessage(response.data.success)
-                setSuccess(response.data.success)
-                setpercent(response.data.percent)
+                console.log(response.data)
+                setloader(!loader)
+            })
+            .then((response) => {
+                setloader(!loader)
             })
     }
+    const handleClearCart = () => {
+        axios
+            .get(`http://localhost:8000/cart/clearCart`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                }
+            })
+            .then((response) => {
+                setMessage(response.data.message)
+                setSuccess(response.data.success)
+                window.location.reload(false)
+            })
+    }
+
     return (
         <>
             {listProduct.length === 0 && <EmptyCart />}
@@ -113,14 +129,27 @@ function CartArea() {
                                                                 {formatter.format(product.product.price * ((100 - product.product.percent_sale) / 100))}
                                                             </td>
                                                             <td className={styles.productQuantity}>
-                                                                <input onKeyDown={(evt) => evt.key === 'e' && evt.preventDefault()} type="number" defaultValue={product.quantity} min="1" max="5" />
+                                                                <div className='d-flex justify-content-center '>
+                                                                    <div className='input-group-button my-auto'>
+                                                                        <button type="submit" className='button' onClick={() => { updateQuantity((product.quantity - 1), product.product._id) }}><FaMinus></FaMinus></button>
+                                                                    </div>
+                                                                    <input
+                                                                        type="number"
+                                                                        value={product.quantity}
+                                                                        min='1'
+                                                                        max='5'
+                                                                        readOnly
+                                                                    />
+                                                                    <div className='input-group-button my-auto'>
+                                                                        <button type="submit" className='button' onClick={() => { updateQuantity((product.quantity + 1), product.product._id) }}><FaPlus></FaPlus></button>
+                                                                    </div>
+
+                                                                </div>
                                                             </td>
                                                             <td className={styles.productTotal}>{formatter.format((product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)}</td>
                                                             <td className={styles.productRemove} onClick={() => handleDeleteProduct(product.product._id)}>
                                                                 <ModalATag message={message} success={success} icon={<FaTrashAlt />} />
                                                             </td>
-                                                            
-
                                                         </tr>
                                                     )
                                                 })
@@ -129,20 +158,11 @@ function CartArea() {
                                         </table>
                                     </div>
                                     <div className={styles.btnClearCart}>
-
-                                        <button type="button" className='theme-btn-one btn-black-overlay btn_sm'>Clear cart</button>
+                                        <div onClick={handleClearCart}>
+                                            <AccountEditModal message={message} success={success} nameBtn='Clear cart' />
+                                        </div>
+                                        {/* <button type="button" onClick={handleClearCart} className='theme-btn-one btn-black-overlay btn_sm'>Clear cart</button> */}
                                     </div>
-                                </div>
-                                <div className={styles.coupon}>
-                                    <form onSubmit={handleSubmit(onSubmit)}>
-                                        <input
-                                            type="text"
-                                            placeholder="Coupon code"
-                                            {...register("name")}
-
-                                        />
-                                        <AccountEditModal message={message} success={success} nameBtn='Apply coupon' />
-                                    </form>
                                 </div>
                             </Col>
                             <Col lg={12} md={12}>
@@ -151,7 +171,6 @@ function CartArea() {
                                     <div className={styles.cartInner}>
                                         <div className={styles.cartSubTotal}>
                                             <p>Subtotal</p>
-                                            {console.log(totalPriceCart)}
                                             <p className={styles.cartSubTotalDetail}>${formatter.format(totalPriceCart)}</p>
 
                                         </div>
@@ -171,7 +190,7 @@ function CartArea() {
                             </Col>
                         </Row>
                     </Container>
-                </section>
+                </section >
             }
         </>
     )

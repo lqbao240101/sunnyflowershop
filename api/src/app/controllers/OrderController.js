@@ -88,11 +88,16 @@ class OrderController {
         const id_delivery = orderid.generate();
         const tempArr = [];
 
+        let voucher = voucherId;
+        if (voucherId === '') {
+            voucher = null;
+        }
+
         const list = req.list;
 
         Order.create({
             customer: req.user._id,
-            voucher: voucherId,
+            s: voucher,
             id_delivery: id_delivery,
             address: address,
             order_products: tempArr,
