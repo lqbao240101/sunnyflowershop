@@ -3,8 +3,10 @@ const CustomerProductFavorite = require('../models/CustomerProductFavorite')
 const jwt = require('jsonwebtoken')
 var fs = require('fs');
 const { resolveSoa } = require('dns');
-// const { generateToken } = require('../../utils/generateToken')
+const { generateToken } = require('../../utils/generateToken')
 const Order = require('../models/Order')
+const bcrypt = require('bcrypt');
+const saltRounds = Number(process.env.SALT_ROUNDS);
 
 class CustomerController {
 
@@ -29,39 +31,46 @@ class CustomerController {
                             message: "Password are changing. Please make sure your information is consistent"
                         })
                     } else {
-                        Customer.create({
-                            first_name: firstName,
-                            last_name: lastName,
-                            email: email,
-                            password: password,
-                            avatar: avatar
-                        })
-                            .then(result => {
-
-                                CustomerProductFavorite.create({
-                                    customer: result._id,
-                                    products: [],
-                                })
-                                    .then(favorite => {
-                                        res.json({
-                                            success: true,
-                                            message: "Successfully created account"
-                                        })
-                                    })
-                                    .catch(() => {
-                                        res.json({
-                                            success: true,
-                                            message: "Create account favorite list fail"
-                                        })
-                                    })
-                            })
-                            .catch(err => {
-                                console.log(err)
+                        bcrypt.hash(password, saltRounds, (err, hash) => {
+                            if (err) {
                                 res.json({
-                                    success: true,
-                                    message: "Create account fail"
+                                    success: false,
+                                    message: "Hash failed."
                                 })
+                            }
+                            Customer.create({
+                                first_name: firstName,
+                                last_name: lastName,
+                                email: email,
+                                password: hash,
+                                avatar: avatar
                             })
+                                .then(result => {
+                                    CustomerProductFavorite.create({
+                                        customer: result._id,
+                                        products: [],
+                                    })
+                                        .then(favorite => {
+                                            res.json({
+                                                success: true,
+                                                message: "Create account successfully."
+                                            })
+                                        })
+                                        .catch(() => {
+                                            res.json({
+                                                success: true,
+                                                message: "Create account favorite list failed."
+                                            })
+                                        })
+                                })
+                                .catch(err => {
+                                    console.log(err)
+                                    res.json({
+                                        success: true,
+                                        message: "Create account failed."
+                                    })
+                                })
+                        })
                     }
                 }
             })
@@ -78,36 +87,54 @@ class CustomerController {
     login(req, res) {
         const { email, password } = req.body;
         Customer.findOne({
-            email: email,
-            password: password
-        }).then(data => {
-            if (data) {
-                if (data.disabled === true) {
+            email: email
+        })
+            .then(data => {
+                if (data) {
+                    if (data.disabled === true) {
+                        res.json({
+                            success: false,
+                            message: "Your account has been locked. Please contact us to resolve."
+                        })
+                    } else {
+                        bcrypt.compare(password, data.password, function (err, result) {
+                            if (err) {
+                                res.json({
+                                    success: false,
+                                    message: "Hash failed."
+                                })
+                            } else {
+                                if (result == true) {
+                                    let token = generateToken(data._id);
+                                    // let token = jwt.sign({ id: data._id }, process.env.JWT_SECRET); //Need fix
+                                    res.json({
+                                        success: true,
+                                        token: token,
+                                        message: "Login successfully.",
+                                    })
+                                } else {
+                                    res.json({
+                                        success: false,
+                                        message: "Wrong password. Try again."
+                                    })
+                                }
+                            }
+
+                        });
+                    }
+                } else {
                     res.json({
                         success: false,
-                        message: "Your account has been locked. Please contact us to resolve."
-                    })
-                } else {
-                    let token = jwt.sign({ id: data._id }, process.env.JWT_SECRET); //Need fix
-                    res.json({
-                        success: true,
-                        token: token,
-                        message: "Login successfully.",
+                        message: "Email is not found."
                     })
                 }
-                // let token = generateToken(data._id);
-            } else {
+            })
+            .catch(err => {
                 res.json({
                     success: false,
-                    message: "Invalid credential."
+                    message: "Something went wrong. Try again."
                 })
-            }
-        }).catch(err => {
-            res.json({
-                success: false,
-                message: "Something went wrong. Try again."
             })
-        })
     }
 
     // [GET] /customer/logout => Logout
@@ -196,46 +223,81 @@ class CustomerController {
         const { password, newPassword, confirmNewPassword } = req.body;
 
         Customer.findOne({
-            _id: req.user._id,
-            password: password
+            _id: req.user._id
         })
             .then(data => {
                 if (!data) {
                     res.json({
                         success: false,
-                        message: "Current password is wrong."
+                        message: "Customer id is not found."
                     })
                 } else {
-                    if (!newPassword && !confirmNewPassword) {
+                    if (!password) {
                         res.json({
                             success: false,
-                            message: "New password and confirm new password cannot be empty."
+                            message: "Current password is empty."
                         })
-                    } else if (newPassword !== confirmNewPassword) {
-                        res.json({
-                            success: false,
-                            message: "New password and confirm new password need to be same."
-                        })
-                    } else if (newPassword === confirmNewPassword && newPassword === password) {
-                        res.json({
-                            success: false,
-                            message: "The current password is the same as the new password."
-                        })
-                    } else if (newPassword === confirmNewPassword && newPassword !== password) {
-                        data.password = newPassword;
-                        data.save()
-                            .then(savedData => {
-                                res.json({
-                                    success: true,
-                                    message: "Change password successfully."
-                                })
-                            })
-                            .catch(err => {
+                    } else {
+                        bcrypt.compare(password, data.password, function (err, result) {
+                            if (err) {
                                 res.json({
                                     success: false,
-                                    message: "Change password failed."
+                                    message: "Hash failed."
                                 })
-                            })
+                            } else {
+                                if (result == true) {
+                                    if (!newPassword && !confirmNewPassword) {
+                                        res.json({
+                                            success: false,
+                                            message: "New password and confirm new password cannot be empty."
+                                        })
+                                    } else {
+                                        if (newPassword !== confirmNewPassword) {
+                                            res.json({
+                                                success: false,
+                                                message: "New password and confirm new password need to be same."
+                                            })
+                                        } else {
+                                            if (password === newPassword) {
+                                                res.json({
+                                                    success: false,
+                                                    message: "The current password is the same as the new password."
+                                                })
+                                            } else {
+                                                bcrypt.hash(newPassword, saltRounds, (err, hash) => {
+                                                    if (err) {
+                                                        res.json({
+                                                            success: false,
+                                                            message: "Hash failed."
+                                                        })
+                                                    } else {
+                                                        data.password = hash
+                                                        data.save()
+                                                            .then(savedData => {
+                                                                res.json({
+                                                                    success: true,
+                                                                    message: "Change password successfully."
+                                                                })
+                                                            })
+                                                            .catch(err => {
+                                                                res.json({
+                                                                    success: false,
+                                                                    message: "Change password failed."
+                                                                })
+                                                            })
+                                                    }
+                                                })
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    res.json({
+                                        success: false,
+                                        message: "Wrong password. Try again."
+                                    })
+                                }
+                            }
+                        })
                     }
                 }
             })
@@ -381,12 +443,12 @@ class CustomerController {
 
     // [GET] /customer/dashboard
     dashboard(req, res) {
-        Order.countDocuments({customer: req.user._id, status: 2}).exec((err, ordersCompleted) => {
+        Order.countDocuments({ customer: req.user._id, status: 2 }).exec((err, ordersCompleted) => {
             if (err) return next(err);
-            Order.countDocuments({customer: req.user._id}).exec((err, orders) => {
-                if(err) return next(err);
-                Order.countDocuments({status: 0, customer: req.user._id}).exec((err, ordersPending) => {
-                    if(err) return next(err);
+            Order.countDocuments({ customer: req.user._id }).exec((err, orders) => {
+                if (err) return next(err);
+                Order.countDocuments({ status: 0, customer: req.user._id }).exec((err, ordersPending) => {
+                    if (err) return next(err);
                     res.json({
                         orders: orders,
                         ordersCompleted: ordersCompleted,

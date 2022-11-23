@@ -2,6 +2,9 @@ const Admin = require('../models/Admin');
 const Customer = require('../models/Customer');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
+const bcrypt = require('bcrypt');
+const saltRounds = process.env.SALT_ROUNDS;
+
 class AuthMiddleware {
 
     checkUser(req, res, next) {
