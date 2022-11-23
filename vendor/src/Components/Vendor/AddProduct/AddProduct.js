@@ -42,16 +42,10 @@ const AddProduct = () => {
     }, [])
 
     const onSubmit = data => {
-        const list = []
-        console.log(data)
-        for (let i = 0; i < data.category.length; i++) {
-            list.push({ id: data.category[i] })
-        }
         const payload = {
             ...data,
             img: image,
             category: data.category.toString()
-            // category: list
         }
         console.log("cái data", payload)
 

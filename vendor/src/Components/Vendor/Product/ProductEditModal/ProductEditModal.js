@@ -20,7 +20,7 @@ const ProductEditModal = ({ idDetail }) => {
     const [listCategories, setListCategories] = useState([]);
     const [listCategoriesOfProduct, setListCategoriesOfProduct] = useState([])
     const [description, setDescription] = useState('')
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, reset, formState: { errors } } = useForm();
     const toggleModal = () => {
         setModal(!modal);
         axios
@@ -31,6 +31,7 @@ const ProductEditModal = ({ idDetail }) => {
             })
 
             .then((response) => {
+                reset(response.data.data);
                 setPoductName(response.data.data.name);
                 setPrice(response.data.data.price)
                 setPrecentSale(response.data.data.percent_sale)
@@ -62,26 +63,21 @@ const ProductEditModal = ({ idDetail }) => {
     }
 
     const onSubmit = (data) => {
-        console.log(img)
-        const list = []
-
-        for (let i = 0; i < data.category.length; i++) {
-            list.push({ id: data.category[i] })
-        }
-        console.log(list)
+        console.log(data)
         const payload = {
             ...data,
             img: img,
-            category: list
+            category: data.category.toString()
         }
         console.log(payload)
         axios
-            .patch(`http://localhost:8000/product/${idDetail}`, payload, {
+            .put(`http://localhost:8000/product/${idDetail}`, payload, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`
                 },
             })
             .then((response) => {
+                console.log('chạy vo then')
                 alert(response.data.success);
                 console.log(response.data.message);
                 if (response.data.success === true) {
@@ -103,7 +99,6 @@ const ProductEditModal = ({ idDetail }) => {
         Reader.onload = () => {
             if (Reader.readyState === 2) {
                 setImg(Reader.result);
-
             }
         };
     };
@@ -124,24 +119,6 @@ const ProductEditModal = ({ idDetail }) => {
         setDescription(e.target.value)
     }
 
-    const handleCheckCategory = (category) => {
-
-        const isFound = listCategoriesOfProduct.some(categoryOfProduct => {
-            if (categoryOfProduct.id === category.id) {
-                return true;
-            }
-            return false;
-        });
-        const newObjCaterory = {
-            id: category.id,
-            name: category.name
-        }
-        if (isFound) {
-            setListCategoriesOfProduct(listCategoriesOfProduct.remove(newObjCaterory))
-        } else {
-            setListCategoriesOfProduct(listCategoriesOfProduct.push(newObjCaterory))
-        }
-    }
     return (
         <>
             <FaEdit onClick={toggleModal} className="btn-modal">
@@ -217,20 +194,17 @@ const ProductEditModal = ({ idDetail }) => {
                                 </Col>
                                 <Col lg={12}>
                                     <div className='fotm-group'>
-                                        <label htmlFor="Caterory">Caterory</label>
+                                        <label htmlFor="caterory">Caterory</label>
                                         <Row>
                                             {listCategories.map((category, index) => {
                                                 return (
                                                     <Col lg={4} key={index}>
                                                         <div className='checkbox_group'>
-
                                                             <>
                                                                 < input
-                                                                    // onClick={() => { handleCheckCategory(category) }}
-                                                                    id='Caterory'
+                                                                    id='caterory'
                                                                     type='checkbox'
-                                                                    value={category.id}
-                                                                    // checked={handleCheckCategory}
+                                                                    value={category._id}
                                                                     className='check_box'
                                                                     {...register("category", {})}
                                                                 />
