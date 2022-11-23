@@ -85,7 +85,7 @@ class VoucherController {
         Voucher.findOne({ name: name })
             .then(voucher => {
                 if (voucher) {
-                    if (voucher.usage > 0 && dateNow < voucher.expired_date) {
+                    if (voucher.usage > 0 && dateNow < voucher.expired_date && dateNow > voucher.effective_date) {
                         res.json({
                             success: true,
                             _id: voucher._id,
@@ -114,7 +114,7 @@ class VoucherController {
 
     // [POST] / => Create voucher
     create(req, res) {
-        const { name, usage, percent, expiredDate, show } = req.body;
+        const { name, usage, percent, expiredDate, show, effectiveDate } = req.body;
 
         const date = new Date(expiredDate)
 
@@ -131,6 +131,7 @@ class VoucherController {
                         usage: usage,
                         percent: percent,
                         expired_date: date,
+                        effective_date: effectiveDate,
                         show: show
                     })
                         .then((result) => {
@@ -143,7 +144,7 @@ class VoucherController {
                         .catch((err) => {
                             res.json({
                                 success: false,
-                                message: "Invalid information"
+                                message: "Invalid information or One voucher is counting down available"
                             })
                         })
                 }
@@ -158,20 +159,24 @@ class VoucherController {
 
     // [PUT] /voucher/:id => Update Voucher 
     update(req, res) {
-        const { name, usage, percent, expiredDate } = req.body;
+        const { name, usage, percent, expiredDate, effectiveDate, show } = req.body;
+        console.log(show)
 
-        const date = new Date(expiredDate)
-        const compareDate = new Date(date).toISOString();
+        let setShow = show;
+        console.log(setShow)
+        if (show != 'true') {
+            setShow = false
+        }
+        console.log(setShow)
+
+        const dateEff = new Date(effectiveDate)
+        const dateExp = new Date(expiredDate)
+
+        const compareDate2 = new Date(dateEff).toISOString();
+        const compareDate = new Date(dateExp).toISOString();
 
         Voucher.findById(req.params.id)
             .then(data => {
-                if (!data) {
-                    return res.json({
-                        success: false,
-                        message: "Voucher id not found or vourcher was deleted"
-                    })
-                }
-
                 if (name !== data.name) {
                     Voucher.findOneWithDeleted({ name: name })
                         .then(result => {
@@ -184,7 +189,9 @@ class VoucherController {
                                 data.name = name;
                                 data.usage = usage;
                                 data.percent = percent;
-                                data.expired_date = date;
+                                data.expired_date = dateExp;
+                                data.show = setShow;
+                                date.effective_date = dateEff;
 
                                 data.save()
                                     .then(savedData => {
@@ -196,7 +203,7 @@ class VoucherController {
                                     .catch(err => {
                                         res.json({
                                             success: false,
-                                            message: "Invalid information"
+                                            message: "Invalid information or One voucher is counting down available."
                                         })
                                     })
                             }
@@ -208,9 +215,13 @@ class VoucherController {
                             })
                         })
                 } else {
+                    console.log(setShow)
+                    console.log(data.show)
                     if (usage == data.usage
                         && percent == data.percent
                         && compareDate === data.expired_date.toISOString()
+                        && setShow === data.show
+                        && compareDate2 === data.effective_date.toISOString()
                     ) {
                         res.json({
                             success: false,
@@ -220,7 +231,9 @@ class VoucherController {
                         data.name = name;
                         data.usage = usage;
                         data.percent = percent;
-                        data.expired_date = date;
+                        data.expired_date = dateExp;
+                        data.show = setShow;
+                        data.effective_date = dateEff;
 
                         data.save()
                             .then(savedData => {
@@ -237,6 +250,12 @@ class VoucherController {
                             })
                     }
                 }
+            })
+            .catch(err => {
+                res.json({
+                    success: false,
+                    message: "Voucher id not found or vourcher was deleted"
+                })
             })
     }
 
@@ -274,9 +293,59 @@ class VoucherController {
             })
     }
 
-    // [GET] /voucher/updateShowCountdown
-    updateShowCountDown(req, res) {
+    // [PATCH] /voucher/updateShowCountdown
+    // updateShowCountDown(req, res) {
+    //     const { voucherId } = req.body;
 
+    //     Voucher.findOne({
+    //         _id: voucherId
+    //     })
+    //         .then(data => {
+    //             if(data.show === true) {
+    //                 data.show = false
+    //             } else {
+    //                 data.show = true
+    //             }
+
+    //             data.save()
+    //             .then(savedData => {
+    //                 res.json({
+    //                     success: true,
+    //                     message: "Set count down successfully."
+    //                 })
+    //             })
+    //             .catch(err => {
+    //                 res.json({
+    //                     success: false,
+    //                     message: "Failed. One voucher is counting down available."
+    //                 })
+    //             })
+    //         })
+    //         .catch(err => {
+    //             res.json({
+    //                 success: false,
+    //                 message: "Voucher id is not found."
+    //             })
+    //         })
+    // }
+
+    // [GET] /voucher/countDown
+    countDown(req, res) {
+        Voucher.findOne({
+            show: true
+        })
+        .then(data => {
+            res.json({
+                success: true,
+                data: data
+            })
+        })
+        .catch(err => {
+            res.json({
+                success: false,
+                message: "You have not selected any voucher for the countdown."
+            })
+        })
     }
 
 }

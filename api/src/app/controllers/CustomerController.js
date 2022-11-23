@@ -88,7 +88,7 @@ class CustomerController {
                         message: "Your account has been locked. Please contact us to resolve."
                     })
                 } else {
-                    let token = jwt.sign({ id: data._id }, "secret"); //Need fix
+                    let token = jwt.sign({ id: data._id }, process.env.JWT_SECRET); //Need fix
                     res.json({
                         success: true,
                         token: token,
