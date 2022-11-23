@@ -7,9 +7,9 @@ import './DashBoard.css'
 
 const Dashboard = () => {
     const [orderPending, setOrderPending] = useState(0)
-    const [RecentOrders, setRecenOrders] = useState([])
     const [totalProduct, setTotalProduct] = useState(0)
     const [totalSales, setTotalSales] = useState(0)
+    const [RecentOrders, setRecenOrders] = useState([])
     useEffect(() => {
         axios
             .get(`http://localhost:8000/order/admin`, {
@@ -25,16 +25,15 @@ const Dashboard = () => {
 
     useEffect(() => {
         axios
-            .get(`http://127.0.0.1:8000/api/admin/dashboard`, {
+            .get(`http://localhost:8000/admin/dashboard`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
             })
             .then((response) => {
-                setOrderPending(response.data.totalOrdersPending)
-                setTotalProduct(response.data.totalProducts)
-                setTotalSales(response.data.totalSales)
-                setRecenOrders(response.data.recentOrders)
+                setOrderPending(response.data.ordersPending)
+                setTotalProduct(response.data.products)
+                setTotalSales(response.data.orders)
             })
     }, [totalProduct])
 
