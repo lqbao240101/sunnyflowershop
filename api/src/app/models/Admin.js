@@ -7,7 +7,7 @@ const Admin = new Schema(
     {
         username: { type: String, minLength: 2, maxLength: 50, required: true },
         email: { type: String, required: true },
-        password: { type: String, minLength: 6, maxLength: 24, required: true },
+        password: { type: String, minLength: 6, required: true },
         level: { type: Number, default: 1, min: 1, max: 2},
         avatar: { type: String, required: true}
     },{
