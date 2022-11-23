@@ -3,6 +3,8 @@ import styles from './OfferCountdown.module.scss'
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 function OfferCountdown() {
 
@@ -10,11 +12,14 @@ function OfferCountdown() {
     const [timeHours, setHours] = useState('00');
     const [timeMinutes, setMinutes] = useState('00');
     const [timeSeconds, setSeconds] = useState('00');
+    const [name, setName] = useState('');
+    const [discount, setDiscount] = useState(0)
 
     let interval = useRef();
 
-    const startCountDown = () => {
-        const countDownDate = new Date('October 1, 2022 00:00:00').getTime();
+
+    const startCountDown = (date) => {
+        const countDownDate = new Date(date).getTime();
 
         interval = setInterval(() => {
             const now = new Date().getTime();
@@ -36,12 +41,27 @@ function OfferCountdown() {
         }, 1000);
     }
 
+
     useEffect(() => {
-        startCountDown();
-        return () => {
-            clearInterval(interval.current);
-        }
+        axios
+            .get(`http://localhost:8000/voucher/countDown`)
+            .then((response) => {
+                if (response.data.success) {
+                    console.log(response.data)
+                    setName(response.data.data.name)
+                    setDiscount(response.data.data.percent)
+                    startCountDown(response.data.data.effective_date);
+                    return () => {
+                        clearInterval(interval.current);
+                    }
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
     }, [])
+
+    console.log(timeDays)
 
     return (
         <section id={styles.offerTime}>
@@ -68,9 +88,20 @@ function OfferCountdown() {
                                 </div>
                             </div>
                             <div className={styles.offerTimeText}>
-                                <h2>20% OFF FOR ALL T-SHIRT COLLECTION</h2>
-                                <p>Exciting promotions coming up, check it out</p>
-                                <a href="">VIEW MORE</a>
+                                {(timeDays !== '00' || timeHours !== '00' || timeMinutes !== '00' || timeSeconds !== '00') && <>
+                                    <h2>VOUCHER WILL BE AVAILABLE SOON!</h2>
+                                    <p>Exciting promotions coming up.</p>
+                                </>
+                                }
+                                {/* <h2>VOUCHER WILL BE AVAILABLE SOON!</h2>
+                                <p>Exciting promotions coming up.</p>
+                                <Link to="/shop">SHOP NOW</Link> */}
+                                {timeDays === '00' && timeHours === '00' && timeMinutes === '00' && timeSeconds === '00' && <>
+                                    <h2>{name} - {discount}%</h2>
+                                    <p>Use this voucher to get discount</p>
+                                    <Link to="/shop">SHOP NOW</Link>
+                                </>
+                                }
                             </div>
                         </div>
                     </Col>

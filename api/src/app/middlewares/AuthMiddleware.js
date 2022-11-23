@@ -2,7 +2,6 @@ const Admin = require('../models/Admin');
 const Customer = require('../models/Customer');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
-
 class AuthMiddleware {
 
     checkUser(req, res, next) {
@@ -18,7 +17,7 @@ class AuthMiddleware {
                 let token = authHeader.substring(7, authHeader.length);
                 // const cert = fs.readFileSync('../../key/publickey.crt')
                 // const decoded = jwt.verify(token, cert, { algorithm: ['RS256'] })
-                var decoded = jwt.verify(token, "secret")// Need fix
+                var decoded = jwt.verify(token, process.env.JWT_SECRET)// Need fix
                 Customer.findOne({
                     _id: decoded.id
                 }, { password: 0 })
@@ -51,7 +50,7 @@ class AuthMiddleware {
                 let token = authHeader.substring(7, authHeader.length);
                 // var cert = fs.readFileSync('../../key/publickey.crt')
                 // const decoded = jwt.verify(token, cert, { algorithm: ['RS256'] });
-                let decoded = jwt.verify(token, "secret")// Need fix
+                let decoded = jwt.verify(token, process.env.JWT_SECRET)// Need fix
                 Admin.findById({ _id: decoded.id })
                     .then(function (data) {
                         if (!data) {
@@ -88,7 +87,7 @@ class AuthMiddleware {
                 let token = authHeader.substring(7, authHeader.length);
                 // var cert = fs.readFileSync('../../key/publickey.crt')
                 // const decoded = jwt.verify(token, cert, { algorithm: ['RS256'] });
-                let decoded = jwt.verify(token, "secret")// Need fix
+                let decoded = jwt.verify(token, process.env.JWT_SECRET)// Need fix
                 Admin.findById({ _id: decoded.id }).then(function (data) {
                     if (data.length === 0) {
                         res.json({

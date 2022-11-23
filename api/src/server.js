@@ -2,11 +2,10 @@ const express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const dotenv = require('dotenv');
 const db = require('./config/db');
 const cors = require('cors');
+require('dotenv').config();
 
-dotenv.config();
 const corsOptions = {
   origin: '*',
   credentials: true,            //access-control-allow-credentials:true

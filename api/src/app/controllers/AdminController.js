@@ -59,7 +59,7 @@ class AdminController {
         }).then(data => {
             if (data) {
                 // let token = generateToken(data._id);
-                let token = jwt.sign({ id: data._id }, "secret"); //Need fix
+                let token = jwt.sign({ id: data._id }, process.env.JWT_SECRET); //Need fix
                 res.json({
                     success: true,
                     token: token,
