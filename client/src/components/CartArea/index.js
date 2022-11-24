@@ -170,17 +170,8 @@ function CartArea() {
                                     <h3>Cart Total</h3>
                                     <div className={styles.cartInner}>
                                         <div className={styles.cartSubTotal}>
-                                            <p>Subtotal</p>
-                                            <p className={styles.cartSubTotalDetail}>${formatter.format(totalPriceCart)}</p>
-
-                                        </div>
-                                        <div className={styles.cartSubTotal}>
-                                            <p>Coupon</p>
-                                            <p className={styles.cartSubTotalDetail}><span>Discount: </span>- {percent}%</p>
-                                        </div>
-                                        <div className={`${styles.cartSubTotal} ${styles.border}`}>
                                             <p>Total</p>
-                                            <p className={styles.cartSubTotalDetail}>${formatter.format(totalPriceCart * percent)}</p>
+                                            <p className={styles.cartSubTotalDetail}>{formatter.format(totalPriceCart)}</p>
                                         </div>
                                         <div className={styles.checkoutBtn}>
                                             <Link to="/checkout-order" className='theme-btn-one btn-black-overlay btn_sm'>Proceed to Checkout</Link>

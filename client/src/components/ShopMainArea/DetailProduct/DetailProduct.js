@@ -66,6 +66,7 @@ const DetailProduct = () => {
     }, [])
     const AddWishlist = () => {
         const payload = { productId: productId }
+        console.log(payload)
         axios
             .patch(`http://localhost:8000/favorite`, payload, {
                 headers: {

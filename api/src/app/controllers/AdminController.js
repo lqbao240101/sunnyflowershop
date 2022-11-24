@@ -34,7 +34,6 @@ class AdminController {
                             if (err) {
                                 console.log(err);
                             }
-                            console.log(hash)
                             Admin.create({
                                 username: userName,
                                 email: email,
@@ -156,7 +155,6 @@ class AdminController {
                         data.email = email;
                         data.password = password;
 
-                        console.log(data)
                         data.save().then(result => {
                             res.json({
                                 success: true,

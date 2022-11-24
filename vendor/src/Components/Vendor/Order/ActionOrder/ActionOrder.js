@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FaListAlt, FaTimes, FaImage } from 'react-icons/fa'
 import axios from 'axios';
 import Col from 'react-bootstrap/Col';
@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Cookies from 'js-cookie';
 import { useForm } from "react-hook-form";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { formatter } from '../../../../until/FormatterVND';
 
 const ActionOrder = ({ idOrder, idCustomer }) => {
     const [modal, setModal] = useState(false);
@@ -16,7 +17,11 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
     const [address, setAddress] = useState('')
     const [deletedBy, setDeletedBy] = useState()
     const [state, setState] = useState('')
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const [discount, setDiscount] = useState(0)
+    const [totalPriceCart, settotalPriceCart] = useState(0)
+    const [phoneReceiver, setPhoneReceiver] = useState('')
+    const [nameReceiver, setNameReceiver] = useState('')
+    // const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const toggleModal = () => {
         setModal(!modal);
         console.log(`http://localhost:8000/order/${idOrder}/${idCustomer}`)
@@ -32,10 +37,12 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                 setCreatedAt(response.data.data.createdAt)
                 settotalPrice(response.data.data.total_price)
                 setListProducts(response.data.data.order_products)
-                // setEmail(response.data.data.customer.email)
+                setPhoneReceiver(response.data.data.phone_receiver)
                 setState(response.data.data.status)
                 setAddress(response.data.data.address)
                 setDeletedBy(response.data.data.deleted_by)
+                setDiscount(response.data.data.voucher.percent)
+                setNameReceiver(response.data.data.name_receiver)
             });
     };
 
@@ -73,6 +80,17 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
     } else {
         document.body.classList.remove('active-modal')
     }
+
+    const [couter, setcouter] = useState(0)
+    useEffect(() => {
+        listProducts.map((product) => {
+            if (couter < 1) {
+                settotalPriceCart(totalPriceCart => totalPriceCart + (product.product.price * ((100 - product.product.percent_sale) / 100)) * product.quantity)
+                setcouter(couter + 1)
+            }
+        })
+    }, [listProducts])
+
     return (
         <div><FaListAlt onClick={toggleModal} />
             {modal && (
@@ -102,6 +120,12 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                                                         {deletedBy ? <h6 className='Cancelled'>Cancelled</h6> : state === 0 ? <h6 className='Pending'>Pending</h6> : state === 1 ? <h6 className='Confirmed'>Confirm</h6> : <h6 className='Completed'>Completed</h6>}
                                                     </li>
                                                 </ul>
+                                                <ul>
+                                                    <li>
+                                                        <span>Name Receiver: </span>
+                                                        <h6 >{nameReceiver}</h6>
+                                                    </li>
+                                                </ul>
 
                                             </div>
                                         </Col>
@@ -111,6 +135,12 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                                                     <li>
                                                         <span>Address: </span>
                                                         <h6>{address}</h6>
+                                                    </li>
+                                                </ul>
+                                                <ul>
+                                                    <li>
+                                                        <span>Phone Receiver: </span>
+                                                        <h6>{phoneReceiver}</h6>
                                                     </li>
                                                 </ul>
                                             </div>
@@ -125,6 +155,7 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                                                 <th scope='col'>Product</th>
                                                 <th scope='col'>PRICE</th>
                                                 <th scope='col'>Quantity</th>
+                                                <th scope='col'>Discount</th>
                                                 <th scope='col'>TOTAL</th>
                                             </tr>
                                         </thead>
@@ -132,11 +163,12 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                                             {listProducts.map((product) => {
                                                 return (
                                                     <tr key={product._id} >
-                                                        <th scope='col'><img src={product.img} alt="img" /></th>
-                                                        <th scope='col'>{product.name}</th>
-                                                        <th scope='col'>{product.price}</th>
+                                                        <th scope='col' className='img_product_order'><img src={product.product.img} alt="img" /></th>
+                                                        <th scope='col'>{product.product.name}</th>
+                                                        <th scope='col'>{formatter.format(product.price)}</th>
                                                         <th scope='col'>{product.quantity}</th>
-                                                        <th scope='col'>{product.price * product.quantity}</th>
+                                                        <th scope='col'>{product.percent_sale}%</th>
+                                                        <th scope='col'>{formatter.format((product.price * (1 - (product.percent_sale / 100))) * product.quantity)}</th>
                                                     </tr>
                                                 )
                                             })}
@@ -144,8 +176,21 @@ const ActionOrder = ({ idOrder, idCustomer }) => {
                                         <tfoot>
                                             <tr>
                                                 <td colSpan={2}></td>
+                                                <td colSpan={1}></td>
+                                                <td className='font-bold text-dark' colSpan={2}>Total</td>
+                                                <td className='font-bold text-theme'>{formatter.format(totalPriceCart)}</td>
+                                            </tr>
+                                            {discount ? <tr>
+                                                <td colSpan={2}></td>
+                                                <td colSpan={1}></td>
+                                                <td className='font-bold text-dark' colSpan={2}>Voucher</td>
+                                                <td className='font-bold text-theme'>-{discount}%</td>
+                                            </tr> : ""}
+                                            <tr>
+                                                <td colSpan={2}></td>
+                                                <td colSpan={1}></td>
                                                 <td className='font-bold text-dark' colSpan={2}>Grand total</td>
-                                                <td className='font-bold text-theme'>{totalPrice}</td>
+                                                <td className='font-bold text-theme'>{formatter.format(totalPrice)}</td>
                                             </tr>
                                         </tfoot>
                                     </table>
