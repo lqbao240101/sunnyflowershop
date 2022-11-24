@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import Container from 'react-bootstrap/Container';
+import styles from '../ShopMainArea/ListProduct/ListProduct.module.scss'
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import axios from 'axios'
@@ -43,8 +44,6 @@ function HotProduct() {
                         <div>
                             <ul className='navTabs'>
                                 <li className={unit === "new_arrival" ? 'tabOnClick' : ''} onClick={() => setUnit('new_arrival')}>NEW ARRIVAL</li>
-                                <li className={unit === "trending" ? 'tabOnClick' : ''} onClick={() => setUnit('trending')}>TRENDING</li>
-                                <li className={unit === "best_seller" ? 'tabOnClick' : ''} onClick={() => setUnit('best_seller')}>BEST SELLERS</li>
                                 <li className={unit === "on_sell" ? 'tabOnClick' : ''} onClick={() => setUnit('on_sell')}>ON SELL</li>
                             </ul>
 
@@ -57,25 +56,28 @@ function HotProduct() {
                                     <Row>
                                         {listNewArrival.map((newArrival) => {
                                             return (
-                                                <Col lg={3} md={4} sm={6} xs={12}>
+                                                <Col lg={3} md={4} sm={6} xs={12} key={newArrival._id}>
                                                     <div className="product_wrappers_one ">
                                                         <div className="thumb">
-                                                            <Link to="" className='image'>
+                                                            <Link to={`/shop/${newArrival._id}`} className='image'>
                                                                 <img src={newArrival.img} alt={newArrival.img} />
                                                             </Link>
                                                             <span className='badges'>
-                                                                {newArrival.percent_sale !== 0 ? <span className={newArrival.percent_sale !== "" ? newArrival.sale : ""}>
+
+                                                                {newArrival.percent_sale !== 0 ? <span className={newArrival.percent_sale !== "" ? styles.sale : ""}>
                                                                     {newArrival.percent_sale + "% OFF"}</span>
                                                                     : ''}
                                                             </span>
                                                             <div className='actions'>
                                                                 <button className='action wishlist'><FaRegHeart /></button>
                                                             </div>
-                                                            <button type='button' className='add-to-cart offcanvas-toggle'>Add to cart</button>
+                                                            <Link to={`/shop/${newArrival._id}`}>
+                                                                <button type='button' className='add-to-cart offcanvas-toggle'>Add to cart</button>
+                                                            </Link>
                                                         </div>
                                                         <div className="content">
                                                             <h5 className='title'>
-                                                                <Link to="">{newArrival.name}</Link>
+                                                                <Link to={`/shop/${newArrival._id}`}>{newArrival.name}</Link>
                                                             </h5>
                                                             <span className='price'>
                                                                 <span className='new'>{newArrival.price}đ</span>
@@ -89,89 +91,31 @@ function HotProduct() {
                                 </div>
 
 
-                                <div id="trending" className={unit === 'trending' ? "tab-pane fade in active show" : 'tab-pane fade'}>
-                                    <Row>
-                                        {/* chạy vòng lặp ở đây */}
-                                        <Col lg={3} md={4} sm={6} xs={12}>
-                                            <div className="product_wrappers_one ">
-                                                <div className="thumb">
-                                                    <Link to="" className='image'>
-                                                        <img src="	https://andshop-react.netlify.app/static/media/product1.7190443a.png" alt="" />
-                                                    </Link>
-                                                    <span className='badges'>
-                                                        <span className='hot'>Trending</span>
-                                                    </span>
-                                                    <div className='actions'>
-                                                        <button className='action wishlist'><FaRegHeart /></button>
-                                                    </div>
-                                                    <button type='button' className='add-to-cart offcanvas-toggle'>Add to cart</button>
-                                                </div>
-                                                <div className="content">
-                                                    <h5 className='title'>
-                                                        <Link to="">Green Dress For Woman</Link>
-                                                    </h5>
-                                                    <span className='price'>
-                                                        <span className='new'>38$</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </div>
-
-                                <div id="best_seller" className={unit === 'best_seller' ? "tab-pane fade in active show" : 'tab-pane fade'}>
-                                    <Row>
-                                        {/* chạy vòng lặp ở đây */}
-                                        <Col lg={3} md={4} sm={6} xs={12}>
-                                            <div className="product_wrappers_one ">
-                                                <div className="thumb">
-                                                    <Link to="" className='image'>
-                                                        <img src="	https://andshop-react.netlify.app/static/media/product1.7190443a.png" alt="" />
-                                                    </Link>
-                                                    <span className='badges'>
-                                                        <span className='hot'>Trending</span>
-                                                    </span>
-                                                    <div className='actions'>
-                                                        <button className='action wishlist'><FaRegHeart /></button>
-                                                    </div>
-                                                    <button type='button' className='add-to-cart offcanvas-toggle'>Add to cart</button>
-                                                </div>
-                                                <div className="content">
-                                                    <h5 className='title'>
-                                                        <Link to="">Green Dress For Woman</Link>
-                                                    </h5>
-                                                    <span className='price'>
-                                                        <span className='new'>38$</span>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </div>
-
                                 <div id="on_sell" className={unit === 'on_sell' ? "tab-pane fade in active show" : 'tab-pane fade'}>
                                     <Row>
                                         {listOnSell.map((onSell) => {
                                             return (
-                                                <Col lg={3} md={4} sm={6} xs={12}>
+                                                <Col lg={3} md={4} sm={6} xs={12} key={onSell._id}>
                                                     <div className="product_wrappers_one ">
                                                         <div className="thumb">
-                                                            <Link to="" className='image'>
+                                                            <Link to={`/shop/${onSell._id}`} className='image'>
                                                                 <img src={onSell.img} alt="img" />
                                                             </Link>
                                                             <span className='badges'>
-                                                                {onSell.percent_sale !== 0 ? <span className={onSell.percent_sale !== "" ? onSell.sale : ""}>
+                                                                {onSell.percent_sale !== 0 ? <span className={onSell.percent_sale !== "" ? styles.sale : ""}>
                                                                     {onSell.percent_sale + "% OFF"}</span>
                                                                     : ''}
                                                             </span>
                                                             <div className='actions'>
                                                                 <button className='action wishlist'><FaRegHeart /></button>
                                                             </div>
-                                                            <button type='button' className='add-to-cart offcanvas-toggle'>Add to cart</button>
+                                                            <Link to={`/shop/${onSell._id}`}>
+                                                                <button type='button' className='add-to-cart offcanvas-toggle'>Add to cart</button>
+                                                            </Link>
                                                         </div>
                                                         <div className="content">
                                                             <h5 className='title'>
-                                                                <Link to="">{onSell.name}</Link>
+                                                                <Link to={`/shop/${onSell._id}`}>{onSell.name}</Link>
                                                             </h5>
                                                             <span className='price'>
                                                                 <span className='new'>{onSell.price}đ</span>
@@ -183,23 +127,12 @@ function HotProduct() {
                                         })}
                                     </Row>
                                 </div>
-
                             </div>
 
                         </div>
 
                     </Col>
-                    {/* <Col lg={12}>
-                        <div>
-                            <div>
-                                <div>
-                                    <Row>
-                                        <ProductWrapper productUnit={unit} />
-                                    </Row>
-                                </div>
-                            </div>
-                        </div>
-                    </Col> */}
+
                 </Row>
             </Container>
         </section>

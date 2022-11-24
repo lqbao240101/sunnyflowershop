@@ -141,9 +141,7 @@ const DetailProduct = () => {
                                     <h3>{productName}</h3>
                                     {percentSale === 0 ? <h4>{formatter.format(productPrice)}</h4> : <h4>{formatter.format(productPrice - (percentSale * productPrice / 100))}<del>{formatter.format(productPrice)}</del> </h4>}
 
-                                    {/* <h4>${productPrice}
-                                        <del>$ giá gốc ở đây</del>
-                                    </h4> */}
+
                                     <p>{productDescription}</p>
                                     <form id='product_count_form_two'
                                         onSubmit={handleSubmit(AddToCart)}>

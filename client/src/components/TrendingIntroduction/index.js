@@ -16,7 +16,7 @@ function TrendingIntroduction() {
                             <p>
                                 Beautiful and attractive products are ready
                             </p>
-                            <Link to="">Shop Now</Link>
+                            <Link to="/shop">Shop Now</Link>
                         </div>
                     </Col>
                 </Row>
