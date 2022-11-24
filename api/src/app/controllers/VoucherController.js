@@ -12,7 +12,7 @@ class VoucherController {
         }
 
         Voucher
-            .find()
+            .findWithDeleted()
             .skip((perPage * page) - perPage)
             .limit(perPage)
             .exec((err, vouchers) => {
@@ -28,22 +28,6 @@ class VoucherController {
                     });
                 });
             });
-    }
-
-    // [GET] /voucher/trash => Show deleted vouchers
-    trashVoucher(req, res) {
-        Voucher.findDeleted({})
-            .then(vouchers => {
-                res.json({
-                    success: true,
-                    data: vouchers
-                })
-            })
-            .catch(err => {
-                res.json({
-                    success: false,
-                })
-            })
     }
 
     // [GET] /voucher/:id => Show detail voucher

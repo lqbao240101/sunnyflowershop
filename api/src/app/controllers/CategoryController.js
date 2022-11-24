@@ -2,84 +2,36 @@ const Category = require('../models/Category')
 
 class CategoryController {
 
-    // [GET] /categories => Show all categories
+    // [GET] /category => Show all categories
     show(req, res) {
-        let perPage = 12;
-        let page = parseInt(req.query.page);
-        if (page < 1) {
-            page = 1;
-        }
-
-        Category
-            .find()
-            .skip((perPage * page) - perPage)
-            .limit(perPage)
-            .exec((err, categories) => {
-                Category.countDocuments((err, count) => {
-                    if (err) return next(err);
-                    res.json({
-                        data: categories,
-                        meta: {
-                            current_page: page,
-                            last_page: Math.ceil(count / perPage),
-                            total: count,
-                        }
-                    });
-                });
+        Category.find({})
+            .then(categories => {
+                res.json({
+                    success: true,
+                    data: categories
+                })
+            })
+            .catch(err => {
+                res.json({
+                    success: false,
+                })
             });
-
-        // Category.find({})
-        //     .then(categories => {
-        //         res.json({
-        //             success: true,
-        //             data: categories
-        //         })
-        //     })
-        //     .catch(err => {
-        //         res.json({
-        //             success: false,
-        //         })
-        //     });
     }
 
-    // [GET] /categories/trash => Show deleted categories
-    trashCategories(req, res) {
-        let perPage = 12;
-        let page = parseInt(req.query.page);
-        if (page < 1) {
-            page = 1;
-        }
-
-        Category
-            .findDeleted()
-            .skip((perPage * page) - perPage)
-            .limit(perPage)
-            .exec((err, categories) => {
-                Category.countDocuments((err, count) => {
-                    if (err) return next(err);
-                    res.json({
-                        data: categories,
-                        meta: {
-                            current_page: page,
-                            last_page: Math.ceil(count / perPage),
-                            total: count,
-                        }
-                    });
-                });
+    // [GET] /category/admin => Show deleted categories
+    showAll(req, res) {
+        Category.findWithDeleted()
+            .then(categories => {
+                res.json({
+                    success: true,
+                    data: categories
+                })
+            })
+            .catch(err => {
+                res.json({
+                    success: false,
+                })
             });
-
-        // Category.findDeleted({})
-        //     .then((categories) => {
-        //         res.json({
-        //             success: true,
-        //             data: categories
-        //         })
-        //     })
-        //     .catch(err => {
-        //         res.json({
-        //             success: false,
-        //         })
-        //     })
     }
 
     // [GET] /categories/:id => Show detail category
