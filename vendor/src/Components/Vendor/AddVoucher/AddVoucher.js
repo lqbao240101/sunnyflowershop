@@ -105,7 +105,7 @@ const AddVoucher = () => {
                                                     <div className='vendor_order_boxed position-relative'>
                                                         <div className='btn_right_table'>
                                                             <button type='submit' className="theme-btn-one bg-black btn_sm">
-                                                                Add Product
+                                                                Add Voucher
                                                             </button>
                                                         </div>
                                                     </div>

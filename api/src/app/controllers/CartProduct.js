@@ -50,7 +50,6 @@ class CustomerProductCarController {
     // [PATCH] /cart/:id
     add(req, res) {
         const { quantity } = req.body;
-        console.log("quantitiiiii", quantity)
         let quanTiTy = Number(quantity);
 
         if (quanTiTy > 5) {
@@ -152,7 +151,6 @@ class CustomerProductCarController {
         if (quantity <= 0) {
             quantity = 1
         }
-        console.log(quantity)
         CartProduct.findOne({
             customer: req.user._id,
             product: req.params.id
@@ -185,7 +183,6 @@ class CustomerProductCarController {
     clearCart(req, res) {
         CartProduct.deleteMany({ customer: req.user._id })
             .then(result => {
-                console.log(result)
                 res.json({
                     success: true,
                     message: "Clear cart successfully."

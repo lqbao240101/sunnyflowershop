@@ -141,7 +141,6 @@ function ShopMainArea() {
                     <Col lg={9}>
                         <ListProduct currentItems={data.data} />
                         < Col lg={12}>
-                            {console.log(data.page)}
                             <ul className={stylesPaginated.pagination}>
                                 {data.page > 1 && <li className={stylesPaginated.pageItem}>
                                     <Link to={`?page=${data.prevPage}`} className={stylesPaginated.pageLink}>«</Link>

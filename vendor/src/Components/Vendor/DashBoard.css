@@ -157,10 +157,10 @@
     color: #000;
 }
 
-.table-responsive table tbody tr td button {
+/* .table-responsive table tbody tr td button {
     border: none;
     background-color: transparent;
-}
+} */
 
 .profils_details_vendor {
     display: flex;
@@ -398,10 +398,8 @@ input[type="checkbox"]:checked:after {
 }
 
 .modal-content-order {
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    position: relative;
+    margin: 1% auto;
     line-height: 1.4;
     background: #f1f1f1;
     padding: 25px 50px;
@@ -409,7 +407,6 @@ input[type="checkbox"]:checked:after {
     /* width: 1080px; */
     max-width: 1140px;
     min-width: 300px;
-
 }
 
 .detail-wrapper {
@@ -531,4 +528,9 @@ input[type="checkbox"]:checked:after {
 
 .detail-footer p {
     font-weight: bold;
+}
+
+.img_product_order img {
+    width: 70px;
+
 }

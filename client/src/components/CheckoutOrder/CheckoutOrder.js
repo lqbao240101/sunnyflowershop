@@ -48,7 +48,7 @@ const CheckoutOrder = () => {
             totalPrice: totalPriceCart - (percent * totalPriceCart / 100),
             address: street + ' ' + ward + ' ' + district + ' ' + province
         }
-        console.log(payload)
+        console.log('chạy do on click')
         axios
             .post(`http://localhost:8000/order/`, payload, {
                 headers: {
@@ -56,7 +56,6 @@ const CheckoutOrder = () => {
                 },
             })
             .then((response) => {
-                console.log(response.data.message)
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
                 if (response.data.success) {
@@ -99,10 +98,12 @@ const CheckoutOrder = () => {
                 },
             })
             .then((response) => {
-                setvoucherId(response.data._id)
                 setMessage(response.data.success)
                 setSuccess(response.data.success)
-                setpercent(response.data.percent)
+                if (response.data.success) {
+                    setvoucherId(response.data._id)
+                    setpercent(response.data.percent)
+                }
             })
     }
 
