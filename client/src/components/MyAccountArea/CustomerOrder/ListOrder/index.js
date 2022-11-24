@@ -10,37 +10,36 @@ function ListOrder() {
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/api/user/order/`, {
+            .get(`http://localhost:8000/order/`, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
             })
             .then((response) => {
-                if (response.data.success) {
-                    setListOrders(response.data.data);
-                }
+
+                setListOrders(response.data.data);
             })
             .catch(function (error) {
                 console.log(error);
             });
     }, []);
-
+    console.log(listOrder)
     return (
         <>
-            {listOrder.map((order, index) => {
+            {listOrder.map((Order, index) => {
                 return (
                     <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{order.dateOrder}</td>
                         <td>
-                            <span className={`${styles.badge}
-                        ${order.deletedBy !== null ? styles.badgeCanceled : order.status === 0 ? styles.badgePending : styles.badgeCompleted}`}>
-                                {order.deletedBy !== null ? 'Cancelled' : order.status === 0 ? 'Pending' : order.status === 1 ? 'Confirm' : 'Completed'}</span>
+                            {Order.id_delivery}
                         </td>
-                        <td>{formatter.format(order.totalPrice)}</td>
+                        <td>{Order.name_receiver}</td>
+                        <td>{Order.phone_receiver}</td>
+                        <td>{Order.address}</td>
                         <td>
-                            <a className={styles.view} href="">View</a>
+                            {Order.deleted_by ? <span className='Cancelled'>Cancelled</span> : Order.status === 0 ? <span className='Pending'>Pending</span> : Order.status === 1 ? <span className='Confirmed'>Confirm</span> : <span className='Completed'>Completed</span>}
                         </td>
+                        <td>{Order.total_price}₫</td>
+                        {/* <td><ActionOrder idOrder={Order._id} idCustomer={Order.customer._id} /> </td> */}
                     </tr>
                 )
             })}

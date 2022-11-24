@@ -149,7 +149,7 @@ class CustomerController {
     show(req, res, next) {
         let perPage = 12;
         let page = parseInt(req.query.page);
-        if (page < 1) {
+        if (page < 1 || !page) {
             page = 1;
         }
 

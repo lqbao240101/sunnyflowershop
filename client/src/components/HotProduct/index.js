@@ -27,8 +27,6 @@ function HotProduct() {
 
     }, [])
 
-
-
     return (
         <section className="pb100">
             <Container>
@@ -66,7 +64,9 @@ function HotProduct() {
                                                                 <img src={newArrival.img} alt={newArrival.img} />
                                                             </Link>
                                                             <span className='badges'>
-                                                                <span className='hot'>Trending</span>
+                                                                {newArrival.percent_sale !== 0 ? <span className={newArrival.percent_sale !== "" ? newArrival.sale : ""}>
+                                                                    {newArrival.percent_sale + "% OFF"}</span>
+                                                                    : ''}
                                                             </span>
                                                             <div className='actions'>
                                                                 <button className='action wishlist'><FaRegHeart /></button>
@@ -160,7 +160,9 @@ function HotProduct() {
                                                                 <img src={onSell.img} alt="img" />
                                                             </Link>
                                                             <span className='badges'>
-                                                                <span className='hot'>Trending</span>
+                                                                {onSell.percent_sale !== 0 ? <span className={onSell.percent_sale !== "" ? onSell.sale : ""}>
+                                                                    {onSell.percent_sale + "% OFF"}</span>
+                                                                    : ''}
                                                             </span>
                                                             <div className='actions'>
                                                                 <button className='action wishlist'><FaRegHeart /></button>

@@ -7,16 +7,17 @@ import axios from '../../../../service/axiosClient';
 function TopHeaderRightAuth(user) {
 
     const handleLogout = () => {
+        console.log("chạy")
         axios
-            .post(
-                'http://localhost:8000/customer/logout', {},
+            .get(
+                'http://localhost:8000/customer/logout',
                 {
                     headers: {
                         Authorization: `Bearer ${Cookies.get('token')}`,
                     },
                 },
             )
-            .then(function (response) {
+            .then((response) => {
                 if (response.data.success) {
                     Cookies.remove('token', { path: '/', domain: 'localhost' });
                     window.location.href = 'http://localhost:3000/login';

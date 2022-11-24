@@ -9,7 +9,6 @@ const ListUsers = ({ listUsers }) => {
 
                 return (
                     <tr key={index}>
-                        <td>{User._id}</td>
                         <td>
                             <a>
                                 {User.avatar ? <img width="70px" src={User.avatar} alt="img" /> : <img width="70px" src={User.defaultAvatar} alt="img" />}

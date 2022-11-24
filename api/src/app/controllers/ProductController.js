@@ -21,10 +21,9 @@ class ProductController {
 
         let perPage = 12;
         let page = parseInt(req.query.page);
-        if (page < 1) {
+        if (page < 1 || !page) {
             page = 1;
         }
-
         Product
             .find()
             .populate('category', 'name')
@@ -127,7 +126,7 @@ class ProductController {
 
     //[PUT] /products/:id/update
     update(req, res) {
-        const { name, category, description, price, percentSale, quantity,img } = req.body;
+        const { name, category, description, price, percentSale, quantity, img } = req.body;
 
         let status = 0;
 
@@ -322,26 +321,27 @@ class ProductController {
     // [GET] /product/hotProducts
     hotProducts(req, res) {
         Product.find({})
-        .sort({ createdAt: -1 })
-        .limit(4)
-        .exec((err, newArrival) => {
-            if(err) return next(err);
-            Product.find({ 
-                percent_sale: {
-                    "$gt": 0
-                }})
-                .sort({ updatedAt: -1 })
-                .limit(4)
-                .exec((err, onSell) => {
-                    if(err) return next(err);
-                    res.json({
-                        newArrival: newArrival,
-                        onSell: onSell
-                    }) 
+            .sort({ createdAt: -1 })
+            .limit(4)
+            .exec((err, newArrival) => {
+                if (err) return next(err);
+                Product.find({
+                    percent_sale: {
+                        "$gt": 0
+                    }
                 })
-        })
+                    .sort({ updatedAt: -1 })
+                    .limit(4)
+                    .exec((err, onSell) => {
+                        if (err) return next(err);
+                        res.json({
+                            newArrival: newArrival,
+                            onSell: onSell
+                        })
+                    })
+            })
     }
-    
+
 }
 
 module.exports = new ProductController();
