@@ -30,6 +30,7 @@ function ListProduct(prop) {
             .then((response) => {
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
+                window.location.reload(false)
             })
     }
     return (

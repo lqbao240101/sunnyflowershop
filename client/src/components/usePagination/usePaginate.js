@@ -11,6 +11,7 @@ function usePaginate(url, query) {
         lastPage: 0,
         total: 0,
     });
+
     useEffect(() => {
         axios
             .get(`${url}?${query.toString()}`, {

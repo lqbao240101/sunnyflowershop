@@ -7,7 +7,7 @@ class VoucherController {
 
         let perPage = 12;
         let page = parseInt(req.query.page);
-        if (page < 1) {
+        if (page < 1 || !page) {
             page = 1;
         }
 
@@ -334,18 +334,18 @@ class VoucherController {
         Voucher.findOne({
             show: true
         })
-        .then(data => {
-            res.json({
-                success: true,
-                data: data
+            .then(data => {
+                res.json({
+                    success: true,
+                    data: data
+                })
             })
-        })
-        .catch(err => {
-            res.json({
-                success: false,
-                message: "You have not selected any voucher for the countdown."
+            .catch(err => {
+                res.json({
+                    success: false,
+                    message: "You have not selected any voucher for the countdown."
+                })
             })
-        })
     }
 
 }

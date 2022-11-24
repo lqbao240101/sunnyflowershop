@@ -8,11 +8,7 @@ import { useForm } from "react-hook-form";
 
 function Footer() {
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors }
-    } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = (data) => {
         console.log({ data })
@@ -27,7 +23,7 @@ function Footer() {
                             <a href="">
                                 <img src={Logo} alt="logo" width={200} />
                             </a>
-                            <p><strong>Huong Duong Shop</strong>  is an multi-vendor B2C fast e-commerce company. The company mainly focuses on men,women and children wear, but it also offers other apparel, clothes, accessories, shoes, bags and other fashion items.</p>
+                            <p><strong>Huong Duong Shop</strong> is a fashion company. Sunny flower shop specializes in providing backpacks and book bags for all ages.</p>
                             <div className={styles.divFooterIcon}>
                                 <ul>
                                     <li>
@@ -53,31 +49,26 @@ function Footer() {
                         <div className={styles.footerRow}>
                             <h3>INFORMATION</h3>
                             <ul>
-                                <li>
-                                    Home
-                                </li>
-                                <li>About us</li>
+                                <li> Home </li>
                                 <li>Privacy Policy</li>
                                 <li>Frequently Questions</li>
                                 <li>Order Tracking</li>
-                                <li>Compare</li>
                             </ul>
                         </div>
                     </Col>
-                    <Col lg={2} md={6} sm={12} xs={12}>
+                    <Col lg={3} md={6} sm={12} xs={12}>
                         <div className={styles.footerRow}>
-                            <h3>SHOP</h3>
+                            <h3>ABOUT US</h3>
                             <ul>
-                                <li>Cart View One</li>
-                                <li>Cart View Two</li>
-                                <li>Empty Cart</li>
-                                <li>Checkout View One</li>
-                                <li>Checkout View Two</li>
-                                <li>Wishlist</li>
+                                <li>TP HCM</li>
+                                <li>0395115641</li>
+                                <li>COMING SOON</li>
+                                <li>huongduongshop@gmail.com</li>
+                                <li></li>
                             </ul>
                         </div>
                     </Col>
-                    <Col lg={3} md={12} sm={12} xs={12}>
+                    <Col lg={2} md={12} sm={12} xs={12}>
                         <div className={styles.footerRow}>
                             <h3>NEWSLETTER</h3>
                             <div className={styles.divForm}>

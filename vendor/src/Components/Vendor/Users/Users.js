@@ -25,7 +25,6 @@ const Users = () => {
                             <table className='table pending_table'>
                                 <thead>
                                     <tr>
-                                        <th scope="col">ID</th>
                                         <th scope="col">Avatar</th>
                                         <th scope="col">Full Name</th>
                                         <th scope="col">Email</th>
@@ -37,38 +36,40 @@ const Users = () => {
                                     <ListUsers listUsers={data} />
                                 </tbody>
                             </table>
-                            {/* < Col lg={12}>
+                            < Col lg={12}>
                                 <ul className={styles.pagination}>
                                     {page > 1 && <li className={styles.pageItem}>
                                         <Link to={`?page=${prevPage}`} className={styles.pageLink}>«</Link>
                                     </li>}
-                                    {page === lastPage && <li className={styles.pageItem}>
+                                    {(page > 4) && <li className={styles.pageItem}>
                                         <Link to={`?page=${1}`} className={styles.pageLink}>1</Link>
                                     </li>}
-                                    {page === lastPage && <li className={`${styles.pageItem} ${styles.disable}`}>
+                                    {(page > 4) && < li className={`${styles.pageItem} ${styles.disable}`}>
                                         <Link className={styles.pageLink}>...</Link>
                                     </li>}
-                                    {page - 1 > 0 && <li className={styles.pageItem}><Link to={`?page=${prevPage}`} className={styles.pageLink}>{page - 1}</Link></li>}
-
+                                    {page - 1 > 0 && <li className={styles.pageItem}>
+                                        <Link to={`?page=${prevPage}`} className={styles.pageLink}>{page - 1}</Link>
+                                    </li>}
                                     <li className={`${styles.pageItem} ${styles.active}`}>
                                         <Link to={`?page=${page}`} className={styles.pageLink}>{page}</Link>
                                     </li>
-                                    {page !== lastPage && <li className={styles.pageItem}>
+                                    {(page !== lastPage && page > 3) && <li className={styles.pageItem}>
                                         <Link to={`?page=${nextPage}`} className={styles.pageLink}>{page + 1}</Link>
                                     </li>}
-                                    {page - 1 === 0 && <li className={styles.pageItem}><Link to={`?page=${page + 2}`} className={styles.pageLink}>{page + 2}</Link></li>}
-                                    {page !== lastPage && <li className={`${styles.pageItem} ${styles.disable}`}>
+                                    {(page >= 2 && page < 4) && <li className={styles.pageItem}>
+                                        <Link to={`?page=${page + 1}`} className={styles.pageLink}>{page + 1}</Link>
+                                    </li>}
+                                    {(page !== lastPage && page > 3) && <li className={`${styles.pageItem} ${styles.disable}`}>
                                         <Link className={styles.pageLink}>...</Link>
                                     </li>}
-                                    {page !== lastPage && <li className={styles.pageItem}>
+                                    {(page !== lastPage && page > 3) && <li className={styles.pageItem}>
                                         <Link to={`?page=${lastPage}`} className={styles.pageLink}>{lastPage}</Link>
                                     </li>}
-                                    {page !== lastPage && <li className={styles.pageItem}>
+                                    {(page !== lastPage && page > 1) && <li className={styles.pageItem}>
                                         <Link to={`?page=${nextPage}`} className={styles.pageLink}>»</Link>
                                     </li>}
                                 </ul>
-                            </Col> */}
-
+                            </Col>
                         </div>
                     </div>
 

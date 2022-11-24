@@ -14,9 +14,14 @@ function ListProduct({ currentItems }) {
     const [isLogin, setIsLogin] = useState(true)
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
-    const AddToCart = (data, productId) => {
+
+
+    const AddToCart = (productId) => {
+        const payload = {
+            quantity: 1
+        }
         axios
-            .patch(`http://localhost:8000/cart/${productId}`, data, {
+            .patch(`http://localhost:8000/cart/${productId}`, payload, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
@@ -26,7 +31,8 @@ function ListProduct({ currentItems }) {
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
                 setModal(!modal);
-                if (!response.data.login) {
+                console.log(!response.data.success)
+                if (!response.data.success) {
                     setIsLogin(false)
                 }
             })
@@ -55,7 +61,6 @@ function ListProduct({ currentItems }) {
                             <div className={styles.thumb}>
                                 <Link to={`/shop/${product._id}`} className={styles.image}>
                                     <img src={product.img} alt={product.name} />
-                                    {/* <img src="" alt="" /> */}
                                 </Link>
                                 <span className={styles.badges}>
                                     {product.percent_sale !== 0 ? <span className={product.percent_sale !== "" ? styles.sale : ""}>
@@ -70,7 +75,7 @@ function ListProduct({ currentItems }) {
                                         <FaExpand />
                                     </a>
                                 </div>
-                                <div onClick={() => { AddToCart(1, product._id) }}><button className={`${styles.addToCart}`}>Add to cart</button></div>
+                                <div onClick={() => { AddToCart(product._id) }}><button className={`${styles.addToCart}`}>Add to cart</button></div>
 
                             </div>
                             <div className={styles.content}>
@@ -85,7 +90,6 @@ function ListProduct({ currentItems }) {
                                 <div className="modal">
                                     <div className="overlay"></div>
                                     <div className="modal-content">
-                                        {console.log("chạy ")}
                                         <div>
                                             {success == true ? <FaRegCheckCircle size={90} className='colorSuccess' /> : <FaTimesCircle size={90} className='colorFail' />}
                                         </div>

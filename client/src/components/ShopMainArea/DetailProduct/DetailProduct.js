@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie';
-import { FaMinus, FaPlus, FaHeart } from "react-icons/fa"
+import { FaMinus, FaPlus, FaHeart, FaTimesCircle, FaRegCheckCircle } from "react-icons/fa"
 import axios from 'axios';
 import { useForm } from "react-hook-form";
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,9 +9,9 @@ import Col from 'react-bootstrap/Col';
 import ModalATag from '../../ModalATag/ModalATag'
 import { useParams } from "react-router-dom"
 import CommonBanner from '../../CommonBanner';
-import { FaRegCheckCircle, FaTimesCircle } from 'react-icons/fa'
 import "./DetailProduct.css"
 import AccountEditModal from "../../AccountEditArea/AccountEditModal/index"
+import { formatter } from '../../../utils/utils';
 
 const DetailProduct = () => {
     const [isLogin, setIsLogin] = useState(true)
@@ -20,6 +20,7 @@ const DetailProduct = () => {
     const [productName, setProductName] = useState('')
     const [productPrice, setProductPrice] = useState('')
     const [productDescription, setProductDescription] = useState('')
+    const [percentSale, setPercentSale] = useState(0)
     const [quantityPurchased, setQuantityPurchased] = useState(1)
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
@@ -59,6 +60,7 @@ const DetailProduct = () => {
                     setProductName(response.data.data.name)
                     setProductPrice(response.data.data.price)
                     setProductDescription(response.data.data.description)
+                    setPercentSale(response.data.data.percent_sale)
                 }
             })
     }, [])
@@ -136,9 +138,11 @@ const DetailProduct = () => {
                             <div className='product_details_right_one'>
                                 <div className='modal_product_content_one'>
                                     <h3>{productName}</h3>
-                                    <h4>${productPrice}
+                                    {percentSale === 0 ? <h4>{formatter.format(productPrice)}</h4> : <h4>{formatter.format(productPrice - (percentSale * productPrice / 100))}<del>{formatter.format(productPrice)}</del> </h4>}
+
+                                    {/* <h4>${productPrice}
                                         <del>$ giá gốc ở đây</del>
-                                    </h4>
+                                    </h4> */}
                                     <p>{productDescription}</p>
                                     <form id='product_count_form_two'
                                         onSubmit={handleSubmit(AddToCart)}>

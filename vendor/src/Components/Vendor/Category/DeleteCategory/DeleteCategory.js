@@ -51,14 +51,10 @@ const DeleteCategory = ({ idDetail, nameDetail }) => {
                             <h2 className="title_modal">Confirm delete Category <p>{nameDetail}</p></h2>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="btn_right_table">
-
                                     <button className="theme-btn-one bg-black btn_sm">Delete </button>
-
                                 </div>
                             </form>
-
                             <button className="close close-modal" onClick={toggleModal}><FaTimes /></button>
-
                         </div>
                     </div>
                 )

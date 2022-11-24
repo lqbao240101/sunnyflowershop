@@ -37,9 +37,6 @@ const Dashboard = () => {
             })
     }, [totalProduct])
 
-    // for (let RecentOrder of RecentOrders) {
-
-    // }
     return (
         <Col sm={12} md={12} lg={9}>
             <div className='tab-content dashboard_content'>
@@ -81,7 +78,6 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {console.log(RecentOrders)}
                                     {RecentOrders && RecentOrders.map((Order) => {
                                         return (
                                             <tr key={Order.id_delivery}>

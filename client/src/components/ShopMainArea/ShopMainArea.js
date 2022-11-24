@@ -4,40 +4,53 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { GoSearch } from "react-icons/go";
 import { useEffect, useState } from 'react'
-import { products } from '../HotProduct/ProductWrapper/products';
+import { Link, useSearchParams } from 'react-router-dom';
 import { formatter } from '../../utils/utils'
 import Cookies from 'js-cookie';
 import { useForm } from "react-hook-form";
 import axios from '../../service/axiosClient';
 import ListProduct from './ListProduct/ListProduct';
+import stylesPaginated from '../usePagination/PaginatedItems.module.scss'
 
 function ShopMainArea() {
-
+    const [searchParams] = useSearchParams();
+    const [listProduct, setListProduct] = useState()
     const [search, setSearch] = useState('');
     const [listCategories, setListCategories] = useState([])
     const [category, setCategory] = useState('');
-    const [price, setPrice] = useState(100000);
-    const [listAPI, setListAPI] = useState([]);
     const { register, handleSubmit } = useForm();
-    const { register: register2, handleSubmit: handleSubmit2 } = useForm();
+    const { register: register2 } = useForm();
+
+
+    const [data, setData] = useState({
+        data: [],
+        page: 0,
+        nextPage: 0,
+        prevPage: 0,
+        lastPage: 0,
+        total: 0,
+    });
 
     useEffect(() => {
         axios
-            .get(`http://localhost:8000/product/`, {
+            .get(`http://localhost:8000/product/?${searchParams.toString()}`, {
                 headers: {
-                    Authorization: `Bearer ${Cookies.get('token')}`,
+                    Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
             })
+
             .then((response) => {
-                setListAPI(response.data.data);
-            })
-            .catch(function (error) {
-                console.log(error);
+                setData({
+                    data: response.data.data,
+                    total: response.data.total,
+                    page: response.data.meta.current_page,
+                    lastPage: response.data.meta.last_page,
+                    nextPage: response.data.meta.current_page + 1,
+                    prevPage: response.data.meta.current_page - 1,
+                });
             });
-    }, []);
+    }, [searchParams.toString()]);
 
-
-    //gọi api để trả về sản phẩm theo filter
     const handleSearch = (data) => {
         const payload = {
             ...data,
@@ -45,8 +58,6 @@ function ShopMainArea() {
             min: '',
             max: ''
         }
-
-        console.log(payload)
         axios
             .post(`http://localhost:8000/product/search`, payload, {
                 headers: {
@@ -54,19 +65,16 @@ function ShopMainArea() {
                 },
             })
             .then((response) => {
-                console.log(response.data)
-                setListAPI(response.data.data);
+                setData({
+                    data: response.data.data
+                })
             })
             .catch(function (error) {
                 console.log(error);
             });
     }
-
-    const handlePriceFilter = (e) => {
-        setPrice(e.target.value);
-    }
-
     useEffect(() => {
+        setListProduct(data)
         axios
             .get(`http://localhost:8000/category/`, {
                 headers: {
@@ -80,6 +88,7 @@ function ShopMainArea() {
                 console.log(error);
             });
     }, [])
+
     return (
         <section id={styles.shopMainArea}>
             <Container fluid>
@@ -127,20 +136,47 @@ function ShopMainArea() {
                                     })}
                                 </form>
                             </div>
-                            {/* <div className={styles.shopSidebarBoxed}>
-                                <h4>Price</h4>
-                                <div className={styles.priceFilter}>
-                                    <input id={styles.formControlRange} type="range" onInput={handlePriceFilter} min="100000" max="500000" value={price} />
-                                    <div className={styles.price}>
-                                        <span>Price: {formatter.format(price)}</span>
-                                    </div>
-                                </div>
-                            </div> */}
                         </div>
                     </Col>
                     <Col lg={9}>
-                        <ListProduct currentItems={listAPI} />
+                        <ListProduct currentItems={data.data} />
+                        < Col lg={12}>
+                            {console.log(data.page)}
+                            <ul className={stylesPaginated.pagination}>
+                                {data.page > 1 && <li className={stylesPaginated.pageItem}>
+                                    <Link to={`?page=${data.prevPage}`} className={stylesPaginated.pageLink}>«</Link>
+                                </li>}
+                                {(data.page > 4) && <li className={stylesPaginated.pageItem}>
+                                    <Link to={`?page=${1}`} className={stylesPaginated.pageLink}>1</Link>
+                                </li>}
+                                {(data.page > 4) && < li className={`${stylesPaginated.pageItem} ${stylesPaginated.disable}`}>
+                                    <Link className={stylesPaginated.pageLink}>...</Link>
+                                </li>}
+                                {data.page - 1 > 0 && <li className={stylesPaginated.pageItem}>
+                                    <Link to={`?page=${data.prevPage}`} className={stylesPaginated.pageLink}>{data.page - 1}</Link>
+                                </li>}
+                                <li className={`${stylesPaginated.pageItem} ${stylesPaginated.active}`}>
+                                    <Link to={`?page=${data.page}`} className={stylesPaginated.pageLink}>{data.page}</Link>
+                                </li>
+                                {(data.page !== data.lastPage && data.page > 3) && <li className={stylesPaginated.pageItem}>
+                                    <Link to={`?page=${data.nextPage}`} className={stylesPaginated.pageLink}>{data.page + 1}</Link>
+                                </li>}
+                                {(data.page >= 2 && data.page < 4) && <li className={stylesPaginated.pageItem}>
+                                    <Link to={`?page=${data.page + 1}`} className={stylesPaginated.pageLink}>{data.page + 1}</Link>
+                                </li>}
+                                {(data.page !== data.lastPage && data.page > 3) && <li className={`${stylesPaginated.pageItem} ${stylesPaginated.disable}`}>
+                                    <Link className={stylesPaginated.pageLink}>...</Link>
+                                </li>}
+                                {(data.page !== data.lastPage && data.page > 3) && <li className={stylesPaginated.pageItem}>
+                                    <Link to={`?page=${data.lastPage}`} className={stylesPaginated.pageLink}>{data.lastPage}</Link>
+                                </li>}
+                                {(data.page !== data.lastPage && data.page > 1) && <li className={stylesPaginated.pageItem}>
+                                    <Link to={`?page=${data.nextPage}`} className={stylesPaginated.pageLink}>»</Link>
+                                </li>}
+                            </ul>
+                        </Col>
                     </Col>
+
                 </Row>
             </Container>
         </section >

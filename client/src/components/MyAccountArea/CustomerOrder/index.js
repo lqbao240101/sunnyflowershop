@@ -9,11 +9,13 @@ function CustomerOrder() {
                 <table>
                     <thead>
                         <tr>
-                            <th>Order</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Total</th>
-                            <th>Action</th>
+                            <th scope='col'>Order Id</th>
+                            <th scope='col'>Name Receiver</th>
+                            <th scope='col'>Phone Receiver</th>
+                            <th scope='col'>Address</th>
+                            <th scope='col'>Status</th>
+                            <th scope='col'>Price</th>
+                            {/* <th scope='col'>Action</th> */}
                         </tr>
                     </thead>
                     <tbody>
