@@ -135,57 +135,165 @@ class AdminController {
         })
     }
 
+
+
     // [PATCH] /admin/update => Update account admin
-    update(req, res) {
-        const { userName, email, password, newPassword, confirmNewPassword } = req.body;
+    updatePassword(req, res) {
+        const { password, newPassword, confirmNewPassword } = req.body;
 
         Admin.findOne({
-            _id: req.admin.id,
-            password: password
+            _id: req.admin._id
         })
             .then(data => {
-                if (!data) {
-                    return res.json({
+                if (!password) {
+                    res.json({
                         success: false,
-                        message: "Current password is wrong."
+                        message: "Current password is empty."
                     })
                 } else {
-                    if (!newPassword && !confirmNewPassword) {
-                        data.username = userName;
-                        data.email = email;
-                        data.password = password;
-
-                        data.save().then(result => {
+                    bcrypt.compare(password, data.password, function (err, result) {
+                        if (err) {
                             res.json({
-                                success: true,
-                                message: "Update account admin successfully"
+                                success: false,
+                                message: "Hash failed."
                             })
-                        })
-                    } else if ((newPassword || confirmNewPassword) && newPassword !== confirmNewPassword) {
-                        return res.json({
-                            success: false,
-                            message: "new password are changing. Please make sure your information is consistent."
-                        })
-                    } else if (newPassword && confirmNewPassword && newPassword === confirmNewPassword) {
-                        data.username = userName;
-                        data.email = email;
-                        data.password = newPassword;
-
-                        data.save().then(result => {
-                            res.json({
-                                success: true,
-                                message: "Update account admin successfully."
-                            })
-                        })
-                    }
+                        } else {
+                            if (result == true) {
+                                if (!newPassword && !confirmNewPassword) {
+                                    res.json({
+                                        success: false,
+                                        message: "New password and confirm new password cannot be empty."
+                                    })
+                                } else {
+                                    if (newPassword !== confirmNewPassword) {
+                                        res.json({
+                                            success: false,
+                                            message: "New password and confirm new password need to be same."
+                                        })
+                                    } else {
+                                        if (password === newPassword) {
+                                            res.json({
+                                                success: false,
+                                                message: "The current password is the same as the new password."
+                                            })
+                                        } else {
+                                            bcrypt.hash(newPassword, saltRounds, (err, hash) => {
+                                                if (err) {
+                                                    res.json({
+                                                        success: false,
+                                                        message: "Hash failed."
+                                                    })
+                                                } else {
+                                                    data.password = hash
+                                                    data.save()
+                                                        .then(savedData => {
+                                                            res.json({
+                                                                success: true,
+                                                                message: "Change password successfully."
+                                                            })
+                                                        })
+                                                        .catch(err => {
+                                                            res.json({
+                                                                success: false,
+                                                                message: "Change password failed."
+                                                            })
+                                                        })
+                                                }
+                                            })
+                                        }
+                                    }
+                                }
+                            } else {
+                                res.json({
+                                    success: false,
+                                    message: "Wrong password. Try again."
+                                })
+                            }
+                        }
+                    })
                 }
+                // if (!newPassword && !confirmNewPassword) {
+                //     data.username = userName;
+                //     data.email = email;
+                //     data.password = password;
+
+                //     data.save().then(result => {
+                //         res.json({
+                //             success: true,
+                //             message: "Update account admin successfully"
+                //         })
+                //     })
+                // } else if ((newPassword || confirmNewPassword) && newPassword !== confirmNewPassword) {
+                //     return res.json({
+                //         success: false,
+                //         message: "new password are changing. Please make sure your information is consistent."
+                //     })
+                // } else if (newPassword && confirmNewPassword && newPassword === confirmNewPassword) {
+                //     data.username = userName;
+                //     data.email = email;
+                //     data.password = newPassword;
+
+                //     data.save().then(result => {
+                //         res.json({
+                //             success: true,
+                //             message: "Update account admin successfully."
+                //         })
+                //     })
+                // }
             })
             .catch(err => {
                 res.json({
                     success: false,
-                    message: "Something wrong!"
+                    message: "Admin is not found."
                 })
             })
+    }
+
+    updateInformation(req, res) {
+        const { userName, email } = req.body;
+
+        if (req.admin.username == userName
+            && req.admin.email == email) {
+            res.json({
+                success: false,
+                message: "You didn't change any infomation."
+            })
+        } else {
+            Admin.findOne({
+                email: email
+            })
+                .then(result => {
+                    if (data) {
+                        res.json({
+                            success: false,
+                            message: "Email already exists"
+                        })
+                    } else {
+                        req.admin.username = userName;
+                        req.admin.email = email;
+
+                        req.admin.save()
+                            .then(savedDatad => {
+                                res.json({
+                                    success: true,
+                                    message: "Change information successfully."
+                                })
+                            })
+                            .catch(err => {
+                                res.json({
+                                    success: false,
+                                    message: "Change information failed."
+                                })
+                            })
+                    }
+                })
+                .catch(err => {
+                    res.json({
+                        success: false,
+                        message: "Something wong"
+                    })
+                })
+        }
     }
 
     // [PATCH] /admin/updateAvatar
