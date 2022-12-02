@@ -40,7 +40,7 @@ function TopHeaderRightAuth({ user }) {
                             <Link to="/my-account"><FaTachometerAlt /> Dashboard</Link>
                         </li>
                         <li>
-                            <Link to="/my-account/customer-order"><FaCubes /> My Orders</Link>
+                            <Link to="/change-information"><FaCubes />Change Information</Link>
                         </li>
                         <li>
                             <button onClick={handleLogout}><FaSignOutAlt /> Log out</button>

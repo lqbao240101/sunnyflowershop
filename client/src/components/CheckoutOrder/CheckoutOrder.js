@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { FaRegCheckCircle, FaTimesCircle } from 'react-icons/fa'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import axios from "axios";
@@ -21,6 +23,8 @@ const CheckoutOrder = () => {
     const [province, setprovince] = useState('')
     const [ward, setWard] = useState('')
     const [street, setStreet] = useState('')
+    const navigate = useNavigate();
+    const [modal, setModal] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm();
     const { register: register2, handleSubmit: handleSubmit2 } = useForm();
 
@@ -38,6 +42,9 @@ const CheckoutOrder = () => {
                 console.log(error);
             });
     }, []);
+    const closeModal = () => {
+        setModal(!modal);
+    }
 
 
     const PlaceOrder = (data) => {
@@ -59,6 +66,7 @@ const CheckoutOrder = () => {
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
                 if (response.data.success) {
+                    navigate("/order-completed")
                     axios
                         .get(`http://localhost:8000/cart/clearCart`,
                             {
@@ -72,6 +80,8 @@ const CheckoutOrder = () => {
                         .catch((error) => {
 
                         })
+                } else {
+                    setModal(!modal)
                 }
             })
             .catch(function (error) {
@@ -89,7 +99,9 @@ const CheckoutOrder = () => {
         })
     }, [listProduct])
 
-
+    const toggleModal = () => {
+        setTimeout(() => { setModal(!modal); }, 1000)
+    };
     const onSubmit2 = (data) => {
         axios
             .post(`http://localhost:8000/voucher/check`, data, {
@@ -249,7 +261,23 @@ const CheckoutOrder = () => {
                                 </table>
                             </div>
                             <div className='coupon' onClick={PlaceOrder}>
-                                <AccountEditModal message={message} success={success} nameBtn='Place order' />
+                                <button type="submit" className="theme-btn-one bg-black btn_sm" >Place Order</button>
+                                {modal && (
+                                    <div className="modal">
+                                        <div onClick={toggleModal} className="overlay"></div>
+                                        <div className="modal-content">
+                                            <div>
+                                                {success == true ? <FaRegCheckCircle size={90} className='colorSuccess' /> : <FaTimesCircle size={90} className='colorFail' />}
+                                            </div>
+                                            <h2 className="title_modal">Place Order {success ? 'Successful' : 'Failed'}</h2>
+                                            <p className='p_modal'>{message}</p>
+                                            <div className='divClose'>
+                                                <button className="close close-modal" onClick={closeModal}>OK</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
