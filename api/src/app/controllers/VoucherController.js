@@ -119,7 +119,6 @@ class VoucherController {
                         show: show
                     })
                         .then((result) => {
-                            console.log(result.expired_date)
                             res.json({
                                 success: true,
                                 message: "Create voucher successfully"
@@ -144,15 +143,10 @@ class VoucherController {
     // [PUT] /voucher/:id => Update Voucher 
     update(req, res) {
         const { name, usage, percent, expiredDate, effectiveDate, show } = req.body;
-        console.log(show)
-
         let setShow = show;
-        console.log(setShow)
         if (show != 'true') {
             setShow = false
         }
-        console.log(setShow)
-
         const dateEff = new Date(effectiveDate)
         const dateExp = new Date(expiredDate)
 
@@ -199,8 +193,6 @@ class VoucherController {
                             })
                         })
                 } else {
-                    console.log(setShow)
-                    console.log(data.show)
                     if (usage == data.usage
                         && percent == data.percent
                         && compareDate === data.expired_date.toISOString()

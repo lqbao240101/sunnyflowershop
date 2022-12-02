@@ -64,6 +64,7 @@ class OrderController {
             customer: req.user ? req.user._id : req.params.userId,
             _id: req.params.id
         })
+            .populate('voucher', 'percent -_id')
             .populate({
                 path: 'order_products',
                 populate: { path: 'product' }
@@ -75,6 +76,7 @@ class OrderController {
                 })
             })
             .catch(err => {
+                console.log(err);
                 res.json({
                     success: false,
                     message: "Order id or Customer id are not found."
@@ -84,6 +86,7 @@ class OrderController {
 
     // [POST] /order/
     create(req, res) {
+        console.log('da chay')
         const { voucherId, address, nameReceiver, phoneReceiver, totalPrice } = req.body;
         const id_delivery = orderid.generate();
         const tempArr = [];
@@ -97,7 +100,7 @@ class OrderController {
 
         Order.create({
             customer: req.user._id,
-            s: voucher,
+            voucher: voucher,
             id_delivery: id_delivery,
             address: address,
             order_products: tempArr,
@@ -126,10 +129,6 @@ class OrderController {
                                     }
                                     data.save()
                                         .then(savedData => {
-                                            res.json({
-                                                success: true,
-                                                message: "Create order product successfully."
-                                            })
                                         })
                                         .catch(err => {
                                             res.json({
@@ -153,6 +152,20 @@ class OrderController {
                         })
                 })
 
+                data.order_products = tempArr;
+                data.save()
+                    .then(savedData => {
+                        res.json({
+                            success: true,
+                            message: "Create order successfully."
+                        })
+                    })
+                    .catch(err => {
+                        res.json({
+                            success: false,
+                            message: "Create order failed"
+                        })
+                    })
             })
             .catch(err => {
                 console.log(err)
@@ -161,6 +174,8 @@ class OrderController {
                     message: "Create order failed"
                 })
             })
+
+
     }
 
     // [PATCH] /order/:id/:userId/cancel => Admin cancel order of customer || /order/:id/cancel => Customer cancel order

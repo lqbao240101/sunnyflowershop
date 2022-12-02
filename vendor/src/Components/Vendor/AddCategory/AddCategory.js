@@ -40,7 +40,7 @@ const AddCategory = () => {
                             <Row>
                                 <Col lg={12}>
                                     <div className='add_product_wrapper'>
-                                        <h4>Add Product</h4>
+                                        <h4>Add Category</h4>
                                         <form className='add_product_form'
                                             onSubmit={handleSubmit(onSubmit)}>
                                             <Row>

@@ -14,9 +14,9 @@ function OfferCountdown() {
     const [timeSeconds, setSeconds] = useState('00');
     const [name, setName] = useState('');
     const [discount, setDiscount] = useState(0)
+    const [check, setCheck] = useState(false)
 
     let interval = useRef();
-
 
     const startCountDown = (date) => {
         const countDownDate = new Date(date).getTime();
@@ -41,18 +41,22 @@ function OfferCountdown() {
         }, 1000);
     }
 
-
     useEffect(() => {
         axios
             .get(`http://localhost:8000/voucher/countDown`)
             .then((response) => {
                 if (response.data.success) {
-                    console.log(response.data)
-                    setName(response.data.data.name)
-                    setDiscount(response.data.data.percent)
-                    startCountDown(response.data.data.effective_date);
-                    return () => {
-                        clearInterval(interval.current);
+                    if (response.data.data) {
+                        console.log(response.data)
+                        setName(response.data.data.name)
+                        setDiscount(response.data.data.percent)
+                        startCountDown(response.data.data.effective_date);
+                        return () => {
+                            clearInterval(interval.current);
+                        }
+                    }
+                    else {
+                        setCheck(true)
                     }
                 }
             })
@@ -60,8 +64,6 @@ function OfferCountdown() {
                 console.log(error);
             });
     }, [])
-
-    console.log(timeDays)
 
     return (
         <section id={styles.offerTime}>
@@ -88,26 +90,28 @@ function OfferCountdown() {
                                 </div>
                             </div>
                             <div className={styles.offerTimeText}>
-                                {(timeDays !== '00' || timeHours !== '00' || timeMinutes !== '00' || timeSeconds !== '00') && <>
+                                {((timeDays !== '00' || timeHours !== '00' || timeMinutes !== '00' || timeSeconds !== '00') && check === false) && <>
                                     <h2>VOUCHER WILL BE AVAILABLE SOON!</h2>
                                     <p>Exciting promotions coming up.</p>
                                 </>
                                 }
-                                {/* <h2>VOUCHER WILL BE AVAILABLE SOON!</h2>
-                                <p>Exciting promotions coming up.</p>
-                                <Link to="/shop">SHOP NOW</Link> */}
-                                {timeDays === '00' && timeHours === '00' && timeMinutes === '00' && timeSeconds === '00' && <>
+                                {(timeDays === '00' && timeHours === '00' && timeMinutes === '00' && timeSeconds === '00' && check === false) && <>
+
                                     <h2>{name} - {discount}%</h2>
                                     <p>Use this voucher to get discount</p>
                                     <Link to="/shop">SHOP NOW</Link>
-                                </>
-                                }
+                                </>}
+                                {check === true && <><h2>
+                                    THERE ARE CURRENTLY NO PROMOTIONS GOING ON
+                                </h2>
+                                    <p>COMING SOON</p>
+                                </>}
                             </div>
                         </div>
                     </Col>
                 </Row>
             </Container>
-        </section>
+        </section >
     )
 }
 
