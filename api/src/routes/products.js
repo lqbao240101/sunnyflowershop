@@ -6,7 +6,7 @@ const productController = require('../app/controllers/ProductController');
 
 router.get('/', productController.show)
 router.post('/', checkIsAdmin, productController.create);
-router.get('/trash', checkIsAdmin, productController.trashProduct)
+router.get('/admin', checkIsAdmin, productController.showAll)
 router.post('/search', productController.search)
 router.get('/hotProducts', productController.hotProducts)
 router.delete('/:id', checkIsAdmin, productController.delete)

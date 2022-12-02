@@ -7,7 +7,6 @@ const voucherController = require('../app/controllers/VoucherController');
 router.get('/', checkIsAdmin, voucherController.show)
 router.post('/', checkIsSuperAdmin, voucherController.create)
 router.post('/check', voucherController.check)
-router.get('/trash', checkIsAdmin, voucherController.trashVoucher)
 router.get('/countDown', voucherController.countDown)
 router.delete('/:id', checkIsSuperAdmin, voucherController.delete)
 router.get('/:id', checkIsAdmin, voucherController.detail)
