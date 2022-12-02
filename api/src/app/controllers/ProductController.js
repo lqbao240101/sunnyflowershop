@@ -3,27 +3,16 @@ const Category = require('../models/Category')
 const mongoose = require('mongoose');
 
 class ProductController {
+
     // [GET] /product => Show all products
     show(req, res) {
-        // Product.find({})
-        //     .populate('category', 'name')
-        //     .then(products => {
-        //         res.json({
-        //             success: true,
-        //             data: products
-        //         })
-        //     })
-        //     .catch(err => {
-        //         res.json({
-        //             success: false
-        //         })
-        //     });
-
         let perPage = 12;
         let page = parseInt(req.query.page);
+
         if (page < 1 || !page) {
             page = 1;
         }
+
         Product
             .find()
             .populate('category', 'name')
@@ -44,21 +33,33 @@ class ProductController {
             });
     }
 
-    // [GET] /product/trashProduct => Show all deleted products
-    trashProduct(req, res) {
-        Product.findDeleted({})
-            .then(products => {
-                res.json({
-                    success: true,
-                    data: products
-                })
-            })
-            .catch(err => {
-                console.log(err)
-                res.json({
-                    success: false,
-                })
-            })
+    // [GET] /product/admin
+    showAll(req, res) {
+        let perPage = 12;
+        let page = parseInt(req.query.page);
+
+        if (page < 1 || !page) {
+            page = 1;
+        }
+
+        Product
+            .findWithDeleted()
+            .populate('category', 'name')
+            .skip((perPage * page) - perPage)
+            .limit(perPage)
+            .exec((err, products) => {
+                Product.countDocuments((err, count) => {
+                    if (err) return next(err);
+                    res.json({
+                        data: products,
+                        meta: {
+                            current_page: page,
+                            last_page: Math.ceil(count / perPage),
+                            total: count,
+                        }
+                    });
+                });
+            });
     }
 
     // [GET] /product/:id
