@@ -46,7 +46,7 @@ function UpdateAvatar({ avt }) {
         }
 
         axios
-            .put(`http://localhost:8000/admin/updateAvatar`, payload, {
+            .patch(`http://localhost:8000/admin/updateAvatar`, payload, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },

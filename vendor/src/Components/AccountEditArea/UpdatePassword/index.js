@@ -18,7 +18,7 @@ function UpdatePassword() {
 
     const handleUpdatePassword = (data) => {
         axios
-            .put(`http://127.0.0.1:8000/api/admin/changePassword`, data, {
+            .patch(`http://localhost:8000/admin/updatePassword`, data, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('adminToken')}`,
                 },
@@ -49,36 +49,36 @@ function UpdatePassword() {
     return (
         <form onSubmit={handleSubmit(handleUpdatePassword)} id='accountEditFormPassword' className={styles.accountEditForm}>
             <div className={styles.formGroup}>
-                <label htmlFor="oldPassword">Mật khẩu hiện tại
+                <label htmlFor="password">Mật khẩu hiện tại
                     <span className="text-danger">*</span>
                 </label>
                 <input
                     className="FormInput"
                     type="password"
                     placeholder="Mật khẩu hiện tại"
-                    {...register("oldPassword", { required: true, minLength: 3, maxLength: 24 })}
+                    {...register("password", { required: true, minLength: 3, maxLength: 24 })}
                 />
-                {errors["oldPassword"] && (
+                {errors["password"] && (
                     <p className="checkInput">Mật khẩu phải có từ 3 đến 24 ký tự</p>
                 )}
-                <label htmlFor="password">Mật khẩu mới</label>
+                <label htmlFor="newPassword">Mật khẩu mới</label>
                 <input
                     className="FormInput"
                     type="password"
                     placeholder="Mật khẩu mới"
-                    {...register("password", { required: true, minLength: 6, maxLength: 24 })}
+                    {...register("newPassword", { required: true, minLength: 6, maxLength: 24 })}
                 />
-                {errors["password"] && (
+                {errors["newPassword"] && (
                     <p className="checkInput">Mật khẩu mới phải có từ 6 đến 24 ký tự</p>
                 )}
-                <label htmlFor="confirmPassword">Xác nhận mật khẩu mới</label>
+                <label htmlFor="confirmNewPassword">Xác nhận mật khẩu mới</label>
                 <input
                     className="FormInput"
                     type="password"
                     placeholder="Xác nhận mật khẩu mới"
-                    {...register("confirmPassword", { required: true, minLength: 6, maxLength: 24 })}
+                    {...register("confirmNewPassword", { required: true, minLength: 6, maxLength: 24 })}
                 />
-                {errors["confirmPassword"] && (
+                {errors["confirmNewPassword"] && (
                     <p className="checkInput">Mật khẩu hiện tại và mật khẩu mới phải giống nhau</p>
                 )}
             </div>

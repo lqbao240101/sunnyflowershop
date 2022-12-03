@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row'
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import { Link, useSearchParams } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ListCategories from './ListCategories/ListCategories'
@@ -8,12 +10,22 @@ import '../DashBoard.css'
 import usePaginate from "../../Hook/usePagination/usePaginate";
 import styles from '../../Hook/usePagination/PaginatedItems.module.scss'
 
+
 const Category = () => {
-    const [searchParams] = useSearchParams();
-    const { data, page, nextPage, prevPage, lastPage } = usePaginate(
-        "http://localhost:8000/category/",
-        searchParams
-    );
+    const [listCategory, setListCategory] = useState([])
+
+    useEffect(() => {
+        axios
+            .get(`http://localhost:8000/category/`, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('adminToken')}`,
+                },
+            })
+
+            .then((response) => {
+                setListCategory(response.data.data)
+            });
+    }, [])
 
     return (
         <Col sm={12} md={12} lg={9}>
@@ -40,7 +52,7 @@ const Category = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <ListCategories currentCategory={data} />
+                                            <ListCategories currentCategory={listCategory} />
                                         </tbody>
                                     </table>
                                     {/* {page !== 1 ?

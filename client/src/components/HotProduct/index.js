@@ -8,6 +8,7 @@ import Cookies from 'js-cookie';
 import { Link } from 'react-router-dom'
 import { FaRegHeart } from 'react-icons/fa'
 import './HotProduct.css'
+import { formatter } from "../../utils/utils";
 
 function HotProduct() {
     const [unit, setUnit] = useState('new_arrival');
@@ -80,7 +81,7 @@ function HotProduct() {
                                                                 <Link to={`/shop/${newArrival._id}`}>{newArrival.name}</Link>
                                                             </h5>
                                                             <span className='price'>
-                                                                <span className='new'>{newArrival.price}đ</span>
+                                                                <span className='new'>{formatter.format(newArrival.price)}</span>
                                                             </span>
                                                         </div>
                                                     </div>
