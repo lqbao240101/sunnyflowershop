@@ -37,7 +37,23 @@ function ListProduct({ currentItems }) {
 
     }
     const [modal, setModal] = useState(false);
-
+    const AddWishlist = (productId) => {
+        const payload = { productId: productId }
+        console.log(payload)
+        axios
+            .patch(`http://localhost:8000/favorite`, payload, {
+                headers: {
+                    Authorization: `Bearer ${Cookies.get('token')}`,
+                },
+            })
+            .then((response) => {
+                setMessage(response.data.message)
+                setSuccess(response.data.success)
+                if (!response.data.success) {
+                    setIsLogin(false)
+                }
+            })
+    }
     const closeModal = () => {
         setModal(!modal);
         if (!isLogin) {
@@ -66,7 +82,7 @@ function ListProduct({ currentItems }) {
                                         : ''}
                                 </span>
                                 <div className={styles.actions}>
-                                    <a href="" className={`${styles.wishList} ${styles.action}`} title="Wishlist">
+                                    <a onClick={AddWishlist(product._id)} className={`${styles.wishList} ${styles.action}`} title="Wishlist" >
                                         <FaRegHeart />
                                     </a>
                                     <a href="" className={`${styles.quickView} ${styles.action}`} title="Quickview">

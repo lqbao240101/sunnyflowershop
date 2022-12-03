@@ -38,7 +38,7 @@ function ListOrder() {
                         <td>
                             {Order.deleted_by ? <span className='Cancelled'>Cancelled</span> : Order.status === 0 ? <span className='Pending'>Pending</span> : Order.status === 1 ? <span className='Confirmed'>Confirm</span> : <span className='Completed'>Completed</span>}
                         </td>
-                        <td>{Order.total_price}₫</td>
+                        <td>{formatter.format(Order.total_price)}</td>
                         {/* <td><ActionOrder idOrder={Order._id} idCustomer={Order.customer._id} /> </td> */}
                     </tr>
                 )
