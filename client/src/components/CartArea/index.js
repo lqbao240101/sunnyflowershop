@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Cart.module.scss'
 import Container from 'react-bootstrap/Container';
 import { FaMinus, FaPlus, FaHeart, FaTrashAlt } from "react-icons/fa"
@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import EmptyCart from './EmptyCart';
 import axios from "axios";
 import ModalATag from '../ModalATag/ModalATag';
@@ -19,6 +20,8 @@ function CartArea() {
     const [message, setMessage] = useState("")
     const [success, setSuccess] = useState("")
     const [percent, setpercent] = useState(0)
+    const [isLogin, setIsLogin] = useState(true)
+    const navigate = useNavigate();
     const [totalPriceCart, settotalPriceCart] = useState(0)
     const { register, handleSubmit, formState: { errors }, } = useForm();
 
@@ -30,7 +33,11 @@ function CartArea() {
                 },
             })
             .then((response) => {
-                setListProduct(response.data.data);
+                if (response.data.success) {
+                    setListProduct(response.data.data);
+                } else {
+                    navigate("/login")
+                }
             })
             .catch(function (error) {
                 console.log(error);

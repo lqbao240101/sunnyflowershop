@@ -15,30 +15,12 @@ import AccountEdit from "./pages/AccountEdit";
 import Wishlist from "./pages/Wishlist";
 import AddressEdit from "./pages/AddressEdit";
 import DetailProduct from "./components/ShopMainArea/DetailProduct/DetailProduct";
-import { useState, useEffect } from 'react'
-import Cookies from "js-cookie";
-import axios from "axios";
+import NotFound from "./components/NotFound";
 import CheckoutOrderPage from "./pages/CheckoutOrderPage";
+import OrderCompleteArea from "./components/OrderCompleteArea copy";
 
 function App() {
-  // const [listAddress, setListAddress] = useState([]);
 
-  // useEffect(() => {
-  //   axios
-  //     .get(`http://localhost:8000/api/user/address`, {
-  //       headers: {
-  //         Authorization: `Bearer ${Cookies.get('token')}`,
-  //       },
-  //     })
-  //     .then((response) => {
-  //       if (response.data.success) {
-  //         setListAddress(response.data.data);
-  //       }
-  //     })
-  //     .catch(function (error) {
-  //       console.log(error);
-  //     });
-  // }, []);
 
   return (
     <GlobalStyles>
@@ -70,6 +52,9 @@ function App() {
             <Route path="/address-edit/*" element={<AddressEdit />}>
             </Route>
             <Route path="/checkout-order/" element={<CheckoutOrderPage />}>
+            </Route>
+            <Route path="/order-completed" element={<OrderCompleteArea />} />
+            <Route path="*" element={<NotFound />}>
             </Route>
           </Routes>
           <Footer />

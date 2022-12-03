@@ -12,7 +12,7 @@ const ModalATag = ({ message, success, nameBtn, icon }) => {
 
     const closeModal = () => {
         setModal(!modal);
-        // window.location.reload(false)
+        window.location.reload(false)
     }
 
     if (modal) {

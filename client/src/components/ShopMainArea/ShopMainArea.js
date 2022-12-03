@@ -48,6 +48,7 @@ function ShopMainArea() {
                     nextPage: response.data.meta.current_page + 1,
                     prevPage: response.data.meta.current_page - 1,
                 });
+                console.log('bắt đầu lấy')
             });
     }, [searchParams.toString()]);
 

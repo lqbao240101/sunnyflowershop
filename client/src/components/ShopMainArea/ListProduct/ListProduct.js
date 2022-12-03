@@ -27,11 +27,9 @@ function ListProduct({ currentItems }) {
                 },
             })
             .then((response) => {
-                console.log('có chạy')
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
                 setModal(!modal);
-                console.log(!response.data.success)
                 if (!response.data.success) {
                     setIsLogin(false)
                 }

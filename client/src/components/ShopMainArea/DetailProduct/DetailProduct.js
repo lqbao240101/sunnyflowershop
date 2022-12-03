@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ModalATag from '../../ModalATag/ModalATag'
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom"
 import CommonBanner from '../../CommonBanner';
 import "./DetailProduct.css"
@@ -23,16 +24,17 @@ const DetailProduct = () => {
     const [percentSale, setPercentSale] = useState(0)
     const [quantityPurchased, setQuantityPurchased] = useState(1)
     const [message, setMessage] = useState("")
-    const [success, setSuccess] = useState("")
+    const [success, setSuccess] = useState(true)
     const [listReview, setListReview] = useState([])
     const [comment, setComment] = useState('')
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('description')
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
     const { register: register2, handleSubmit: handleSubmit2 } = useForm();
     const [modal, setModal] = useState(false);
 
     const toggleModal = () => {
-        setTimeout(() => { setModal(!modal); }, 1000)
+        setTimeout(() => { setModal(!modal); }, 1)
     };
 
     const closeModal = () => {
@@ -76,7 +78,7 @@ const DetailProduct = () => {
             .then((response) => {
                 setMessage(response.data.message)
                 setSuccess(response.data.success)
-                if (!response.data.login) {
+                if (!response.data.success) {
                     setIsLogin(false)
                 }
             })
@@ -93,18 +95,24 @@ const DetailProduct = () => {
             })
 
     }, [])
-    const AddToCart = (data) => {
+
+    const AddToCart = () => {
+        const payload = {
+            quantity: quantityPurchased
+        }
         axios
-            .patch(`http://localhost:8000/cart/${productId}`, data, {
+            .patch(`http://localhost:8000/cart/${productId}`, payload, {
                 headers: {
                     Authorization: `Bearer ${Cookies.get('token')}`,
                 },
             })
             .then((response) => {
-                setMessage(response.data.message)
-                setSuccess(response.data.success)
-                if (!response.data.login) {
-                    setIsLogin(false)
+                if (!response.data.success) {
+                    navigate("/login")
+                } else {
+                    setMessage(response.data.message)
+                    setSuccess(response.data.success)
+                    setModal(!modal)
                 }
             })
     }
@@ -116,10 +124,12 @@ const DetailProduct = () => {
                 },
             })
             .then((response) => {
-                setMessage(response.data.message)
-                setSuccess(response.data.success)
-                if (!response.data.login) {
-                    setIsLogin(false)
+
+                if (!response.data.success) {
+                    navigate("/login")
+                } else {
+                    setMessage(response.data.message)
+                    setSuccess(response.data.success)
                 }
                 window.location.reload(false)
             })
@@ -143,8 +153,7 @@ const DetailProduct = () => {
 
 
                                     <p>{productDescription}</p>
-                                    <form id='product_count_form_two'
-                                        onSubmit={handleSubmit(AddToCart)}>
+                                    <form id='product_count_form_two'>
                                         <div className='product_count_one'>
                                             <div className='plus-minus-input'>
                                                 <div className='input-group-button'>
@@ -157,7 +166,7 @@ const DetailProduct = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <input type="submit" id="submit-form" className="hidden" />
+
                                     </form>
                                     <div className='links_Product_areas'>
                                         <ul>
@@ -165,25 +174,26 @@ const DetailProduct = () => {
                                                 <ModalATag message={message} success={success} nameBtn='Add To Wishlist' icon={<FaHeart />}></ModalATag>
                                             </li>
                                         </ul>
-                                        <label htmlFor='submit-form' className="theme-btn-one bg-black btn_sm" onClick={toggleModal}>
+                                        <button htmlFor='submit-form' className="theme-btn-one bg-black btn_sm" onClick={AddToCart}>
                                             Add to cart
 
-                                            {modal && (
-                                                <div className="modal">
-                                                    <div onClick={toggleModal} className="overlay"></div>
-                                                    <div className="modal-content">
-                                                        <div>
-                                                            {success == true ? <FaRegCheckCircle size={90} className='colorSuccess' /> : <FaTimesCircle size={90} className='colorFail' />}
-                                                        </div>
-                                                        <h2 className="title_modal">Add to cart {success ? 'Successful' : 'Failed'}</h2>
-                                                        <p >{message}</p>
-                                                        <div className='divClose'>
-                                                            <button className="close close-modal" onClick={closeModal}>OK</button>
-                                                        </div>
 
+                                        </button>
+                                        {modal && (
+                                            <div className="modal">
+                                                <div onClick={toggleModal} className="overlay"></div>
+                                                <div className="modal-content">
+                                                    <div>
+                                                        {success == true ? <FaRegCheckCircle size={90} className='colorSuccess' /> : <FaTimesCircle size={90} className='colorFail' />}
                                                     </div>
-                                                </div>)}
-                                        </label>
+                                                    <h2 className="title_modal">Add to cart {success ? 'Successful' : 'Failed'}</h2>
+                                                    <p >{message}</p>
+                                                    <div className='divClose'>
+                                                        <button className="close close-modal" onClick={closeModal}>OK</button>
+                                                    </div>
+
+                                                </div>
+                                            </div>)}
                                     </div>
                                 </div>
                             </div>
