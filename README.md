@@ -10,8 +10,8 @@
 - Chạy: cd vendor để chuyển đường dẫn sang thư mục vendor
 - Chạy: npm i để khởi tạo thư mục node_modules ở vendor
 - Chạy: npm start để chạy webside
-** Chạy dự án ở BackEnd:
 
+** Chạy dự án ở BackEnd:
 - Chạy: cd api để chuyển đường dẫn sang thư mục api
 - Chạy: npm i để khởi tạo thư mục node_modules ở api
 - Chạy: npm start để chạy webside
