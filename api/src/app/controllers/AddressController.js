@@ -9,15 +9,16 @@ class AddressController {
             customer: req.user._id
         })
             .then(data => {
-                res.json({
+                res.status(200).json({
                     success: true,
                     data: data
                 })
             })
             .catch(err => {
                 console.log(err);
-                res.json({
-                    success: false
+                res.status(500).json({
+                    success: false,
+                    error: err
                 })
             });
     }

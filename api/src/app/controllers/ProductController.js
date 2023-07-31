@@ -20,8 +20,10 @@ class ProductController {
             .limit(perPage)
             .exec((err, products) => {
                 Product.countDocuments((err, count) => {
-                    if (err) return next(err);
-                    res.json({
+                    if (err) return res.status(500).json({
+                        error: err
+                    });
+                    res.status(200).json({
                         data: products,
                         meta: {
                             current_page: page,
@@ -79,14 +81,16 @@ class ProductController {
                     message: "Product id not found"
                 })
             })
+            let x = 2;
     }
 
     // [POST] /products/ => Create product
     create(req, res) {
         const { name, category, description, price, percentSale, img, quantity } = req.body;
-
+        let x = 2;
         Product.findOneWithDeleted({ name: name })
             .then(data => {
+                let x = 3;
                 if (data) {
                     res.json({
                         success: false,

@@ -85,54 +85,52 @@ class CustomerController {
 
     // [POST] /customer/login => Login
     login(req, res) {
-        const { email, password } = req.body;
+        const { email, password } = req.body
         Customer.findOne({
             email: email
         })
             .then(data => {
                 if (data) {
-                    if (data.disabled === true) {
-                        res.json({
+                    if (data.disabled === true)
+                        return res.status(403).json({
                             success: false,
                             message: "Your account has been locked. Please contact us to resolve."
                         })
-                    } else {
-                        bcrypt.compare(password, data.password, function (err, result) {
-                            if (err) {
-                                res.json({
-                                    success: false,
-                                    message: "Hash failed."
-                                })
-                            } else {
-                                if (result == true) {
-                                    let token = generateToken(data._id);
-                                    // let token = jwt.sign({ id: data._id }, process.env.JWT_SECRET); //Need fix
-                                    res.json({
-                                        success: true,
-                                        token: token,
-                                        message: "Login successfully.",
-                                    })
-                                } else {
-                                    res.json({
-                                        success: false,
-                                        message: "Wrong password. Try again."
-                                    })
-                                }
-                            }
 
-                        });
-                    }
-                } else {
-                    res.json({
+                    bcrypt.compare(password, data.password, function (err, result) {
+                        if (err)
+                            return res.status(500).json({
+                                success: false,
+                                message: err
+                            })
+
+                        if (result === true) {
+                            let token = generateToken(data._id);
+                            // let token = jwt.sign({ id: data._id }, process.env.JWT_SECRET); //Need fix
+                            return res.status(200).json({
+                                success: true,
+                                token: token,
+                                message: "Login successfully.",
+                            })
+                        }
+
+                        return res.status(400).json({
+                            success: false,
+                            message: "Wrong password. Try again."
+                        })
+
+                    });
+
+                } else
+                    return res.status(400).json({
                         success: false,
                         message: "Email is not found."
                     })
-                }
             })
             .catch(err => {
-                res.json({
+                return res.status(500).json({
                     success: false,
-                    message: "Something went wrong. Try again."
+                    message: err
                 })
             })
     }

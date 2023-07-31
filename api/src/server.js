@@ -1,10 +1,10 @@
 const express = require('express')
 const morgan = require('morgan')
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const db = require('./config/db');
-const cors = require('cors');
-require('dotenv').config();
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const db = require('./config/db')
+const cors = require('cors')
+require('dotenv').config()
 
 const corsOptions = {
   origin: '*',
@@ -14,7 +14,7 @@ const corsOptions = {
 db.connect();
 const app = express();
 
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 //Connect to DB
 
@@ -25,7 +25,6 @@ app.use(morgan('combined'))
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json({ limit: '1000kb' }));
 app.use(cookieParser())
-
 // app.use(function (req, res, next) {
 //   res.header('Access-Control-Allow-Origin', '*');
 //   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -33,9 +32,9 @@ app.use(cookieParser())
 //   next();
 // })
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+// app.get('/', (req, res) => {
+//   res.send('Hello World!')
+// })
 
 routes(app);
 

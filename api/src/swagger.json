@@ -1,0 +1,95 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Node API",
+    "version": "1.0",
+    "title": "Node API"
+  },
+  "host": "localhost:8000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Products",
+      "description": "Products API"
+    },
+    {
+      "name": "Categories",
+      "description": "Categories API"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/products": {
+      "get": {
+        "x-swagger-router-controller": "products",
+        "operationId": "getAllProducts",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get all products",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all products"
+          },
+          "500": {
+            "description": "Something wrong"
+          }
+        }
+      }
+    },
+    "/products/{productId}": {
+      "get": {
+        "x-swagger-router-controller": "products",
+        "operationId": "getProductDetail",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get product by id",
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get product by id"
+          },
+          "401": {
+            "description": "Error"
+          },
+          "500": {
+            "description": "Something went wrong, please contact server admin"
+          }
+        }
+      }
+    },
+    "/products/allWithDeleted": {
+      "get": {
+        "x-swagger-router-controller": "products",
+        "operationId": "getAllProductsWithDeleted",
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get all products with deleted",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all products with deleted"
+          },
+          "500": {
+            "description": "Something went wrong, please contact server admin"
+          }
+        }
+      }
+    }
+  }
+}

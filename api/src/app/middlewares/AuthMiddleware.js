@@ -54,32 +54,35 @@ class AuthMiddleware {
                 let token = authHeader.substring(7, authHeader.length);
                 // var cert = fs.readFileSync('../../key/publickey.crt')
                 // const decoded = jwt.verify(token, cert, { algorithm: ['RS256'] });
-                let decoded = jwt.verify(token, process.env.JWT_SECRET)// Need fix
-                Admin.findById({ _id: decoded.id })
-                    .then(function (data) {
-                        if (!data) {
-                            res.json({
-                                success: false,
-                                message: "Invalid token."
-                            })
-                        } else {
+                jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+                    if (err)
+                        return res.status(401).json({
+                            success: false,
+                            message: err
+                        })
+                    Admin.findById({ _id: decoded.id })
+                        .then(data => {
                             if (data.level >= 1) {
                                 req.admin = data;
                                 next();
-                            } else {
-                                res.json({
-                                    success: false,
-                                    message: "Not authorized. Invalid token."
-                                })
                             }
-                        }
-                    })
-            }
+                        })
+                        .catch(err => {
+                            return res.status(401).json({
+                                success: false,
+                                message: err
+                            })
+                        })
+                })
+            } else
+                return res.status(401).json({
+                    success: false,
+                    message: "You need to log in"
+                })
         } catch (err) {
-            console.log(err);
-            res.json({
+            return res.status(500).json({
                 success: false,
-                message: "Invalid token."
+                message: err
             })
         }
     }
@@ -91,31 +94,45 @@ class AuthMiddleware {
                 let token = authHeader.substring(7, authHeader.length);
                 // var cert = fs.readFileSync('../../key/publickey.crt')
                 // const decoded = jwt.verify(token, cert, { algorithm: ['RS256'] });
-                let decoded = jwt.verify(token, process.env.JWT_SECRET)// Need fix
-                Admin.findById({ _id: decoded.id }).then(function (data) {
-                    if (data.length === 0) {
-                        res.json({
+                jwt.verify(token, process.env.JWT_SECRET, function (err, decoded) {
+                    if (err)
+                        return res.status(401).json({
                             success: false,
-                            message: "Invalid token."
+                            message: err
                         })
-                    } else {
-                        if (data.level === 2) {
-                            req.admin = data;
-                            next();
-                        } else {
-                            res.json({
+                    Admin.findById({ _id: decoded.id })
+                        .then(data => {
+                            if (!data)
+                                return res.status(401).json({
+                                    success: false,
+                                    message: "Unauthorized"
+                                })
+                            if (data.level === 2) {
+                                req.admin = data;
+                                next();
+                            }
+                            else
+                                return res.status(401).json({
+                                    success: false,
+                                    message: "Unauthorized"
+                                })
+                        })
+                        .catch((err) => {
+                            return res.status(500).json({
                                 success: false,
-                                message: "Not authorized. Invalid token."
+                                message: err    
                             })
-                        }
-                    }
+                        })
                 })
-            }
+            } else
+                return res.status(401).json({
+                    success: false,
+                    message: "You need to log in"
+                })
         } catch (err) {
-            console.log(err)
-            res.json({
+            return res.status(500).json({
                 success: false,
-                message: "Invalid token."
+                message: err
             })
         }
     }
